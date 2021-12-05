@@ -48,8 +48,8 @@ public class Day5 {
                     }
                 }
             }
-            for (int i = 0; i < lines.getNewX().size(); i++) {
-                oeanFloor[lines.getNewX().get(i).y][lines.getNewX().get(i).x]++;
+            for (int i = 0; i < lines.getVerticalPoints().size(); i++) {
+                oeanFloor[lines.getVerticalPoints().get(i).y][lines.getVerticalPoints().get(i).x]++;
             }
         }
         return countOverlap(oeanFloor);
