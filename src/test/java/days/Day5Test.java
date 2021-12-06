@@ -5,33 +5,33 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import classes.Lines;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
-import util.Util;
+import util.FileUtil;
 
 class Day5Test {
 
     @Test
     void testDay5Level1() throws IOException {
-        int res = Day5.part1(Util.readFromFile("day5.txt"));
+        int res = Day5.part1(FileUtil.readFromFile("day5.txt"));
         assertEquals(6113, res);
 
     }
 
     @Test
     void testDay5exLevel1() throws IOException {
-        int res = Day5.part1(Util.readFromFile("day5ex.txt"));
+        int res = Day5.part1(FileUtil.readFromFile("day5ex.txt"));
         assertEquals(5, res);
     }
 
     @Test
     void testDay5Level2() throws IOException {
-        int res = Day5.level2(Util.readFromFile("day5.txt"));
+        int res = Day5.level2(FileUtil.readFromFile("day5.txt"));
         assertEquals(20373, res);
 
     }
 
     @Test
     void testDay5exLevel2() throws IOException {
-        int res = Day5.level2(Util.readFromFile("day5ex.txt"));
+        int res = Day5.level2(FileUtil.readFromFile("day5ex.txt"));
         assertEquals(12, res);
     }
 

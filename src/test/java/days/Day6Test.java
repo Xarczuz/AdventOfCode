@@ -7,31 +7,31 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.LinkedList;
 import org.junit.jupiter.api.Test;
-import util.Util;
+import util.FileUtil;
 
 class Day6Test {
 
     @Test
     void testLanternfish1ex() throws IOException {
-        long fishes = new Day6().Lanternfish1(Util.readFromFile("day6ex.txt"), 80);
+        long fishes = new Day6().Lanternfish1(FileUtil.readFromFile("day6ex.txt"), 80);
         assertEquals(5934, fishes);
     }
 
     @Test
     void testLanternfish1() throws IOException {
-        long fishes = new Day6().Lanternfish1(Util.readFromFile("day6.txt"), 80);
+        long fishes = new Day6().Lanternfish1(FileUtil.readFromFile("day6.txt"), 80);
         assertEquals(360268, fishes);
     }
 
     @Test
     void testLanternfish2ex() throws IOException {
-        BigInteger fishes = new Day6().Lanternfish2(Util.readFromFile("day6ex.txt"));
+        BigInteger fishes = new Day6().Lanternfish2(FileUtil.readFromFile("day6ex.txt"));
         assertEquals("26984457539", fishes.toString());
     }
 
     @Test
     void testLanternfish2() throws IOException {
-        BigInteger fishes = new Day6().Lanternfish2(Util.readFromFile("day6.txt"));
+        BigInteger fishes = new Day6().Lanternfish2(FileUtil.readFromFile("day6.txt"));
         assertEquals("1632146183902", fishes.toString());
     }
 

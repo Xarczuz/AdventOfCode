@@ -2,7 +2,7 @@ package days;
 
 import java.util.ArrayList;
 import java.util.List;
-import util.Util;
+import util.FileUtil;
 
 public class Day3 {
     private static final int OFSET = 48;
@@ -44,8 +44,8 @@ public class Day3 {
         String oxy = oxgenAndCarbon(s, new ArrayList<>(list), 0, true);
         s = gammaAndEpsilon(list, false);
         String carb = oxgenAndCarbon(s, new ArrayList<>(list), 0, false);
-        long gammanr = Util.bitToLong(oxy);
-        long epsilonnr = Util.bitToLong(carb);
+        long gammanr = FileUtil.bitToLong(oxy);
+        long epsilonnr = FileUtil.bitToLong(carb);
         return gammanr * epsilonnr;
     }
 

@@ -6,12 +6,12 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
-public final class Util {
+public final class FileUtil {
 
     private static final char OFSET = 48;
     private static final long[] TWO = new long[] {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192};
 
-    private Util() {
+    private FileUtil() {
         throw new IllegalStateException("Utility class");
     }
 

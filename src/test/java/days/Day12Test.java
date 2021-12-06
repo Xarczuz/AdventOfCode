@@ -1,16 +1,14 @@
 package days;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
-import util.Util;
+import util.FileUtil;
 
 class Day12Test {
 
     @Test
     void part1() throws IOException {
-        new Day12().part1(Util.readFromFile("day12ex.txt"));
+        new Day12().part1(FileUtil.readFromFile("day12ex.txt"));
 
     }
 }
