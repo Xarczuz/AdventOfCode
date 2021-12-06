@@ -1,9 +1,10 @@
 package days;
 
+import classes.Lines;
 import java.util.ArrayList;
 
 public class Day5 {
-    public static int level1(ArrayList<String> readFromFile) {
+    public static int part1(ArrayList<String> readFromFile) {
         ArrayList<Lines> linesArr = new ArrayList<>(readFromFile.size());
         int[][] oeanFloor = makeOceanFloor(readFromFile, linesArr);
 

@@ -10,7 +10,7 @@ class Day1Test {
 
     @Test
     void testDay1() throws IOException {
-        long res = Day1.countDiff(Util.readFromFile("src/main/resource/day1.txt"));
+        long res = Day1.countDiff(Util.readFromFile("day1.txt"));
 
         assertEquals(1527,res);
     }

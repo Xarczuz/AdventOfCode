@@ -16,7 +16,7 @@ public final class Util {
     }
 
     public static ArrayList<String> readFromFile(String filename) throws IOException {
-        Path of = Path.of("src/main/resource/" + filename);
+        Path of = Path.of("src/main/resources/" + filename);
         Stream<String> lines = Files.lines(of.toAbsolutePath());
         ArrayList<String> arrayList = new ArrayList<>(lines.toList());
         lines.close();

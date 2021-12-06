@@ -2,6 +2,7 @@ package days;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import classes.Lines;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import util.Util;
@@ -10,14 +11,14 @@ class Day5Test {
 
     @Test
     void testDay5Level1() throws IOException {
-        int res = Day5.level1(Util.readFromFile("day5.txt"));
+        int res = Day5.part1(Util.readFromFile("day5.txt"));
         assertEquals(6113, res);
 
     }
 
     @Test
     void testDay5exLevel1() throws IOException {
-        int res = Day5.level1(Util.readFromFile("day5ex.txt"));
+        int res = Day5.part1(Util.readFromFile("day5ex.txt"));
         assertEquals(5, res);
     }
 
