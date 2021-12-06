@@ -36,8 +36,7 @@ class Day6Test {
     }
 
     @Test
-    void testGrowLanternfish() throws IOException {
-
+    void testGrowLanternfish() {
         LinkedList<Fish> f = new LinkedList<>();
         f.addLast(new Fish(0));
         LinkedList<Fish> fishes = new Day6().grow(f, 80);
@@ -45,15 +44,12 @@ class Day6Test {
     }
 
     @Test
-    void testGrowLanternfish3() throws IOException {
-
+    void testGrowLanternfish3() {
         for (int i = 2; i < 9; i++) {
             Fish fishes1 = new Fish(0);
             fishes1.unsyncFishes[i] = 1;
             BigInteger fishes = new Day6().grow2(fishes1, 256);
             System.out.println(fishes);
         }
-
-//        assertEquals(1421, fishes);
     }
 }
