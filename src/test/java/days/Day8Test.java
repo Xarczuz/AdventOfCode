@@ -1,5 +1,6 @@
 package days;
 
+
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import util.FileUtil;
@@ -7,8 +8,7 @@ import util.FileUtil;
 class Day8Test {
 
     @Test
-    void part1() throws IOException {
+    void testPart1ex() throws IOException {
         new Day8().part1(FileUtil.readFromFile("day8ex.txt"));
-
     }
 }

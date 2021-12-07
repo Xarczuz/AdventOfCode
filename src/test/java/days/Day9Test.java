@@ -7,7 +7,7 @@ import util.FileUtil;
 class Day9Test {
 
     @Test
-    void part1() throws IOException {
+    void testPart1ex() throws IOException {
         new Day9().part1(FileUtil.readFromFile("day9ex.txt"));
 
     }

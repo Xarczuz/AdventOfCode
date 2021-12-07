@@ -15,7 +15,7 @@ class Day7Test {
     }
 
     @Test
-    void testPart1() throws IOException {
+    void testtestPart1ex() throws IOException {
         int res = new Day7().part1(FileUtil.readFromFile("day7.txt"));
         assertEquals(328187, res);
     }
