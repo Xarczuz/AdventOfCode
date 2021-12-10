@@ -13,28 +13,29 @@ class Day10Test {
     void autocomplete() {
         ArrayList<String> arr = new ArrayList<>();
         arr.add("[({(<(())[]>[[{[]{<()<>>");
-        new Day10().autocomplete(arr);
+        assertEquals(1,new Day10().autocomplete(arr).size());
     }
 
     @Test
     void autocomplete2() {
         ArrayList<String> arr = new ArrayList<>();
         arr.add("[(()[<>])]({[<{<<[]>>(");
-        new Day10().autocomplete(arr);
+        assertEquals(1,new Day10().autocomplete(arr).size());
     }
 
     @Test
     void autocomplete3() {
         ArrayList<String> arr = new ArrayList<>();
         arr.add("(((({<>}<{<{<>}{[]{[]{}");
-        new Day10().autocomplete(arr);
+        assertEquals(1,new Day10().autocomplete(arr).size());
     }
+
     @Test
     void autocomplete4() {
         ArrayList<String> arr = new ArrayList<>();
         arr.add("<{([([[(<>()){}]>(<<{{");
         arr.add("<{([([>(<<{{");
-        new Day10().autocomplete(arr);
+        assertEquals(0,new Day10().autocomplete(arr).size());
     }
 
     @Test
