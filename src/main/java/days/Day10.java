@@ -3,25 +3,18 @@ package days;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Stack;
 
 public class Day10 {
+
     public long part1(ArrayList<String> strings) {
-
         ArrayList<Character> errors = findError(strings);
-
-        long points = errorPoints(errors);
-        return points;
+        return errorPoints(errors);
     }
 
     public long part2(ArrayList<String> strings) {
         ArrayList<LinkedList<Character>> errors = autocomplete(strings);
-
         ArrayList<Long> points = errorPoints2(errors);
-
-        long middleScore = findMid(points);
-
-        return middleScore;
+        return findMid(points);
     }
 
     private long findMid(ArrayList<Long> points) {
@@ -33,33 +26,33 @@ public class Day10 {
         ArrayList<LinkedList<Character>> errors = new ArrayList<>();
         for (String string : strings) {
             LinkedList<Character> stack = new LinkedList<>();
-            for (char c : string.toCharArray()) {
-                if (c == '{' || c == '[' || c == '<' || c == '(') {
-                    stack.push(c);
-                } else {
-                    Character match = stack.pop();
-                    if (match == '{' && c != '}') {
-                        stack.clear();
-                        break;
-                    } else if (match == '(' && c != ')') {
-                        stack.clear();
-                        break;
-                    } else if (match == '[' && c != ']') {
-                        stack.clear();
-
-                        break;
-                    } else if (match == '<' && c != '>') {
-                        stack.clear();
-                        break;
-                    }
-                }
-            }
-            if (stack.size() != 0) {
-
-                errors.add(stack);
-            }
+            addCompleteLines(errors, string, stack);
         }
         return errors;
+    }
+
+    private void addCompleteLines(ArrayList<LinkedList<Character>> errors, String string, LinkedList<Character> stack) {
+        for (char c : string.toCharArray()) {
+            if (c == '{' || c == '[' || c == '<' || c == '(') {
+                stack.push(c);
+            } else {
+                Character match = stack.pop();
+                if (isCorrupted(c, match)) {
+                    stack.clear();
+                    break;
+                }
+            }
+        }
+        if (!stack.isEmpty()) {
+            errors.add(stack);
+        }
+    }
+
+    private boolean isCorrupted(char c, Character match) {
+        return match == '{' && c != '}'
+                || match == '(' && c != ')'
+                || match == '[' && c != ']'
+                || match == '<' && c != '>';
     }
 
     private ArrayList<Long> errorPoints2(ArrayList<LinkedList<Character>> errors) {
@@ -79,10 +72,6 @@ public class Day10 {
 
         }
         return pointArr;
-    }
-
-    private ArrayList<Character> findError2(ArrayList<String> strings) {
-        return null;
     }
 
     private long errorPoints(ArrayList<Character> errors) {
@@ -106,29 +95,27 @@ public class Day10 {
 
     private static void addErrors(ArrayList<String> strings, ArrayList<Character> errors) {
         for (String string : strings) {
-            Stack<Character> stack = new Stack<>();
-            for (char c : string.toCharArray()) {
-                if (c == '{' || c == '[' || c == '<' || c == '(') {
-                    stack.push(c);
-                } else {
-                    Character match = stack.pop();
-                    if (match == '{' && c != '}') {
-                        errors.add(c);
-                        break;
-                    } else if (match == '(' && c != ')') {
-                        errors.add(c);
-                        break;
-                    } else if (match == '[' && c != ']') {
-                        errors.add(c);
-                        break;
-                    } else if (match == '<' && c != '>') {
-                        errors.add(c);
-                        break;
-                    }
+            LinkedList<Character> stack = new LinkedList<>();
+            addErrors(errors, string, stack);
+        }
+
+    }
+
+    private static void addErrors(ArrayList<Character> errors, String string, LinkedList<Character> stack) {
+        for (char c : string.toCharArray()) {
+            if (c == '{' || c == '[' || c == '<' || c == '(') {
+                stack.push(c);
+            } else {
+                Character match = stack.pop();
+                if (match == '{' && c != '}'
+                        || match == '(' && c != ')'
+                        || match == '[' && c != ']'
+                        || match == '<' && c != '>') {
+                    errors.add(c);
+                    break;
                 }
             }
         }
-
     }
 }
 
