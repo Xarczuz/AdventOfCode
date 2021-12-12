@@ -63,6 +63,7 @@ public class Day12 {
             value = map.getOrDefault(path[1], new ArrayList<>());
             value.add(path[0]);
             map.put(path[1], value);
+
         }
 
         return map;
@@ -71,8 +72,8 @@ public class Day12 {
     public int part2(ArrayList<String> readFromFile) {
         HashMap<String, ArrayList<String>> caveMap = parse(readFromFile);
         System.out.println(caveMap);
-        ArrayList<String> strings1 = new ArrayList<>();
-        strings1.add("start");
+        StringBuilder strings1 = new StringBuilder();
+        strings1.append("start");
         HashMap<String, Integer> smallCave = new HashMap<>();
         smallCave.put("start", 2);
         smallCave.put("end", 2);
@@ -87,36 +88,23 @@ public class Day12 {
                 visitPaths2("start", smallCaveUnique, caveMap, strings1);
             }
         }
-
-        System.out.println(sum);
         return h.size();
     }
 
-    private void visitPaths2(String start, HashMap<String, Integer> smallCave, HashMap<String, ArrayList<String>> caveMap, ArrayList<String> strings) {
+    private void visitPaths2(String start, HashMap<String, Integer> smallCave, HashMap<String, ArrayList<String>> caveMap, StringBuilder strings) {
         ArrayList<String> linkedCaves = caveMap.getOrDefault(start, new ArrayList<>());
         for (String c : linkedCaves) {
             if (c.equals("end")) {
-                sum++;
-                ArrayList<String> sss = new ArrayList<>(strings);
-                sss.add("end");
-                h.add(sss.toString());
-                // System.out.println(sss);
-                continue;
-            }
-            if (c.equals("start")) {
-                continue;
-            }
-            Integer nrVisits = smallCave.getOrDefault(c, 0);
-            if (nrVisits < 2) {
-                HashMap<String, Integer> smallCave1 = new HashMap<>(smallCave);
-
-                if (isLowerCase(c)) {
-                    smallCave1.put(c, nrVisits + 1);
+                h.add(strings + "end");
+            } else if (!c.equals("start")) {
+                Integer nrVisits = smallCave.getOrDefault(c, 0);
+                if (nrVisits < 2) {
+                    HashMap<String, Integer> smallCave1 = new HashMap<>(smallCave);
+                    if (isLowerCase(c)) {
+                        smallCave1.put(c, nrVisits + 1);
+                    }
+                    visitPaths2(c, smallCave1, caveMap, new StringBuilder(strings).append(c));
                 }
-
-                ArrayList<String> strings1 = new ArrayList<>(strings);
-                strings1.add(c);
-                visitPaths2(c, smallCave1, caveMap, strings1);
             }
         }
     }
