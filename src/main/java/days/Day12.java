@@ -76,11 +76,20 @@ public class Day12 {
         HashMap<String, Integer> smallCave = new HashMap<>();
         smallCave.put("start", 2);
         smallCave.put("end", 2);
+        for (String small : caveMap.keySet()) {
+            if (isLowerCase(small)) {
+                HashMap<String, Integer> smallCaveUnique = new HashMap<>(smallCave);
+                for (String sc : caveMap.keySet()) {
+                    if (isLowerCase(sc) && !sc.equals(small)) {
+                        smallCaveUnique.put(sc, 1);
+                    }
+                }
+                visitPaths2("start", smallCaveUnique, caveMap, strings1);
+            }
+        }
 
-        visitPaths2("start", smallCave, caveMap, strings1);
-
-        System.out.println(h.size());
-        return sum;
+        System.out.println(sum);
+        return h.size();
     }
 
     private void visitPaths2(String start, HashMap<String, Integer> smallCave, HashMap<String, ArrayList<String>> caveMap, ArrayList<String> strings) {
@@ -91,7 +100,7 @@ public class Day12 {
                 ArrayList<String> sss = new ArrayList<>(strings);
                 sss.add("end");
                 h.add(sss.toString());
-               // System.out.println(sss);
+                // System.out.println(sss);
                 continue;
             }
             if (c.equals("start")) {
@@ -102,15 +111,7 @@ public class Day12 {
                 HashMap<String, Integer> smallCave1 = new HashMap<>(smallCave);
 
                 if (isLowerCase(c)) {
-                        smallCave1.put(c, nrVisits + 1);
-                        if (nrVisits+1 == 2){
-                            for (String s:
-                                 caveMap.keySet()) {
-                                if (isLowerCase(s) && !s.equals(c)){
-                                    smallCave1.put(s,smallCave1.getOrDefault(s,0)+1);
-                                }
-                            }
-                        }
+                    smallCave1.put(c, nrVisits + 1);
                 }
 
                 ArrayList<String> strings1 = new ArrayList<>(strings);
