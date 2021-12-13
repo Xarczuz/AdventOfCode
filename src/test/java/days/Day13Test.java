@@ -33,6 +33,6 @@ class Day13Test {
     void testPart2() throws IOException {
         int res = new Day13().part2(FileUtil.readFromFile("day13.txt"));
 
-        assertEquals(747,res);
+        assertEquals(102,res);
     }
 }
