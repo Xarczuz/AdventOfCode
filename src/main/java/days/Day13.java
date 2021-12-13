@@ -3,7 +3,6 @@ package days;
 import classes.Fold;
 import classes.Origami;
 import java.util.ArrayList;
-import util.Util;
 
 public class Day13 {
 
@@ -30,9 +29,22 @@ public class Day13 {
                 origamiPaper.matrix = foldX(fold.point, origamiPaper.matrix);
             }
         }
-        Util.print(origamiPaper.matrix);
+        print(origamiPaper.matrix);
 
         return count(origamiPaper.matrix);
+    }
+
+    private void print(int[][] matrix) {
+        for (int[] ints : matrix) {
+            for (int anInt : ints) {
+                if (anInt == 0) {
+                    System.out.print(" ");
+                } else {
+                    System.out.print("#");
+                }
+            }
+            System.out.println();
+        }
     }
 
     public static int count(int[][] matrix) {
