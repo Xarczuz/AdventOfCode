@@ -26,12 +26,11 @@ public class Day14 {
 
     public long part2(ArrayList<String> strings, int loops) {
         Info info = parse(strings);
-
         parseMap(info);
         long[] chars = initCount(info);
         countRest(loops, info, chars);
-
-        return count2(chars);
+        long l = count2(chars);
+        return l;
     }
 
     private void countRest(int loops, Info info, long[] chars) {
@@ -42,10 +41,12 @@ public class Day14 {
                 long l = info.newMap.getOrDefault(s, 0L);
                 char a = s.charAt(0);
                 char b = s.charAt(1);
-                char c = info.map.get(a + String.valueOf(b));
+                char c = info.map.get(String.valueOf(new char[] {a, b}));
                 chars[c - 65] += l;
-                map.put(a + String.valueOf(c), map.getOrDefault(a + String.valueOf(c), 0L) + l);
-                map.put(c + String.valueOf(b), map.getOrDefault(c + String.valueOf(b), 0L) + l);
+                String key = String.valueOf(new char[] {a, c});
+                map.put(key, map.getOrDefault(key, 0L) + l);
+                String key1 = String.valueOf(new char[] {c, b});
+                map.put(key1, map.getOrDefault(key1, 0L) + l);
             }
 
             info.newMap = map;
