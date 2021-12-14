@@ -6,51 +6,59 @@ import java.util.HashMap;
 
 public class Day14 {
 
-    public long part1(ArrayList<String> strings,int loops) {
+    public long part1(ArrayList<String> strings, int loops) {
         Info info = parse(strings);
 
-        String polymer = "";
         for (int i = 0; i < loops; i++) {
             StringBuilder sb = new StringBuilder();
-                char a = info.template.charAt(0);
-                sb.append(a);
-            for (int x = 0; x < info.template.length()-1; x++) {
+            char a = info.template.charAt(0);
+            sb.append(a);
+            for (int x = 0; x < info.template.length() - 1; x++) {
                 a = info.template.charAt(x);
                 char b = info.template.charAt(x + 1);
-                char c = info.map.get(String.valueOf(a)+String.valueOf(b));
+                char c = info.map.get(String.valueOf(a) + String.valueOf(b));
                 sb.append(c).append(b);
             }
-            info.template=sb.toString();
+            info.template = sb.toString();
         }
-        return  count(info);
+        return count(info);
     }
 
-    public long part2(ArrayList<String> strings,int loops) {
+    public long part2(ArrayList<String> strings, int loops) {
         Info info = parse(strings);
 
         parseMap(info);
-        long[] chars = new long[25];
-        for (char c : info.template.toCharArray()) {
-            chars[c-65]++;
-        }
+        long[] chars = initCount(info);
+        countRest(loops, info, chars);
 
+        return count2(chars);
+    }
+
+    private void countRest(int loops, Info info, long[] chars) {
         for (long i = 0; i < loops; i++) {
-            HashMap<String,Long> map = new HashMap<>();
+            HashMap<String, Long> map = new HashMap<>();
 
             for (String s : info.newMap.keySet()) {
-                long l =info.newMap.getOrDefault(s,0L);
+                long l = info.newMap.getOrDefault(s, 0L);
                 char a = s.charAt(0);
                 char b = s.charAt(1);
-                char c = info.map.get(a+String.valueOf(b));
-                chars[c-65]+=l;
-                map.put(a+String.valueOf(c),map.getOrDefault(a+String.valueOf(c),0L)+l);
-                map.put(c+String.valueOf(b),map.getOrDefault(c+String.valueOf(b),0L)+l);
+                char c = info.map.get(a + String.valueOf(b));
+                chars[c - 65] += l;
+                map.put(a + String.valueOf(c), map.getOrDefault(a + String.valueOf(c), 0L) + l);
+                map.put(c + String.valueOf(b), map.getOrDefault(c + String.valueOf(b), 0L) + l);
             }
 
-            info.newMap=map;
+            info.newMap = map;
 
         }
-        return  count2(chars);
+    }
+
+    private long[] initCount(Info info) {
+        long[] chars = new long[25];
+        for (char c : info.template.toCharArray()) {
+            chars[c - 65]++;
+        }
+        return chars;
     }
 
     private long count2(long[] chars) {
@@ -68,24 +76,21 @@ public class Day14 {
     }
 
     private void parseMap(Info info) {
-        HashMap<String,Long> map = new HashMap<>();
+        HashMap<String, Long> map = new HashMap<>();
 
-        for (int x = 0; x < info.template.length()-1; x++) {
-        StringBuilder sb = new StringBuilder();
+        for (int x = 0; x < info.template.length() - 1; x++) {
+            StringBuilder sb = new StringBuilder();
             char a = info.template.charAt(x);
             char b = info.template.charAt(x + 1);
             sb.append(a).append(b);
-            map.put(sb.toString(),map.getOrDefault(sb.toString(),0L)+1);
+            map.put(sb.toString(), map.getOrDefault(sb.toString(), 0L) + 1);
         }
 
         info.newMap = map;
     }
 
     private long count(Info info) {
-        long[] chars = new long[25];
-        for (char c : info.template.toCharArray()) {
-            chars[c-65]++;
-        }
+        long[] chars = initCount(info);
         long big = Integer.MIN_VALUE;
         long small = Integer.MAX_VALUE;
         for (long r : chars) {
@@ -96,7 +101,7 @@ public class Day14 {
                 big = r;
             }
         }
-        return big-small;
+        return big - small;
     }
 
     private Info parse(ArrayList<String> strings) {
