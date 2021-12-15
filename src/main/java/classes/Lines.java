@@ -104,16 +104,5 @@ public class Lines {
                 '}';
     }
 
-    public class XY {
-        public int x;
-        public int y;
 
-        @Override
-        public String toString() {
-            return "XY{" +
-                    "x=" + x +
-                    ", y=" + y +
-                    '}';
-        }
-    }
 }

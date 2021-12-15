@@ -1,35 +1,28 @@
 package days;
 
+import classes.XY;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class Day15 {
+    private final int maxStrikes = 5;
     int[][] mazeMatrix = new int[0][];
     HashMap<Integer, Integer> fastPath = new HashMap<>();
+    HashMap<Integer, Integer> fastPath2 = new HashMap<>();
 
     public long part1(ArrayList<String> strings) {
         mazeMatrix = parse(strings);
+        HashSet<XY> visitedXY = new HashSet<>();
+        visitedXY.add(new XY(0, 0));
 
-        fastPath = stupidSolution(mazeMatrix);
-
-        findPath(-1, 0, 0, 0, 0);
-
+        findPath1(-1, 0, 0, 0, 0);
         return min;
     }
 
     int min = 800;
 
-    private void findPath(int tot, int x, int y, int depth, int strikes) {
-//        if (strikes > 20) {//(10 - 370) (15 - 368) (4 - 370)
-//            return;
-//        }
-//        if (tot > getOrDefault(depth)) {
-//            strikes++;
-//        } else {
-//            fastPath.put(depth, tot);
-//            strikes = 0;
-//        }
-
+    private void findPath1(int tot, int x, int y, int depth, int strikes) {
         if (x == mazeMatrix[0].length - 1 && y == mazeMatrix.length - 1) {
             tot = tot + mazeMatrix[y][x];
             if (tot < min) {
@@ -38,8 +31,24 @@ public class Day15 {
             }
             return;
         }
-        yPlus(tot, x, y, depth, strikes);
-        xPlus(tot, x, y, depth, strikes);
+
+        int tot1 = tot + mazeMatrix[y][x];
+        if (tot1 > min) {
+            return;
+        }
+        if (tot1 >= getOrDefault(depth)) {
+            strikes++;
+            if (strikes > maxStrikes) {//(10 - 370) (15 - 368) (4 - 370)
+                return;
+            }
+        } else {
+            fastPath.put(depth, tot1);
+            strikes = 0;
+        }
+        yPlus(tot1, x, y, depth, strikes);
+        yMinus(tot1, x, y, depth, strikes);
+        xPlus(tot1, x, y, depth, strikes);
+        xMinus(tot1, x, y, depth, strikes);
     }
 
     private void xPlus(int tot, int x, int y, int depth, int strikes) {
@@ -48,12 +57,7 @@ public class Day15 {
             return;
         }
 
-        int tot1 = tot + mazeMatrix[y][x];
-        if (tot1 > min) {
-            return;
-        }
-        findPath(tot1, i, y, depth + 1, strikes);
-
+        findPath1(tot, i, y, depth + 1, strikes);
     }
 
     private void yPlus(int tot, int x, int y, int depth, int strikes) {
@@ -61,11 +65,25 @@ public class Day15 {
         if (i > mazeMatrix.length - 1) {
             return;
         }
-        int tot1 = tot + mazeMatrix[y][x];
-        if (tot1 > min) {
+
+        findPath1(tot, x, i, depth + 1, strikes);
+    }
+
+    private void xMinus(int tot, int x, int y, int depth, int strikes) {
+        int i = x - 1;
+        if (i < 0) {
             return;
         }
-        findPath(tot1, x, i, depth + 1, strikes);
+
+        findPath1(tot, i, y, depth + 1, strikes);
+    }
+
+    private void yMinus(int tot, int x, int y, int depth, int strikes) {
+        int i = y - 1;
+        if (i < 0) {
+            return;
+        }
+        findPath1(tot, x, i, depth + 1, strikes);
     }
 
     private int getOrDefault(int depth) {
