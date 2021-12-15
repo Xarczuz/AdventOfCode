@@ -10,9 +10,16 @@ class Day15Test {
 
     @Test
     void part1ex() throws IOException {
-        long res = new Day15().part1(FileUtil.readFromFile("day15ex.txt"));
+        long res = new Day15().part12(FileUtil.readFromFile("day15ex.txt"));
 
         assertEquals(40, res);
+    }
+
+    @Test
+    void part1ex2() throws IOException {
+        long res = new Day15().part1(FileUtil.readFromFile("day15ex2.txt"));
+
+        assertEquals(24, res);
     }
 
     @Test
