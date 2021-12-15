@@ -17,15 +17,15 @@ class Day15Test {
 
     @Test
     void part1ex2() throws IOException {
-        long res = new Day15().part1(FileUtil.readFromFile("day15ex2.txt"));
+        long res = new Day15().part12(FileUtil.readFromFile("day15ex2.txt"));
 
         assertEquals(24, res);
     }
 
     @Test
     void part1() throws IOException {
-        long res = new Day15().part1(FileUtil.readFromFile("day15.txt"));
+        long res = new Day15().part12(FileUtil.readFromFile("day15.txt"));
 
-        assertEquals(367, res);//413
+        assertEquals(366, res);//413
     }
 }
