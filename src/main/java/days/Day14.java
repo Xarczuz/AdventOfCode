@@ -35,7 +35,7 @@ public class Day14 {
 
     private void countRest(int loops, Info info, long[] chars) {
         for (long i = 0; i < loops; i++) {
-            HashMap<String, Long> map = new HashMap<>();
+            HashMap<String, Long> map = new HashMap<>(25);
 
             for (String s : info.newMap.keySet()) {
                 long l = info.newMap.getOrDefault(s, 0L);
