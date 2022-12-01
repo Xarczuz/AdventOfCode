@@ -1,9 +1,13 @@
 package util;
 
+import adventOfCode.Year2022.Day1;
+
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 public final class FileUtil {
@@ -32,4 +36,7 @@ public final class FileUtil {
         return nr;
     }
 
+    public static List<String> readfile(Class<Day1> day1Class, int i) throws IOException, URISyntaxException {
+        return Files.readAllLines(Path.of(day1Class.getResource("day" + i).toURI()));
+    }
 }
