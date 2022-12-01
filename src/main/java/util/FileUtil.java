@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 public final class FileUtil {
@@ -37,6 +38,6 @@ public final class FileUtil {
     }
 
     public static List<String> readfile(Class<Day1> dayClass) throws IOException, URISyntaxException {
-        return Files.readAllLines(Path.of(dayClass.getResource("day" + dayClass.getSimpleName().substring(3)).toURI()));
+        return Files.readAllLines(Path.of(Objects.requireNonNull(dayClass.getResource("day" + dayClass.getSimpleName().substring(3))).toURI()));
     }
 }
