@@ -10,7 +10,7 @@ import java.util.List;
 public class Day1 {
 
     public static void main(String[] args) throws IOException, URISyntaxException {
-        List<String> l = FileUtil.readfile(Day1.class, 1);
+        List<String> l = FileUtil.readfile(Day1.class);
         oneStar(l);
         twoStar(l);
     }
