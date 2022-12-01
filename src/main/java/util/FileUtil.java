@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 public final class FileUtil {
 
     private static final char OFSET = 48;
-    private static final long[] TWO = new long[] {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192};
+    private static final long[] TWO = new long[]{1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192};
 
     private FileUtil() {
         throw new IllegalStateException("Utility class");
@@ -38,6 +38,14 @@ public final class FileUtil {
     }
 
     public static List<String> readfile(Class<Day1> dayClass) throws IOException, URISyntaxException {
-        return Files.readAllLines(Path.of(Objects.requireNonNull(dayClass.getResource("day" + dayClass.getSimpleName().substring(3))).toURI()));
+        return Files.readAllLines(Path.of(Objects.requireNonNull(dayClass.getResource(createFileName(dayClass))).toURI()));
+    }
+
+    private static String createFileName(Class<Day1> dayClass) {
+        return "day" + dayClass.getSimpleName().substring(3);
+    }
+
+    public static List<String> readfileEx(Class<Day1> dayClass) throws IOException, URISyntaxException {
+        return Files.readAllLines(Path.of(Objects.requireNonNull(dayClass.getResource(createFileName(dayClass) + "ex")).toURI()));
     }
 }
