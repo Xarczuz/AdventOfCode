@@ -1,7 +1,5 @@
 package util;
 
-import adventOfCode.Year2022.Day1;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -37,15 +35,15 @@ public final class FileUtil {
         return nr;
     }
 
-    public static List<String> readfile(Class<Day1> dayClass) throws IOException, URISyntaxException {
+    public static List<String> readfile(Class<?> dayClass) throws IOException, URISyntaxException {
         return Files.readAllLines(Path.of(Objects.requireNonNull(dayClass.getResource(createFileName(dayClass))).toURI()));
     }
 
-    private static String createFileName(Class<Day1> dayClass) {
+    private static String createFileName(Class<?> dayClass) {
         return "day" + dayClass.getSimpleName().substring(3);
     }
 
-    public static List<String> readfileEx(Class<Day1> dayClass) throws IOException, URISyntaxException {
+    public static List<String> readfileEx(Class<?> dayClass) throws IOException, URISyntaxException {
         return Files.readAllLines(Path.of(Objects.requireNonNull(dayClass.getResource(createFileName(dayClass) + "ex")).toURI()));
     }
 }
