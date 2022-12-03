@@ -11,10 +11,40 @@ public class Day3 {
 
     public static void main(String[] args) throws IOException, URISyntaxException {
         List<String> l = FileUtil.readfile(Day3.class);
+        List<String> l2 = FileUtil.readfileExempel(Day3.class);
 
+        oneStar(l2);
         oneStar(l);
 
+        twoStar(l2);
+        twoStar(l);
+    }
 
+    private static void twoStar(List<String> l) {
+        long sum = 0;
+        for (int i = 0; i < l.size(); i += 3) {
+            int[] chars = new int[255];
+            String s1 = l.get(i);
+            String s2 = l.get(i + 1);
+            String s3 = l.get(i + 2);
+            findBadge(chars, s1, 1);
+            findBadge(chars, s2, 2);
+            findBadge(chars, s3, 3);
+            for (int j = 0; j < chars.length; j++) {
+                if (chars[j] == 3) {
+                    sum += toPrioValue(j);
+                }
+            }
+        }
+        System.out.println("star 2 sum: " + sum);
+    }
+
+    private static void findBadge(int[] chars, String s1, int i) {
+        for (char c : s1.toCharArray()) {
+            if (chars[c] == i - 1) {
+                chars[c] = i;
+            }
+        }
     }
 
     private static void oneStar(List<String> l) {
@@ -37,7 +67,7 @@ public class Day3 {
         System.out.println("star 1 sum: " + sum);
     }
 
-    private static int toPrioValue(Character character) {
+    private static int toPrioValue(int character) {
         if (character > 97) {
             return character - 96;
         }
