@@ -1,6 +1,7 @@
 package adventOfCode.Year2022;
 
 import util.FileUtil;
+import util.TimeUtil;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -17,22 +18,15 @@ public class Day3 {
         oneStar(l2);
         oneStar(l);
 
-        System.out.println("******TIME*******");
-        long start = System.nanoTime();
+        TimeUtil.startTime();
         twoStar(l2);
         twoStar(l);
-        System.out.println("****End**********");
-        System.out.println(System.nanoTime() - start);
-        System.out.println();
+        TimeUtil.endTime();
 
-        System.out.println("******TIME*******");
-        start = System.nanoTime();
+        TimeUtil.startTime();
         twoStar2(l2);
         twoStar2(l);
-
-        System.out.println("****End**********");
-        System.out.println(System.nanoTime() - start);
-        System.out.println();
+        TimeUtil.endTime();
     }
 
     private static void twoStar2(List<String> l) {
