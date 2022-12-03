@@ -32,9 +32,9 @@ public class Day3 {
     private static void twoStar2(List<String> l) {
         long sum = 0;
         for (int i = 0; i < l.size(); i += 3) {
-            ArrayList<String> s1 = extracted(l, i);
-            ArrayList<String> s2 = extracted(l, i + 1);
-            ArrayList<String> s3 = extracted(l, i + 2);
+            ArrayList<String> s1 = createList(l, i);
+            ArrayList<String> s2 = createList(l, i + 1);
+            ArrayList<String> s3 = createList(l, i + 2);
             List<String> chars = s1.stream().distinct().filter(s2::contains).filter(s3::contains).toList();
             for (String aChar : chars) {
                 sum += toPrioValue(aChar.charAt(0));
@@ -43,7 +43,7 @@ public class Day3 {
         System.out.println("star 2 sum: " + sum);
     }
 
-    private static ArrayList<String> extracted(List<String> l, int i) {
+    private static ArrayList<String> createList(List<String> l, int i) {
         ArrayList<String> strings = new ArrayList<>();
         for (char s : l.get(i).toCharArray()) {
             strings.add(String.valueOf(s));
