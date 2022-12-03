@@ -71,6 +71,6 @@ public class Day3 {
         if (character > 97) {
             return character - 96;
         }
-        return character - 64 + 26;
+        return character - 38;
     }
 }
