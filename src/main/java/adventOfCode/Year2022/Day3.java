@@ -53,18 +53,29 @@ public class Day3 {
 
     private static void twoStar(List<String> l) {
         long sum = 0;
-        for (int i = 0; i < l.size(); i += 3) {
-            int[] chars = new int[255];
-            prepareUniqueCharsBetweenLists(chars, l.get(i), 1);
-            prepareUniqueCharsBetweenLists(chars, l.get(i + 1), 2);
-            prepareUniqueCharsBetweenLists(chars, l.get(i + 2), 3);
-            for (int j = 0; j < chars.length; j++) {
-                if (chars[j] == 3) {
-                    sum += toPrioValue(j);
-                }
-            }
+        int nrInGroup = 3;
+        for (int i = 0; i < l.size(); i += nrInGroup) {
+            int[] chars = createUniqueList(l, nrInGroup, i);
+            sum = calculateScore(sum, nrInGroup, chars);
         }
         System.out.println("star 2 sum: " + sum);
+    }
+
+    private static int[] createUniqueList(List<String> l, int nrInGroup, int i) {
+        int[] chars = new int[130];
+        for (int j = 0; j < nrInGroup; j++) {
+            prepareUniqueCharsBetweenLists(chars, l.get(i + j), j + 1);
+        }
+        return chars;
+    }
+
+    private static long calculateScore(long sum, int nrInGroup, int[] chars) {
+        for (int j = 0; j < chars.length; j++) {
+            if (chars[j] == nrInGroup) {
+                sum += toPrioValue(j);
+            }
+        }
+        return sum;
     }
 
     private static void prepareUniqueCharsBetweenLists(int[] chars, String s1, int i) {
