@@ -55,9 +55,9 @@ public class Day3 {
         long sum = 0;
         for (int i = 0; i < l.size(); i += 3) {
             int[] chars = new int[255];
-            findUnique(chars, l.get(i), 1);
-            findUnique(chars, l.get(i + 1), 2);
-            findUnique(chars, l.get(i + 2), 3);
+            prepareUniqueCharsBetweenLists(chars, l.get(i), 1);
+            prepareUniqueCharsBetweenLists(chars, l.get(i + 1), 2);
+            prepareUniqueCharsBetweenLists(chars, l.get(i + 2), 3);
             for (int j = 0; j < chars.length; j++) {
                 if (chars[j] == 3) {
                     sum += toPrioValue(j);
@@ -67,7 +67,7 @@ public class Day3 {
         System.out.println("star 2 sum: " + sum);
     }
 
-    private static void findUnique(int[] chars, String s1, int i) {
+    private static void prepareUniqueCharsBetweenLists(int[] chars, String s1, int i) {
         for (char c : s1.toCharArray()) {
             if (chars[c] == i - 1) {
                 chars[c] = i;
