@@ -43,7 +43,8 @@ public final class FileUtil {
         return "day" + dayClass.getSimpleName().substring(3);
     }
 
-    public static List<String> readfileEx(Class<?> dayClass) throws IOException, URISyntaxException {
+    public static List<String> readfileExempel(Class<?> dayClass) throws IOException, URISyntaxException {
         return Files.readAllLines(Path.of(Objects.requireNonNull(dayClass.getResource(createFileName(dayClass) + "ex")).toURI()));
     }
+
 }
