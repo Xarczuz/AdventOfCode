@@ -70,7 +70,7 @@ public class Day4 {
                 }
             }
         }
-        System.out.println("star one: " + sum);
+        System.out.println("star two: " + sum);
     }
 
     private static class SectionAssigment {
