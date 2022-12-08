@@ -116,9 +116,7 @@ public class Day8 {
         int maxView = 0;
         for (int i = 0; i < xSize; i++) {
             for (int j = 0; j < ySize; j++) {
-
                 maxView = Math.max(maxView, findViewDistance(forest[i][j], i, j, forest));
-
             }
         }
         System.out.println("Star two: " + maxView);
