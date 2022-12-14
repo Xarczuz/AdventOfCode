@@ -222,10 +222,9 @@ public class Day9 {
         }
 
         public double dist(Rope tempHead) {
-            double dd1 = Math.pow(tempHead.x - x, 2);
-            double dd2 = Math.pow(tempHead.y - y, 2);
-            double dis = Math.sqrt(dd1 + dd2);
-            return dis;
+            double dd1 = Math.pow((double) tempHead.x - x, 2);
+            double dd2 = Math.pow((double) tempHead.y - y, 2);
+            return Math.sqrt(dd1 + dd2);
         }
     }
 }
