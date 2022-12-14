@@ -1,5 +1,7 @@
 package util;
 
+import adventOfCode.Year2022.Day9;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -47,4 +49,7 @@ public final class FileUtil {
         return Files.readAllLines(Path.of(Objects.requireNonNull(dayClass.getResource(createFileName(dayClass) + "ex")).toURI()));
     }
 
+    public static List<String> readfileExempel2(Class<Day9> dayClass) throws URISyntaxException, IOException {
+        return Files.readAllLines(Path.of(Objects.requireNonNull(dayClass.getResource(createFileName(dayClass) + "ex2")).toURI()));
+    }
 }
