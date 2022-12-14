@@ -26,7 +26,6 @@ public class Day9 {
         TimeUtil.endTime();
     }
 
-
     private static void twoStar(List<String> l) {
         Rope head = new Rope();
         Rope tempHead = head;
