@@ -149,9 +149,6 @@ public class Day10 {
             System.out.print(string);
         }
         System.out.println();
-
-
-        System.out.println();
         System.out.println("Two star: " + sum);
 
     }
