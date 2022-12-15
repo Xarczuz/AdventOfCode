@@ -5,10 +5,7 @@ import util.TimeUtil;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class Day10 {
 
@@ -17,9 +14,9 @@ public class Day10 {
         List<String> l2 = FileUtil.readfileExempel(Day10.class);
         List<String> l3 = FileUtil.readfileExempel2(Day10.class);
         TimeUtil.startTime();
-//        oneStar(l);
-//        oneStar(l2);
-//        oneStar(l3);
+        oneStar(l);
+        oneStar(l2);
+        oneStar(l3);
         TimeUtil.endTime();
         TimeUtil.startTime();
         twoStar(l2);
@@ -27,8 +24,7 @@ public class Day10 {
         TimeUtil.endTime();
     }
 
-    //RAPFKIHF
-    //
+
     private static void oneStar(List<String> l) {
         int[] ints = {20, 60, 100, 140, 180, 220};
         int sum = 0;
@@ -82,32 +78,20 @@ public class Day10 {
     }
 
     private static void twoStar(List<String> l) {
-        int[] ints = {20, 60, 100, 140, 180, 220};
         int sum = 0;
         LinkedList<String> list = new LinkedList<>(l);
         int x = 1;
         int spirite = 1;
-        int row = 0;
-        ArrayList<String[]> screen = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
-            String[] screen1 = new String[40];
-            for (int j = 0; j < screen1.length; j++) {
-                screen1[j] = ".";
-            }
-            screen.add(screen1);
-
-        }
+        String[] screen1 = new String[40];
+        Arrays.fill(screen1, ".");
         int count = 0;
         ArrayList<Instruction> instructions = new ArrayList<>();
         for (int cycle = 0; cycle < 240; cycle++) {
             if (count == 40) {
-                for (String[] strings : screen) {
-                    for (int i = 0; i < strings.length; i++) {
-                        String string = strings[i];
-                        System.out.print(string);
-                        strings[i] = ".";
-                    }
-                    break;
+                for (int i = 0; i < screen1.length; i++) {
+                    String string = screen1[i];
+                    System.out.print(string);
+                    screen1[i] = ".";
                 }
                 System.out.println();
                 count = 0;
@@ -132,13 +116,13 @@ public class Day10 {
             }
 
             if (spirite == cycle % 40 + 1) {
-                screen.get(row)[cycle % 40] = "#";
+                screen1[cycle % 40] = "#";
             } else if (spirite == cycle % 40 - 1) {
-                screen.get(row)[cycle % 40] = "#";
+                screen1[cycle % 40] = "#";
             } else if (spirite == cycle % 40) {
-                screen.get(row)[cycle % 40] = "#";
+                screen1[cycle % 40] = "#";
             } else {
-                screen.get(row)[cycle % 40] = ".";
+                screen1[cycle % 40] = ".";
             }
             ArrayList<UUID> uuidsToDelete = new ArrayList<>();
             for (Instruction inst : instructions) {
@@ -160,13 +144,12 @@ public class Day10 {
 
             spirite = x;
         }
-        for (String[] strings : screen) {
-            for (String string : strings) {
-                System.out.print(string);
-            }
-            System.out.println();
-            break;
+
+        for (String string : screen1) {
+            System.out.print(string);
         }
+        System.out.println();
+
 
         System.out.println();
         System.out.println("Two star: " + sum);
@@ -174,9 +157,8 @@ public class Day10 {
     }
 
     static class Instruction {
-        public int value;
+        int value;
         UUID uuid = UUID.randomUUID();
         int cycleToAdd;
-        String instruction = "";
     }
 }
