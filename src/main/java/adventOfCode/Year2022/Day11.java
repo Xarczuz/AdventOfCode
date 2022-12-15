@@ -107,32 +107,29 @@ public class Day11 {
     }
 
     private static void twoStar(List<String> l) {
-
-        int worryLevel = 1;
-        int[] ints = new int[]{1, 20, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000};
-
         ArrayList<Monkey> monkeys = parseMonkeys(l);
-        ArrayList<Monkey> list = findWorryLevel(monkeys, ints);
-
-        System.out.println("Star one: " + worryLevel);
+        findMonkeys(monkeys);
     }
 
-    private static ArrayList<Monkey> findWorryLevel(ArrayList<Monkey> monkeys, int[] worryLevel) {
-
+    private static void findMonkeys(ArrayList<Monkey> monkeys) {
         for (int i = 1; i <= 10000; i++) {
             for (int j = 0; j < monkeys.size(); j++) {
                 Monkey monkey = monkeys.get(j);
                 int size = monkey.items.size();
                 for (int k = 0; k < size; k++) {
                     long worry;
+                    monkey.inspected++;
                     Long item = monkey.items.removeFirst();
                     if (monkey.operation.equals("*")) {
                         worry = item * getOperationAmount(item, monkey);
                     } else {
                         worry = item + getOperationAmount(item, monkey);
                     }
-                    monkey.inspected++;
-                    long newWorry = worry;
+                    int divisible = 1;
+                    for (Monkey monkey1 : monkeys) {
+                        divisible *= monkey1.divisible;
+                    }
+                    long newWorry = worry % divisible;
                     if (newWorry % monkey.divisible == 0) {
                         int ifTrue = monkey.ifTrue;
                         monkeys.get(ifTrue).items.addLast(newWorry);
@@ -142,17 +139,13 @@ public class Day11 {
                     }
                 }
             }
-            for (int i1 : worryLevel) {
-                if (i == i1) {
-                    for (Monkey monkey : monkeys) {
-                        System.out.println(monkey.inspected);
-                    }
-                    System.out.println("-----");
-
-                }
-            }
         }
-        return monkeys;
+        ArrayList<Integer> list = new ArrayList<>();
+        for (Monkey monkey : monkeys) {
+            list.add(monkey.inspected);
+        }
+        list.sort((o1, o2) -> o2 - o1);
+        System.out.println("Star two: " + (long) list.get(0) * list.get(1));
     }
 
     static class Monkey {
