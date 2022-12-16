@@ -75,16 +75,16 @@ public class Day12 {
 
             travelPath.steps++;
             travelPath.currentPos.height = String.valueOf(square.height);
-            TravelPath north = travelPath.clone();
+            TravelPath north = travelPath.copy();
             north.currentPos.y--;
             findPath(heightMap, north, steps);
-            TravelPath east = travelPath.clone();
+            TravelPath east = travelPath.copy();
             east.currentPos.x++;
             findPath(heightMap, east, steps);
-            TravelPath south = travelPath.clone();
+            TravelPath south = travelPath.copy();
             south.currentPos.y++;
             findPath(heightMap, south, steps);
-            TravelPath west = travelPath.clone();
+            TravelPath west = travelPath.copy();
             west.currentPos.x--;
             findPath(heightMap, west, steps);
         }
@@ -123,12 +123,10 @@ public class Day12 {
         Square[][] heightMaps = heightMap.toArray(new Square[0][0]);
         ArrayList<Point> pointsToStart = new ArrayList<>();
 
-        for (int i = 0; i < heightMap.size(); i++) {
-            for (int h = 0; h < heightMaps[0].length; h++) {
-                Square square = heightMaps[i][h];
+        for (int y = 0; y < heightMap.size(); y++) {
+            for (int x = 0; x < heightMaps[0].length; x++) {
+                Square square = heightMaps[y][x];
                 if (square.height == 'S' || square.height == 'a') {
-                    int x = h;
-                    int y = i;
                     Point p = new Point(x, y, String.valueOf(square.height));
                     pointsToStart.add(p);
                 }
@@ -162,12 +160,6 @@ public class Day12 {
                     '}';
         }
 
-        public Square clone() {
-            Square square = new Square();
-            square.height = height;
-            square.coordinate = new Point(coordinate.x, coordinate.y, coordinate.height);
-            return square;
-        }
     }
 
     static class TravelPath {
@@ -176,10 +168,10 @@ public class Day12 {
         Point currentPos = new Point(0, 0, "S");
         char currentHeight = 'a';
 
-        public TravelPath clone() {
+        public TravelPath copy() {
             TravelPath clone = new TravelPath();
             clone.currentHeight = this.currentHeight;
-            clone.currentPos = this.currentPos.clone();
+            clone.currentPos = this.currentPos.copy();
             clone.steps = this.steps;
 
             return clone;
@@ -207,7 +199,7 @@ public class Day12 {
                     '}';
         }
 
-        public Point clone() {
+        public Point copy() {
             return new Point(x, y, height);
         }
     }
