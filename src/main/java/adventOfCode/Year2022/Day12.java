@@ -26,6 +26,8 @@ public class Day12 {
     }
 
     private static void oneStar(List<String> l) {
+        max = Integer.MAX_VALUE;
+
         ArrayList<Square[]> heightMap = parseHeightmap(l);
         Square[][] heightMaps = heightMap.toArray(new Square[0][0]);
         int x = 0;
@@ -65,7 +67,7 @@ public class Day12 {
                 || travelPath.currentHeight >= square.height) {
             travelPath.currentHeight = square.height;
 
-            if (travelPath.steps > square.minSteps) {
+            if (travelPath.steps >= square.minSteps) {
                 return;
             } else {
                 square.minSteps = travelPath.steps;
@@ -92,50 +94,6 @@ public class Day12 {
             max = Math.min(travelPath.steps, max);
         }
     }
-
-    private static void findPath2(Square[][] heightMap, TravelPath travelPath, ArrayList<Integer> steps) {
-        int y = travelPath.currentPos.y;
-        int x = travelPath.currentPos.x;
-        if (travelPath.steps > max || y < 0 || x < 0 || y > heightMap.length - 1 || x > heightMap[0].length - 1) {
-            return;
-        }
-        Square square = heightMap[y][x];
-        if (square.height == 'S') {
-            square.height = 'a';
-        }
-
-        if (travelPath.currentHeight + 1 == square.height
-                || travelPath.currentHeight >= square.height) {
-            travelPath.currentHeight = square.height;
-
-            if (travelPath.steps >= square.minSteps) {
-                return;
-            } else {
-                square.minSteps = travelPath.steps;
-            }
-
-            travelPath.steps++;
-            travelPath.currentPos.height = String.valueOf(square.height);
-            TravelPath north = travelPath.clone();
-            north.currentPos.y--;
-            findPath2(heightMap, north, steps);
-            TravelPath east = travelPath.clone();
-            east.currentPos.x++;
-            findPath2(heightMap, east, steps);
-            TravelPath south = travelPath.clone();
-            south.currentPos.y++;
-            findPath2(heightMap, south, steps);
-            TravelPath west = travelPath.clone();
-            west.currentPos.x--;
-            findPath2(heightMap, west, steps);
-        }
-
-        if (travelPath.currentHeight == '{') {
-            steps.add(travelPath.steps);
-            max = Math.min(travelPath.steps, max);
-        }
-    }
-
 
     private static ArrayList<Square[]> parseHeightmap(List<String> l) {
         ArrayList<Square[]> heightMap = new ArrayList<>();
@@ -164,14 +122,13 @@ public class Day12 {
         ArrayList<Square[]> heightMap = parseHeightmap(l);
         Square[][] heightMaps = heightMap.toArray(new Square[0][0]);
         ArrayList<Point> pointsToStart = new ArrayList<>();
-        int x = 0;
-        int y = 0;
+
         for (int i = 0; i < heightMap.size(); i++) {
             for (int h = 0; h < heightMaps[0].length; h++) {
                 Square square = heightMaps[i][h];
                 if (square.height == 'S' || square.height == 'a') {
-                    x = h;
-                    y = i;
+                    int x = h;
+                    int y = i;
                     Point p = new Point(x, y, String.valueOf(square.height));
                     pointsToStart.add(p);
                 }
@@ -183,7 +140,7 @@ public class Day12 {
             TravelPath travelPath = new TravelPath();
             travelPath.currentPos.y = point.y;
             travelPath.currentPos.x = point.x;
-            findPath2(heightMaps, travelPath, steps);
+            findPath(heightMaps, travelPath, steps);
         }
         steps.sort(Integer::compareTo);
 
