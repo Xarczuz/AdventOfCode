@@ -22,7 +22,6 @@ public class Day13 {
         oneStar(l);
         TimeUtil.endTime();
         TimeUtil.startTime();
-        twoStar(l2);
         twoStar(l);
         TimeUtil.endTime();
     }
@@ -46,7 +45,6 @@ public class Day13 {
     }
 
     private static State isRightOrder(ArrayList<Object> leftArr, ArrayList<Object> rightArr) {
-        State s = TRUE;
         for (int i = 0; i < leftArr.size(); i++) {
             if (i >= rightArr.size()) {
                 return FALSE;
@@ -61,7 +59,6 @@ public class Day13 {
                 } else if (leftInt > rightInt) {
                     return FALSE;
                 }
-                s = State.DRAW;
             } else if (left instanceof ArrayList<?> && right instanceof ArrayList<?>) {
                 State state = isRightOrder((ArrayList<Object>) left, (ArrayList<Object>) right);
                 if (state == FALSE) {
@@ -120,7 +117,6 @@ public class Day13 {
     }
 
     private static void twoStar(List<String> l) {
-
         ArrayList<Object> arrayList = new ArrayList<>();
         for (int i = 0; i < l.size(); i++) {
             if (l.get(i).isBlank()) {
