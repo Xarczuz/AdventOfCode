@@ -87,7 +87,7 @@ public class Day13 {
     }
 
     private static int parseString(char[] charArray, int i, ArrayList<Object> arr) {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         for (; i < charArray.length; i++) {
             char c = charArray[i];
             if (c == '[') {
@@ -98,32 +98,31 @@ public class Day13 {
                 continue;
             }
             if (c == ']') {
-                if (!s.isBlank()) {
-                    arr.add(Integer.parseInt(s));
+                if (!s.toString().isBlank()) {
+                    arr.add(Integer.parseInt(s.toString()));
                 }
                 break;
             }
             if (c == ',') {
-                if (s.isBlank()) {
-                } else {
-                    arr.add(Integer.parseInt(s));
+                if (!s.toString().isBlank()) {
+                    arr.add(Integer.parseInt(s.toString()));
                 }
-                s = "";
+                s = new StringBuilder();
                 continue;
             }
-            s += c;
+            s.append(c);
         }
         return i;
     }
 
     private static void twoStar(List<String> l) {
         ArrayList<Object> arrayList = new ArrayList<>();
-        for (int i = 0; i < l.size(); i++) {
-            if (l.get(i).isBlank()) {
+        for (String s : l) {
+            if (s.isBlank()) {
                 continue;
             }
             ArrayList<Object> arr = new ArrayList<>();
-            parseString(l.get(i).toCharArray(), 0, arr);
+            parseString(s.toCharArray(), 0, arr);
             arrayList.add(arr);
 
         }
