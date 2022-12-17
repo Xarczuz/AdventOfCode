@@ -23,7 +23,7 @@ public class Day13 {
         TimeUtil.endTime();
         TimeUtil.startTime();
         twoStar(l2);
-        //twoStar(l);
+        twoStar(l);
         TimeUtil.endTime();
     }
 
@@ -41,21 +41,8 @@ public class Day13 {
             if (rightOrder == TRUE) {
                 sum += pair;
             }
-//            else{
-//                System.out.println(pair);
-//                for (Object o : leftArr) {
-//                    System.out.print(o);
-//                }
-//                System.out.println();
-//                for (Object o : rightArr) {
-//                    System.out.print(o);
-//                }
-//                System.out.println();
-//            }
-
         }
-
-        System.out.println("Star one: " + sum);  // störren än 610 less 5768 902wrong 1430  969
+        System.out.println("Star one: " + sum);
     }
 
     private static State isRightOrder(ArrayList<Object> leftArr, ArrayList<Object> rightArr) {
@@ -134,6 +121,40 @@ public class Day13 {
 
     private static void twoStar(List<String> l) {
 
+        ArrayList<Object> arrayList = new ArrayList<>();
+        for (int i = 0; i < l.size(); i++) {
+            if (l.get(i).isBlank()) {
+                continue;
+            }
+            ArrayList<Object> arr = new ArrayList<>();
+            parseString(l.get(i).toCharArray(), 0, arr);
+            arrayList.add(arr);
+
+        }
+        ArrayList<Object> e = new ArrayList<>();
+        e.add(2);
+        arrayList.add(e);
+        ArrayList<Object> e2 = new ArrayList<>();
+        e2.add(6);
+        arrayList.add(e2);
+        arrayList.sort((o1, o2) -> {
+            if (isRightOrder((ArrayList<Object>) o1, (ArrayList<Object>) o2) == TRUE) {
+                return -1;
+            }
+            return 1;
+        });
+        int i = 1;
+        int k = 1;
+        for (int j = 0; j < arrayList.size(); j++, k++) {
+            Object o = arrayList.get(j);
+            ArrayList<Object> x = (ArrayList<Object>) ((ArrayList<Object>) o).get(0);
+            System.out.println(x);
+            if (x.toString().equals("[[[[6]]]]") || x.toString().equals("[[[[2]]]]")) {
+                i *= k;
+            }
+
+        }
+        System.out.println("Star two: " + i);
     }
 
 
