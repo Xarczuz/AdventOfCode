@@ -8,13 +8,17 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static adventOfCode.Year2022.Day13.State.*;
+
 public class Day13 {
 
     public static void main(String[] args) throws IOException, URISyntaxException {
         List<String> l = FileUtil.readfile(Day13.class);
         List<String> l2 = FileUtil.readfileExempel(Day13.class);
+        List<String> l3 = FileUtil.readfileExempel2(Day13.class);
         TimeUtil.startTime();
         oneStar(l2);
+        oneStar(l3);
         oneStar(l);
         TimeUtil.endTime();
         TimeUtil.startTime();
@@ -25,58 +29,77 @@ public class Day13 {
 
     private static void oneStar(List<String> l) {
         int sum = 0;
-        int pair = 1;
-        for (int i = 0; i < l.size(); i += 3, pair++) {
+        int pair = 0;
+        for (int i = 0; i < l.size(); i += 3) {
+            pair++;
             ArrayList<Object> leftArr = new ArrayList<>();
             parseString(l.get(i).toCharArray(), 0, leftArr);
             ArrayList<Object> rightArr = new ArrayList<>();
             parseString(l.get(i + 1).toCharArray(), 0, rightArr);
 
-            if (isRightOrder(leftArr, rightArr)) {
+            State rightOrder = isRightOrder(leftArr, rightArr);
+            if (rightOrder == TRUE) {
                 sum += pair;
-                System.out.println(pair);
             }
+//            else{
+//                System.out.println(pair);
+//                for (Object o : leftArr) {
+//                    System.out.print(o);
+//                }
+//                System.out.println();
+//                for (Object o : rightArr) {
+//                    System.out.print(o);
+//                }
+//                System.out.println();
+//            }
+
         }
 
-        System.out.println("Star one: " + sum);
+        System.out.println("Star one: " + sum);  // störren än 610 less 5768 902wrong 1430  969
     }
 
-    private static boolean isRightOrder(ArrayList<Object> leftArr, ArrayList<Object> rightArr) {
-
+    private static State isRightOrder(ArrayList<Object> leftArr, ArrayList<Object> rightArr) {
+        State s = TRUE;
         for (int i = 0; i < leftArr.size(); i++) {
-            Object left = leftArr.get(i);
             if (i >= rightArr.size()) {
-                return false;
+                return FALSE;
             }
+            Object left = leftArr.get(i);
             Object right = rightArr.get(i);
-            if (left instanceof String && right instanceof String) {
+            if (left instanceof Integer && right instanceof Integer) {
                 int leftInt = Integer.parseInt(left.toString());
                 int rightInt = Integer.parseInt(right.toString());
-                if (leftInt > rightInt) {
-                    return false;
-                } else if (leftInt < rightInt) {
-                    return true;
+                if (leftInt < rightInt) {
+                    return TRUE;
+                } else if (leftInt > rightInt) {
+                    return FALSE;
                 }
-            }
-            if (left instanceof ArrayList<?> && right instanceof ArrayList<?>) {
-                if (!isRightOrder((ArrayList<Object>) left, (ArrayList<Object>) right)) {
-                    return false;
+                s = State.DRAW;
+            } else if (left instanceof ArrayList<?> && right instanceof ArrayList<?>) {
+                State state = isRightOrder((ArrayList<Object>) left, (ArrayList<Object>) right);
+                if (state == FALSE) {
+                    return FALSE;
                 }
-            }
-            if (left instanceof String && right instanceof ArrayList<?>) {
+                if (state == TRUE) {
+                    return TRUE;
+                }
+
+            } else if (left instanceof Integer) {
                 ArrayList<Object> newLeft = new ArrayList<>();
                 newLeft.add(left);
                 leftArr.set(i, newLeft);
                 i--;
-            } else if (left instanceof ArrayList<?> && right instanceof String) {
+            } else if (right instanceof Integer) {
                 ArrayList<Object> newRight = new ArrayList<>();
                 newRight.add(right);
                 rightArr.set(i, newRight);
                 i--;
             }
         }
-
-        return true;
+        if (leftArr.size() == rightArr.size()) {
+            return DRAW;
+        }
+        return TRUE;
     }
 
     private static int parseString(char[] charArray, int i, ArrayList<Object> arr) {
@@ -92,14 +115,14 @@ public class Day13 {
             }
             if (c == ']') {
                 if (!s.isBlank()) {
-                    arr.add(s);
+                    arr.add(Integer.parseInt(s));
                 }
                 break;
             }
             if (c == ',') {
                 if (s.isBlank()) {
                 } else {
-                    arr.add(s);
+                    arr.add(Integer.parseInt(s));
                 }
                 s = "";
                 continue;
@@ -109,8 +132,12 @@ public class Day13 {
         return i;
     }
 
-
     private static void twoStar(List<String> l) {
 
+    }
+
+
+    enum State {
+        TRUE, FALSE, DRAW
     }
 }
