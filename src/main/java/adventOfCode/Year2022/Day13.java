@@ -14,7 +14,7 @@ public class Day13 {
         List<String> l = FileUtil.readfile(Day13.class);
         List<String> l2 = FileUtil.readfileExempel(Day13.class);
         TimeUtil.startTime();
-//        oneStar(l2);
+        oneStar(l2);
         oneStar(l);
         TimeUtil.endTime();
         TimeUtil.startTime();
@@ -34,16 +34,49 @@ public class Day13 {
 
             if (isRightOrder(leftArr, rightArr)) {
                 sum += pair;
+                System.out.println(pair);
             }
         }
 
-        System.out.println("Star one: ");
+        System.out.println("Star one: " + sum);
     }
 
     private static boolean isRightOrder(ArrayList<Object> leftArr, ArrayList<Object> rightArr) {
 
+        for (int i = 0; i < leftArr.size(); i++) {
+            Object left = leftArr.get(i);
+            if (i >= rightArr.size()) {
+                return false;
+            }
+            Object right = rightArr.get(i);
+            if (left instanceof String && right instanceof String) {
+                int leftInt = Integer.parseInt(left.toString());
+                int rightInt = Integer.parseInt(right.toString());
+                if (leftInt > rightInt) {
+                    return false;
+                } else if (leftInt < rightInt) {
+                    return true;
+                }
+            }
+            if (left instanceof ArrayList<?> && right instanceof ArrayList<?>) {
+                if (!isRightOrder((ArrayList<Object>) left, (ArrayList<Object>) right)) {
+                    return false;
+                }
+            }
+            if (left instanceof String && right instanceof ArrayList<?>) {
+                ArrayList<Object> newLeft = new ArrayList<>();
+                newLeft.add(left);
+                leftArr.set(i, newLeft);
+                i--;
+            } else if (left instanceof ArrayList<?> && right instanceof String) {
+                ArrayList<Object> newRight = new ArrayList<>();
+                newRight.add(right);
+                rightArr.set(i, newRight);
+                i--;
+            }
+        }
 
-        return false;
+        return true;
     }
 
     private static int parseString(char[] charArray, int i, ArrayList<Object> arr) {
