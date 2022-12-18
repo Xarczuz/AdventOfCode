@@ -6,6 +6,7 @@ import util.TimeUtil;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class Day18 {
@@ -20,8 +21,9 @@ public class Day18 {
         oneStar(l);
         TimeUtil.endTime();
         TimeUtil.startTime();
-        twoStar(l2);
-        //twoStar(l);
+        twoStar(l3);
+//        twoStar(l2);
+//        twoStar(l);
         TimeUtil.endTime();
     }
 
@@ -35,7 +37,9 @@ public class Day18 {
             cube.z = Integer.parseInt(nrs[2]);
 
             for (Cube cube1 : cubes) {
-                cube1.connected(cube);
+                if (cube1.isConnected(cube)) {
+                    cube1.connectedCube(cube);
+                }
             }
             cubes.add(cube);
         }
@@ -49,26 +53,91 @@ public class Day18 {
     }
 
     private static void twoStar(List<String> l) {
-        ArrayList<Cube> cubes = new ArrayList<>();
+        HashSet<Cube> cubes = new HashSet<>();
+        int xMax = 0;
+        int yMax = 0;
+        int zMax = 0;
         for (String s : l) {
             String[] nrs = s.split(",");
-            Cube cube = new Cube();
-            cube.x = Integer.parseInt(nrs[0]);
-            cube.y = Integer.parseInt(nrs[1]);
-            cube.z = Integer.parseInt(nrs[2]);
+            int x = Integer.parseInt(nrs[0]);
+            int y = Integer.parseInt(nrs[1]);
+            int z = Integer.parseInt(nrs[2]);
+            Cube cube = new Cube(x, y, z);
 
             for (Cube cube1 : cubes) {
-                cube1.connected(cube);
+                if (cube1.isConnected(cube)) {
+                    cube1.connectedCube(cube);
+                }
             }
             cubes.add(cube);
+            xMax = Math.max(x, xMax);
+            yMax = Math.max(y, yMax);
+            zMax = Math.max(z, zMax);
         }
         int sum = 0;
         for (Cube cube : cubes) {
             sum += cube.exposed;
         }
 
+        ArrayList<Cube> airpockets = new ArrayList<>();
+        for (int x = 0; x <= xMax; x++) {
+            for (int y = 0; y <= yMax; y++) {
+                for (int z = 0; z <= zMax; z++) {
+                    Cube cube = new Cube(x, y, z);
+                    if (!cubes.contains(cube)) {
+                        int connected = 0;
+                        for (Cube cube1 : cubes) {
+                            if (cube1.isConnected(cube)) {
+                                connected++;
+                            }
+                        }
 
-        System.out.println("Star one: " + sum);
+                        cube.connected = connected;
+                        airpockets.add(cube);
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < airpockets.size(); i++) {
+            Cube cubeTrapped = airpockets.get(i);
+            cubeTrapped.whoHasVisited.add(cubeTrapped);
+            if (isTrapped(cubeTrapped, cubeTrapped, airpockets)) {
+                sum -= cubeTrapped.connected;
+                System.out.println(cubeTrapped);
+            }
+        }
+
+
+        System.out.println("Star two: " + sum); //36-4 4078,3618 to high 2536 to low
+    }
+
+    private static boolean isTrapped(Cube origin, Cube cubeTrapped, ArrayList<Cube> airpockets) {
+        if (cubeTrapped.x == 0 && cubeTrapped.y == 0 && cubeTrapped.z == 0) {
+            return false;
+        }
+
+        if (airpockets.contains(cubeTrapped)) {
+            boolean isTrapped = true;
+            for (Cube airpocket : airpockets) {
+
+                if (airpocket.isConnected(cubeTrapped) && !airpocket.whoHasVisited.contains(origin)) {
+                    airpocket.whoHasVisited.add(origin);
+                    isTrapped = isTrapped && isTrapped(origin, airpocket, airpockets);
+                }
+
+
+//                return isTrapped(new Cube(cubeTrapped.x + 1, cubeTrapped.y, cubeTrapped.z), airpockets)
+//                        && isTrapped(new Cube(cubeTrapped.x - 1, cubeTrapped.y, cubeTrapped.z), airpockets)
+//                        && isTrapped(new Cube(cubeTrapped.x, cubeTrapped.y + 1, cubeTrapped.z), airpockets)
+//                        && isTrapped(new Cube(cubeTrapped.x, cubeTrapped.y - 1, cubeTrapped.z), airpockets)
+//                        && isTrapped(new Cube(cubeTrapped.x, cubeTrapped.y, cubeTrapped.z + 1), airpockets)
+//                        && isTrapped(new Cube(cubeTrapped.x, cubeTrapped.y, cubeTrapped.z - 1), airpockets);
+            }
+            return isTrapped;
+        }
+
+        return false;
     }
 
     static class Cube {
@@ -76,11 +145,20 @@ public class Day18 {
         int y;
         int z;
         int exposed = 6;
+        int connected = 0;
+        HashSet<Cube> whoHasVisited = new HashSet<>();
 
-        public void connected(Cube cube) {
-            if (isConnectedXY(cube) || isConnectedXZ(cube) || isConnectedZY(cube)) {
-                connectedCube(cube);
-            }
+        public Cube() {
+        }
+
+        public Cube(int x, int y, int z) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
+
+        public boolean isConnected(Cube cube) {
+            return isConnectedXY(cube) || isConnectedXZ(cube) || isConnectedZY(cube);
         }
 
         private boolean isConnectedZY(Cube cube) {
@@ -108,6 +186,26 @@ public class Day18 {
                     ", z=" + z +
                     ", exposed=" + exposed +
                     '}';
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Cube cube = (Cube) o;
+
+            if (x != cube.x) return false;
+            if (y != cube.y) return false;
+            return z == cube.z;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = x;
+            result = 31 * result + y;
+            result = 31 * result + z;
+            return result;
         }
     }
 }
