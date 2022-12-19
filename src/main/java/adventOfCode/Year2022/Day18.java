@@ -21,9 +21,9 @@ public class Day18 {
         oneStar(l);
         TimeUtil.endTime();
         TimeUtil.startTime();
-//        twoStar(l3);
+        twoStar(l3);
 //        twoStar(l2);
-        twoStar(l);
+//        twoStar(l);
         TimeUtil.endTime();
     }
 
@@ -115,9 +115,9 @@ public class Day18 {
         if (cubeTrapped.x == 0 && cubeTrapped.y == 0 && cubeTrapped.z == 0) {
             return false;
         }
-        if (!cubeTrapped.whoHasVisited.contains(origin)) {
+        if (cubeTrapped.whoHasVisited.contains(origin)) {
             return true;
-        } else {
+        }
 
             cubeTrapped.whoHasVisited.add(origin);
             if (airpockets.contains(cubeTrapped)) {
@@ -134,9 +134,7 @@ public class Day18 {
             }
 
 
-        }
-
-        return true;
+        return false;
     }
 
     static class Cube {
