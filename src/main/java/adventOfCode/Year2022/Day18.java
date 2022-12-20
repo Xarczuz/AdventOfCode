@@ -22,8 +22,8 @@ public class Day18 {
         TimeUtil.endTime();
         TimeUtil.startTime();
         twoStar(l3);
-//        twoStar(l2);
-//        twoStar(l);
+        twoStar(l2);
+        twoStar(l);
         TimeUtil.endTime();
     }
 
@@ -101,7 +101,7 @@ public class Day18 {
 
         for (int i = 0; i < airpockets.size(); i++) {
             Cube cubeTrapped = airpockets.get(i);
-            if (isTrapped(cubeTrapped, cubeTrapped, airpockets)) {
+            if (isTrapped(cubeTrapped, cubeTrapped, airpockets, new HashSet(), cubes, xMax, yMax, zMax)) {
                 sum -= cubeTrapped.connected;
                 System.out.println(cubeTrapped);
             }
@@ -111,30 +111,28 @@ public class Day18 {
         System.out.println("Star two: " + sum); //36-4 4078,3618 to high 2536 to low
     }
 
-    private static boolean isTrapped(Cube origin, Cube cubeTrapped, ArrayList<Cube> airpockets) {
-        if (cubeTrapped.x == 0 && cubeTrapped.y == 0 && cubeTrapped.z == 0) {
+    private static boolean isTrapped(Cube origin, Cube cubeTrapped, ArrayList<Cube> airpockets, HashSet<Cube> whoHasVisited, HashSet<Cube> cubes, int xMax, int yMax, int zMax) {
+        if (cubeTrapped.x > xMax || cubeTrapped.y > yMax || cubeTrapped.z > zMax
+                || cubeTrapped.x < 0 || cubeTrapped.y < 0 || cubeTrapped.z < 0) {
             return false;
         }
-        if (cubeTrapped.whoHasVisited.contains(origin)) {
+        if (whoHasVisited.contains(cubeTrapped)) {
             return true;
         }
+        whoHasVisited.add(cubeTrapped);
+        if (airpockets.contains(cubeTrapped)) {
 
-            cubeTrapped.whoHasVisited.add(origin);
-            if (airpockets.contains(cubeTrapped)) {
+            return isTrapped(origin, new Cube(cubeTrapped.x + 1, cubeTrapped.y, cubeTrapped.z), airpockets, whoHasVisited, cubes, xMax, yMax, zMax)
+                    && isTrapped(origin, new Cube(cubeTrapped.x - 1, cubeTrapped.y, cubeTrapped.z), airpockets, whoHasVisited, cubes, xMax, yMax, zMax)
+                    && isTrapped(origin, new Cube(cubeTrapped.x, cubeTrapped.y + 1, cubeTrapped.z), airpockets, whoHasVisited, cubes, xMax, yMax, zMax)
+                    && isTrapped(origin, new Cube(cubeTrapped.x, cubeTrapped.y - 1, cubeTrapped.z), airpockets, whoHasVisited, cubes, xMax, yMax, zMax)
+                    && isTrapped(origin, new Cube(cubeTrapped.x, cubeTrapped.y, cubeTrapped.z + 1), airpockets, whoHasVisited, cubes, xMax, yMax, zMax)
+                    && isTrapped(origin, new Cube(cubeTrapped.x, cubeTrapped.y, cubeTrapped.z - 1), airpockets, whoHasVisited, cubes, xMax, yMax, zMax);
+        }
 
-
-                return isTrapped(origin, new Cube(cubeTrapped.x + 1, cubeTrapped.y, cubeTrapped.z), airpockets)
-                        && isTrapped(origin, new Cube(cubeTrapped.x - 1, cubeTrapped.y, cubeTrapped.z), airpockets)
-                        && isTrapped(origin, new Cube(cubeTrapped.x, cubeTrapped.y + 1, cubeTrapped.z), airpockets)
-                        && isTrapped(origin, new Cube(cubeTrapped.x, cubeTrapped.y - 1, cubeTrapped.z), airpockets)
-                        && isTrapped(origin, new Cube(cubeTrapped.x, cubeTrapped.y, cubeTrapped.z + 1), airpockets)
-                        && isTrapped(origin, new Cube(cubeTrapped.x, cubeTrapped.y, cubeTrapped.z - 1), airpockets);
-
-
-            }
+        return true;
 
 
-        return false;
     }
 
     static class Cube {
@@ -182,6 +180,7 @@ public class Day18 {
                     ", y=" + y +
                     ", z=" + z +
                     ", exposed=" + exposed +
+                    ", connected=" + connected +
                     '}';
         }
 
