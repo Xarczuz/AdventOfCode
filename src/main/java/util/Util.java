@@ -10,4 +10,11 @@ public class Util {
             System.out.println();
         }
     }
+
+    public static void print(int[] arr) {
+        for (int ints : arr) {
+            System.out.print(ints + " ");
+        }
+        System.out.println();
+    }
 }
