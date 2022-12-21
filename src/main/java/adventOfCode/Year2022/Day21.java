@@ -7,10 +7,11 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Day21 {
 
-    public static void main(String[] args) throws IOException, URISyntaxException {
+    public static void main(String[] args) throws IOException, URISyntaxException, IllegalAccessException {
         List<String> l = FileUtil.readfile(Day21.class);
         List<String> l2 = FileUtil.readfileExempel(Day21.class);
         TimeUtil.startTime();
@@ -18,7 +19,7 @@ public class Day21 {
         oneStar(l);
         TimeUtil.endTime();
         TimeUtil.startTime();
-        twoStar(l2);
+//        twoStar(l2);
         twoStar(l);
         TimeUtil.endTime();
     }
@@ -55,15 +56,63 @@ public class Day21 {
         if (nrOrInstruction.length == 1) {
             return Double.parseDouble(nrOrInstruction[0]);
         } else if (nrOrInstruction[1].charAt(0) == '*') {
-            return findMonkeyNr2(nrOrInstruction[0], map) * findMonkeyNr2(nrOrInstruction[2], map);
+            double monkeyNr1 = findMonkeyNr2(nrOrInstruction[0], map);
+            double monkeyNr2 = findMonkeyNr2(nrOrInstruction[2], map);
+            return monkeyNr1 * monkeyNr2;
         } else if (nrOrInstruction[1].charAt(0) == '-') {
-            return findMonkeyNr2(nrOrInstruction[0], map) - findMonkeyNr2(nrOrInstruction[2], map);
+            double monkeyNr1 = findMonkeyNr2(nrOrInstruction[0], map);
+            double monkeyNr2 = findMonkeyNr2(nrOrInstruction[2], map);
+            return monkeyNr1 - monkeyNr2;
         } else if (nrOrInstruction[1].charAt(0) == '+') {
-            return findMonkeyNr2(nrOrInstruction[0], map) + findMonkeyNr2(nrOrInstruction[2], map);
+            double monkeyNr1 = findMonkeyNr2(nrOrInstruction[0], map);
+            double monkeyNr2 = findMonkeyNr2(nrOrInstruction[2], map);
+            return monkeyNr1 + monkeyNr2;
         }
-        return findMonkeyNr2(nrOrInstruction[0], map) / findMonkeyNr2(nrOrInstruction[2], map);
+        double monkeyNr1 = findMonkeyNr2(nrOrInstruction[0], map);
+        double monkeyNr2 = findMonkeyNr2(nrOrInstruction[2], map);
+        return monkeyNr1 / monkeyNr2;
+    }
 
+    private static double findMonkeyNr3(String monkey, HashMap<String, String[]> map, HashMap<String, String[]> stuffToAdd) throws IllegalAccessException {
+        String[] nrOrInstruction = map.get(monkey);
+        if (nrOrInstruction.length == 0) {
+            throw new IllegalAccessException("demo");
 
+        }
+        if (nrOrInstruction.length == 1) {
+            return Double.parseDouble(nrOrInstruction[0]);
+        } else if (nrOrInstruction[1].charAt(0) == '*') {
+            double monkeyNr1 = findMonkeyNr3(nrOrInstruction[0], map, stuffToAdd);
+            double monkeyNr2 = findMonkeyNr3(nrOrInstruction[2], map, stuffToAdd);
+            if (stuffToAdd != null) {
+                stuffToAdd.put(nrOrInstruction[0], new String[]{String.valueOf(monkeyNr1)});
+                stuffToAdd.put(nrOrInstruction[2], new String[]{String.valueOf(monkeyNr2)});
+            }
+            return monkeyNr1 * monkeyNr2;
+        } else if (nrOrInstruction[1].charAt(0) == '-') {
+            double monkeyNr1 = findMonkeyNr3(nrOrInstruction[0], map, stuffToAdd);
+            double monkeyNr2 = findMonkeyNr3(nrOrInstruction[2], map, stuffToAdd);
+            if (stuffToAdd != null) {
+                stuffToAdd.put(nrOrInstruction[0], new String[]{String.valueOf(monkeyNr1)});
+                stuffToAdd.put(nrOrInstruction[2], new String[]{String.valueOf(monkeyNr2)});
+            }
+            return monkeyNr1 - monkeyNr2;
+        } else if (nrOrInstruction[1].charAt(0) == '+') {
+            double monkeyNr1 = findMonkeyNr3(nrOrInstruction[0], map, stuffToAdd);
+            double monkeyNr2 = findMonkeyNr3(nrOrInstruction[2], map, stuffToAdd);
+            if (stuffToAdd != null) {
+                stuffToAdd.put(nrOrInstruction[0], new String[]{String.valueOf(monkeyNr1)});
+                stuffToAdd.put(nrOrInstruction[2], new String[]{String.valueOf(monkeyNr2)});
+            }
+            return monkeyNr1 + monkeyNr2;
+        }
+        double monkeyNr1 = findMonkeyNr3(nrOrInstruction[0], map, stuffToAdd);
+        double monkeyNr2 = findMonkeyNr3(nrOrInstruction[2], map, stuffToAdd);
+        if (stuffToAdd != null) {
+            stuffToAdd.put(nrOrInstruction[0], new String[]{String.valueOf(monkeyNr1)});
+            stuffToAdd.put(nrOrInstruction[2], new String[]{String.valueOf(monkeyNr2)});
+        }
+        return monkeyNr1 / monkeyNr2;
     }
 
     private static void twoStar(List<String> l) {
@@ -83,14 +132,42 @@ public class Day21 {
             }
         }
 
-        double humn = 104008689;
         String[] root = map.get("root");
-        for (; humn < Double.MAX_VALUE; humn++) {
+        double sum2 = findMonkeyNr2(root[2], map);
+
+        map.put("humn", new String[]{});
+
+        for (String s : map.keySet()) {
+            try {
+                HashMap<String, String[]> stuffToAdd = new HashMap<>();
+                findMonkeyNr3(s, map, stuffToAdd);
+                for (Map.Entry<String, String[]> stringEntry : stuffToAdd.entrySet()) {
+                    map.put(stringEntry.getKey(), stringEntry.getValue());
+                }
+            } catch (IllegalAccessException e) {
+            }
+        }
+
+        double humn = 1;
+        double increase = 1;
+        double dincrease = 1;
+        while (true) {
             map.put("humn", new String[]{String.valueOf(humn)});
             double sum1 = findMonkeyNr2(root[0], map);
-            double sum2 = findMonkeyNr2(root[2], map);
-            if (sum1 == sum2) {
+
+            if (Double.compare(sum1, sum2) == 0) {
                 break;
+            }
+            if (Math.abs(sum1 - sum2) < 10000) {
+                increase = 1;
+                humn -= 1;
+            } else if (Double.compare(sum1, sum2) == 1) {
+                increase++;
+                humn = humn + increase;
+            } else {
+                dincrease++;
+                humn = humn - dincrease;
+
             }
             System.out.println(humn);
         }
