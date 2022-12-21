@@ -54,14 +54,14 @@ public class Day21 {
         String[] nrOrInstruction = map.get(monkey);
         if (nrOrInstruction.length == 1) {
             return Double.parseDouble(nrOrInstruction[0]);
-        } else if (nrOrInstruction.charAt(0) == '*') {
-            return findMonkeyNr(nrOrInstruction.substring(0, 4), map) * findMonkeyNr(nrOrInstruction.substring(5), map);
-        } else if (nrOrInstruction.charAt(0) == '-') {
-            return findMonkeyNr(nrOrInstruction.substring(0, 4), map) - findMonkeyNr(nrOrInstruction.substring(5), map);
-        } else if (nrOrInstruction.charAt(0) == '+') {
-            return findMonkeyNr(nrOrInstruction.substring(0, 4), map) + findMonkeyNr(nrOrInstruction.substring(5), map);
+        } else if (nrOrInstruction[1].charAt(0) == '*') {
+            return findMonkeyNr2(nrOrInstruction[0], map) * findMonkeyNr2(nrOrInstruction[2], map);
+        } else if (nrOrInstruction[1].charAt(0) == '-') {
+            return findMonkeyNr2(nrOrInstruction[0], map) - findMonkeyNr2(nrOrInstruction[2], map);
+        } else if (nrOrInstruction[1].charAt(0) == '+') {
+            return findMonkeyNr2(nrOrInstruction[0], map) + findMonkeyNr2(nrOrInstruction[2], map);
         }
-        return findMonkeyNr(nrOrInstruction.substring(0, 4), map) / findMonkeyNr(nrOrInstruction.substring(5), map);
+        return findMonkeyNr2(nrOrInstruction[0], map) / findMonkeyNr2(nrOrInstruction[2], map);
 
 
     }
@@ -72,17 +72,18 @@ public class Day21 {
             String[] line = s.split(":");
             String monekys = line[1].replace(" ", "");
             if (Character.isDigit(monekys.charAt(0))) {
-
-                String[] arr = new String[1];
+                String[] arr = new String[]{monekys};
                 map.put(line[0], arr);
             } else {
-
                 String[] arr = new String[3];
+                arr[0] = monekys.substring(0, 4);
+                arr[1] = monekys.substring(4, 5);
+                arr[2] = monekys.substring(5);
                 map.put(line[0], arr);
             }
         }
 
-        int humn = 81596030;
+        double humn = 104008689;
         String[] root = map.get("root");
         for (; humn < Double.MAX_VALUE; humn++) {
             map.put("humn", new String[]{String.valueOf(humn)});
