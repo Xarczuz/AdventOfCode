@@ -19,7 +19,6 @@ public class Day21 {
         oneStar(l);
         TimeUtil.endTime();
         TimeUtil.startTime();
-//        twoStar(l2);
         twoStar(l);
         TimeUtil.endTime();
     }
@@ -154,7 +153,6 @@ public class Day21 {
         while (true) {
             map.put("humn", new String[]{String.valueOf(humn)});
             double sum1 = findMonkeyNr2(root[0], map);
-
             if (Double.compare(sum1, sum2) == 0) {
                 break;
             }
@@ -167,9 +165,7 @@ public class Day21 {
             } else {
                 dincrease++;
                 humn = humn - dincrease;
-
             }
-            System.out.println(humn);
         }
 
         System.out.println("Star two: " + humn);
