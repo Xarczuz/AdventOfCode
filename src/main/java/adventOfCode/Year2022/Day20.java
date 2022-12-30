@@ -6,7 +6,7 @@ import util.Util;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Day20 {
@@ -16,7 +16,7 @@ public class Day20 {
         List<String> l2 = FileUtil.readfileExempel(Day20.class);
         TimeUtil.startTime();
         oneStar(l2);
-        //oneStar(l);
+        oneStar(l); // to low 13356
         TimeUtil.endTime();
         TimeUtil.startTime();
 //        twoStar(l2);
@@ -32,52 +32,53 @@ public class Day20 {
         }
         Util.print(instructions);
 
-        int[] ints = new int[l.size()];
-        System.arraycopy(instructions, 0, ints, 0, l.size());
+        LinkedList<Integer> ints = new LinkedList<>();
+        for (int instruction : instructions) {
+            ints.add(instruction);
+        }
 
         for (int nr : instructions) {
-            int indexOfNr = findIndex(nr, ints);
+            int indexOfNr = ints.indexOf(nr);
             moveNrInArray(nr, indexOfNr, ints);
         }
 
+        System.out.println(ints);
+        int start = ints.indexOf(0); //to be decided
+        int x = Math.floorMod((start + 1000), instructions.length);
+        int y = Math.floorMod((start + 2000), instructions.length);
+        int z = Math.floorMod((start + 3000), instructions.length);
 
-        Util.print(ints);
-        int start = 4; //to be decided
-        int x = getGroveCoordinates(start, 1000, instructions.length);
-        int y = getGroveCoordinates(start, 2000, instructions.length);
-        int z = getGroveCoordinates(start, 3000, instructions.length);
-        System.out.println("Star one:" + x + " " + y + " " + z);
+        System.out.println("Star one: " + (ints.get(x) + ints.get(y) + ints.get(z)));
 
     }
 
-    private static void moveNrInArray(int nr, int indexOfNr, int[] ints) {
-        int start = indexOfNr;
-        for (int i = 0; i < Math.abs(nr); i++) {
-            if (nr < 0) {
-                int i1 = Math.floorMod(start - 1, ints.length);
-                int next = ints[i1];
-                ints[Math.floorMod(start, ints.length)] = next;
-                ints[i1] = nr;
-                start--;
+    private static void moveNrInArray(int nr, int indexOfNr, LinkedList<Integer> ints) {
+        int next;
+        boolean remove = true;
+        if (nr < 0) {
+            next = Math.floorMod((indexOfNr + nr), ints.size());
+            if (next < indexOfNr) {
+                remove = false;
+                ints.remove(indexOfNr);
+            }
+            if (next == 0) {
+                ints.addLast(nr);
             } else {
-                int next = ints[(start + 1) % ints.length];
-                ints[start % ints.length] = next;
-                ints[(start + 1) % ints.length] = nr;
-                start++;
+                ints.add(next, nr);
             }
+        } else {
+            next = Math.floorMod((indexOfNr + nr), ints.size());
+            if (next < indexOfNr) {
+                remove = false;
+                ints.remove(indexOfNr);
+            }
+            ints.add(next + 1, nr);
         }
-
-
+        if (remove) {
+            ints.remove(indexOfNr);
+        }
     }
 
-    private static int findIndex(int nr, int[] ints) {
-        for (int i = 0; i < ints.length; i++) {
-            if (ints[i] == nr) {
-                return i;
-            }
-        }
-        return Integer.MIN_VALUE;
-    }
 
     private static int getGroveCoordinates(int start, int nrs, int length) {
         for (int i = 0; i < nrs; i++) {
@@ -91,11 +92,6 @@ public class Day20 {
     }
 
     private static void twoStar(List<String> l) {
-        HashSet<String> sss = new HashSet<>();
-        for (String s : l) {
-            if (!sss.add(s)) {
-                System.out.println(s);
-            }
-        }
+
     }
 }
