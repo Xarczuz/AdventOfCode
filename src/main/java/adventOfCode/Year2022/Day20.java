@@ -79,18 +79,6 @@ public class Day20 {
         }
     }
 
-
-    private static int getGroveCoordinates(int start, int nrs, int length) {
-        for (int i = 0; i < nrs; i++) {
-            if (start % length == 0 && start != 0) {
-                start = 0;
-            } else {
-                start++;
-            }
-        }
-        return start;
-    }
-
     private static void twoStar(List<String> l) {
 
     }
