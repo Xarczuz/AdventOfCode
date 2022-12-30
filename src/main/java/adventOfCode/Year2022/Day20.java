@@ -6,20 +6,21 @@ import util.Util;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.HashSet;
 import java.util.List;
 
-public class Day19 {
+public class Day20 {
 
     public static void main(String[] args) throws IOException, URISyntaxException {
-        List<String> l = FileUtil.readfile(Day19.class);
-        List<String> l2 = FileUtil.readfileExempel(Day19.class);
+        List<String> l = FileUtil.readfile(Day20.class);
+        List<String> l2 = FileUtil.readfileExempel(Day20.class);
         TimeUtil.startTime();
         oneStar(l2);
         //oneStar(l);
         TimeUtil.endTime();
         TimeUtil.startTime();
-        twoStar(l2);
-        //twoStar(l);
+//        twoStar(l2);
+        twoStar(l);
         TimeUtil.endTime();
     }
 
@@ -90,6 +91,11 @@ public class Day19 {
     }
 
     private static void twoStar(List<String> l) {
-
+        HashSet<String> sss = new HashSet<>();
+        for (String s : l) {
+            if (!sss.add(s)) {
+                System.out.println(s);
+            }
+        }
     }
 }
