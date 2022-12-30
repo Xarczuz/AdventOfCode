@@ -18,11 +18,11 @@ public class Day20 {
         TimeUtil.startTime();
         oneStar(l3);
         oneStar(l2);
-        oneStar(l); // to low 13356 5555 9536
+        oneStar(l);
         TimeUtil.endTime();
         TimeUtil.startTime();
-//        twoStar(l2);
-//        twoStar(l);
+        twoStar(l2);
+        twoStar(l);
         TimeUtil.endTime();
     }
 
@@ -30,7 +30,7 @@ public class Day20 {
         Point[] instructions = new Point[l.size()];
         for (int i = 0; i < l.size(); i++) {
             String s = l.get(i);
-            int i1 = Integer.parseInt(s);
+            long i1 = Long.parseLong(s);
             instructions[i] = new Point(i1, i);
         }
 
@@ -55,21 +55,48 @@ public class Day20 {
     }
 
     private static void moveNrInArray(Point nr, LinkedList<Point> ints) {
-        int oldIndex = ints.indexOf(nr);
-        int newIndex = (oldIndex + nr.x) % (ints.size() - 1);
+        long oldIndex = ints.indexOf(nr);
+        long newIndex = (oldIndex + nr.x) % (ints.size() - 1);
         if (newIndex < 0) {
             newIndex = ints.size() + newIndex - 1;
         }
 
         ints.remove(nr);
-        ints.add(newIndex, nr);
+        ints.add((int) newIndex, nr);
     }
 
     private static void twoStar(List<String> l) {
+        Point[] instructions = new Point[l.size()];
+        for (int i = 0; i < l.size(); i++) {
+            String s = l.get(i);
+            long i1 = Long.parseLong(s) * 811589153;
+            instructions[i] = new Point(i1, i);
+        }
+
+        LinkedList<Point> ints = new LinkedList<>(Arrays.asList(instructions));
+        Point zero = null;
+        for (int i = 0; i < 10; i++) {
+
+            for (Point nr : instructions) {
+                moveNrInArray(nr, ints);
+                if (nr.x == 0) {
+                    zero = nr;
+                }
+            }
+        }
+
+
+        System.out.println(ints);
+        int start = ints.indexOf(zero);
+        int x = Math.floorMod((start + 1000), instructions.length);
+        int y = Math.floorMod((start + 2000), instructions.length);
+        int z = Math.floorMod((start + 3000), instructions.length);
+
+        System.out.println("Star one: " + (ints.get(x).x + ints.get(y).x + ints.get(z).x));
 
     }
 
-    record Point(int x, int y) {
+    record Point(long x, long y) {
 
         @Override
         public boolean equals(Object o) {
@@ -84,8 +111,8 @@ public class Day20 {
 
         @Override
         public int hashCode() {
-            int result = x;
-            result = 31 * result + y;
+            int result = (int) (x ^ (x >>> 32));
+            result = 31 * result + (int) (y ^ (y >>> 32));
             return result;
         }
 
