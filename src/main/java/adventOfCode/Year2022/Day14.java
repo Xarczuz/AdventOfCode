@@ -39,18 +39,9 @@ public class Day14 {
         x = 500 - offsetX;
         y = 0;
         boolean done = false;
-        int jj = 0;
         while (!done) {
             done = fallingSand(cave);
-
-            if (jj == 50000) {
-                break;
-            }
-            jj--;
-
-
         }
-
         int sum = 0;
         for (int y = 0; y < cave.length; y++) {
             for (int x = 0; x < cave[0].length; x++) {
@@ -60,7 +51,6 @@ public class Day14 {
             }
         }
         Util.print(cave);
-
         System.out.println("Sum: " + sum);
 
     }
