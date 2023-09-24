@@ -10,7 +10,14 @@ public class Util {
             System.out.println();
         }
     }
-
+    public static void print(String[][] matrix) {
+        for (String[] ints : matrix) {
+            for (String anInt : ints) {
+                System.out.print(anInt);
+            }
+            System.out.println();
+        }
+    }
     public static void print(int[] arr) {
         for (int ints : arr) {
             System.out.print(ints + " ");
