@@ -31,36 +31,27 @@ public class Day14 {
 
     private static void twoStar(List<String> l) {
         String[][] cave = parseInput(l);
-        for (int i = 0; i < cave[0].length; i++) {
-            cave[cave.length-1][i] = "#";
-        }
-        startingPoint(cave);
+        createFloor(cave);
+        startingPoint();
         boolean done = false;
-        long test= 0;
         long sum = 0;
         while (!done) {
             done = fallingSandTwoStar(cave);
-            if (test %10_000==0){
-//                Util.print(cave);
-                sum=0;
-                sum = calculateSand(cave, sum);
-                if (sum == 26139) {
-                    break;
-                }
-                System.out.println("Sum: " + sum);
-            }
-            test++;
         }
-         sum = 0;
         sum = calculateSand(cave, sum);
-        writeNumbersToEachRow(cave);
         Util.print(cave);
         System.out.println("Sum: " + sum);
     }
 
+    private static void createFloor(String[][] cave) {
+        for (int i = 0; i < cave[0].length; i++) {
+            cave[cave.length - 1][i] = "#";
+        }
+    }
+
     private static void oneStar(List<String> l) {
         String[][] cave = parseInput(l);
-        startingPoint(cave);
+        startingPoint();
         boolean done = false;
         while (!done) {
             done = fallingSandOneStar(cave);
@@ -75,14 +66,13 @@ public class Day14 {
 
     private static void writeNumbersToEachRow(String[][] cave) {
         for (int i = 0; i < cave.length; i++) {
-            cave[i][0] = ""+i;
+            cave[i][0] = "" + i;
         }
     }
 
-    private static void startingPoint(String[][] cave) {
-//        cave[0][500] = "+";
-        x = 500;
-        y = 0;
+    private static void startingPoint() {
+        x = defaultX;
+        y = defaultY;
     }
 
     private static long calculateSand(String[][] cave, long sum) {
@@ -98,21 +88,17 @@ public class Day14 {
 
     private static boolean fallingSandOneStar(String[][] cave) {
         if (y + 1 >= cave.length) {
-            System.out.println("done");
             return true;
         }
         sandLogic(cave);
-
         return false;
     }
 
     private static boolean fallingSandTwoStar(String[][] cave) {
-        if (cave[y][x]=="0") {
-            System.out.println("done");
+        if (cave[defaultY][defaultX] == "O") {
             return true;
         }
         sandLogic(cave);
-
         return false;
     }
 
@@ -189,34 +175,34 @@ public class Day14 {
     private static void insertWall(String[] walls, int prevX, int prevY, String[][] sS) {
         for (String wall : walls) {
             String[] cord = wall.split(",");
-            int y = Integer.parseInt(cord[0].trim());
-            int x = Integer.parseInt(cord[1].trim());
+            int x = Integer.parseInt(cord[0].trim());
+            int y = Integer.parseInt(cord[1].trim());
             String wallChar = "#";
             if (prevX != -1) {
-                if (x > prevY) {
-                    for (int i = prevY; i < x; i++) {
-                        sS[i][y] = wallChar;
+                if (y > prevY) {
+                    for (int i = prevY; i < y; i++) {
+                        sS[i][x] = wallChar;
                     }
                 }
-                if (y > prevX) {
-                    for (int i = prevX; i < y; i++) {
-                        sS[x][i] = wallChar;
+                if (x > prevX) {
+                    for (int i = prevX; i < x; i++) {
+                        sS[y][i] = wallChar;
                     }
                 }
-                if (x < prevY) {
-                    for (int i = prevY; i > x; i--) {
-                        sS[i][y] = wallChar;
+                if (y < prevY) {
+                    for (int i = prevY; i > y; i--) {
+                        sS[i][x] = wallChar;
                     }
                 }
-                if (y < prevX) {
-                    for (int i = prevX; i > y; i--) {
-                        sS[x][i] = wallChar;
+                if (x < prevX) {
+                    for (int i = prevX; i > x; i--) {
+                        sS[y][i] = wallChar;
                     }
                 }
             }
-            sS[x][y] = wallChar;
-            prevX = y;
-            prevY = x;
+            sS[y][x] = wallChar;
+            prevX = x;
+            prevY = y;
         }
     }
 
