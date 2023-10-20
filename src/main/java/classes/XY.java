@@ -23,18 +23,12 @@ public class XY {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
         XY xy = (XY) o;
 
-        if (x != xy.x) {
-            return false;
-        }
+        if (x != xy.x) return false;
         return y == xy.y;
     }
 
