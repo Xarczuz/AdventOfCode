@@ -17,13 +17,74 @@ public class Day15 {
         List<String> l2 = FileUtil.readfileExempel(Day15.class);
 
         TimeUtil.startTime();
-        oneStar(l2, 10);
-        oneStar(l, 2000000);
+//        oneStar(l2, 10);
+//        oneStar(l, 2000000);
         TimeUtil.endTime();
         TimeUtil.startTime();
-//        twoStar(ll);
-//        twoStar(l);
+        twoStar(l2, 0, 20, 0, 20);
+        twoStar(l, 0, 4000000, 0, 4000000);
         TimeUtil.endTime();
+    }
+
+    private static void twoStar(List<String> l, int minX, int maxX, int minY, int maxY) {
+        ArrayList<SensorBeacon> sensorBeacons = parseInput(l);
+        calculateManhattanDistances(sensorBeacons);
+        XY xy = findEmptySpaceWhereBeaconCanNotBePResent3(sensorBeacons, minX, maxX, minY, maxY);
+        System.out.println("Frequency " + ((xy.x * 4000000L) + xy.y));
+        System.out.println(0);
+        System.out.println(maxX);
+    }
+
+
+    private static XY findEmptySpaceWhereBeaconCanNotBePResent3(ArrayList<SensorBeacon> sensorBeacons, int minX, int maxX, int minY, int maxY) {
+        char[] line = new char[maxX + 1];
+        for (int y = minY; y <= maxY; y++) {
+            for (SensorBeacon sensorBeacon : sensorBeacons) {
+                if ((sensorBeacon.sensor.y + sensorBeacon.distance) < y) {
+                    continue;
+                }
+                if ((sensorBeacon.sensor.y - sensorBeacon.distance) > y) {
+                    continue;
+                }
+                if (sensorBeacon.beacon.y == y && sensorBeacon.beacon.x >= minX && sensorBeacon.beacon.x <= maxX) {
+                    line[sensorBeacon.beacon.x] = 'B';
+                }
+                if (sensorBeacon.sensor.y == y && sensorBeacon.sensor.x >= minX && sensorBeacon.sensor.x <= maxX) {
+                    line[sensorBeacon.sensor.x] = 'S';
+                }
+                boolean startedPlacing = false;
+                for (int x = Math.max(minX, sensorBeacon.sensor.x - sensorBeacon.distance); x <= Math.min(maxX, sensorBeacon.sensor.x + sensorBeacon.distance); x++) {
+                    int dist = calculateManhattanDistance(x, sensorBeacon.sensor.x, y, sensorBeacon.sensor.y);
+                    if (dist <= sensorBeacon.distance && x >= minX && x <= maxX) {// INTERVALL RÄKNA 1-6,7-8 7 eller mindre måste följa
+                        line[x] = '#';
+                        startedPlacing = true;
+                    } else if (startedPlacing) {
+                        break;
+                    }
+                }
+
+            }
+            int x = calculateBeaconVoidPoints2(line);
+            if (x >= 0) {
+                return new XY(x, y);
+            }
+            if (y % 1000 == 0) {
+                System.out.println("y = " + y);
+            }
+        }
+
+        return new XY();
+    }
+
+    private static int calculateBeaconVoidPoints2(char[] line) {
+        for (int x = 0; x < line.length; x++) {
+            char c = line[x];
+            if (c != 'S' && c != '#' && c != 'B') {
+                return x;
+            }
+            line[x] = '.';
+        }
+        return -1;
     }
 
     private static void oneStar(List<String> l, int y) {
@@ -36,7 +97,6 @@ public class Day15 {
         System.out.println("Empty spaces: " + nr);
         System.out.println(minX);
         System.out.println(maxX);
-//        System.out.println(sensorBeacons);
     }
 
     private static int findEmptySpaceWhereBeaconCanNotBePResent(ArrayList<SensorBeacon> sensorBeacons, int minX, int maxX, int y) {
@@ -55,10 +115,7 @@ public class Day15 {
                     line.putIfAbsent(key, "#");
                 }
             }
-
         }
-
-
         return calculateVoidBeaconsSpots(line);
     }
 
