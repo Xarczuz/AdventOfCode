@@ -24,6 +24,7 @@ public class Day16 {
     }
 
     static long sum = 0;
+    static LinkedList<Integer> topTenFlowRate = new LinkedList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
 
     private static void oneStar(List<String> l) {
         HashMap<String, Valve> valves = parseStringIntoValves(l);
@@ -43,16 +44,29 @@ public class Day16 {
             session.pressureFlowRate += session.currentlyOpening.flowRate;
             session.currentlyOpening = null;
         }
+        boolean lower = false;
+        if (session.time > 20) {
+
+            for (Integer i : topTenFlowRate) {
+                if (session.totalRelease < i) {
+                    lower = true;
+                    break;
+                }
+            }
+            if (lower) {
+                return;
+            } else {
+                topTenFlowRate.add((int) session.totalRelease);
+                topTenFlowRate.sort(Integer::compareTo);
+                topTenFlowRate.removeFirst();
+            }
+        }
         session.totalRelease += session.pressureFlowRate;
         if (session.time == 30) {
             sum = Math.max(session.totalRelease, sum);
             return;
         }
-        if (session.opened.size() == valves.size()) {
-            if (session.totalRelease < sum) {
-                return;
-            }
-        }
+
         for (String leadsToValves : session.position.LeadsToValves) {
             Valve valve = valves.get(leadsToValves);
             if (session.opened.contains(valve)) {
@@ -63,6 +77,9 @@ public class Day16 {
                 Session newSession = session.deepcopy();
                 newSession.position = valve;
                 newSession.currentlyOpening = valve;
+                startOpeningValves(newSession, valves);
+                newSession = session.deepcopy();
+                newSession.position = valve;
                 startOpeningValves(newSession, valves);
             }
         }
