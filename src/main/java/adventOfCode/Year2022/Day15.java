@@ -18,11 +18,11 @@ public class Day15 {
         List<String> l2 = FileUtil.readfileExempel(Day15.class);
 
         TimeUtil.startTime();
-//        oneStar(l2, 10);
-//        oneStar(l, 2000000);
+        oneStar(l2, 10);
+        oneStar(l, 2000000);
         TimeUtil.endTime();
         TimeUtil.startTime();
-        //   twoStar(l2, 0, 20, 0, 20);
+        twoStar(l2, 0, 20, 0, 20);
         twoStar(l, 0, 4000000, 0, 4000000);
         TimeUtil.endTime();
     }
@@ -98,8 +98,6 @@ public class Day15 {
             } else {
                 return intervall1.start - 1;
             }
-
-
         }
         return -1;
     }
@@ -199,7 +197,6 @@ public class Day15 {
         xy.y = Integer.parseInt(y);
         return xy;
     }
-
 
     private static class SensorBeacon {
         XY sensor;
