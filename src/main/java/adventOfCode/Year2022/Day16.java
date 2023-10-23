@@ -56,7 +56,7 @@ public class Day16 {
             currentSession.totalRelease += currentSession.pressureFlowRate;
 
             System.out.println("time: " + currentSession.time);
-            if (currentSession.time >= 30) {
+            if (currentSession.time == 30) {
                 sum = Math.max(currentSession.totalRelease, sum);
             } else {
                 ArrayList<Long> orDefault = results.getOrDefault(currentSession.time, new ArrayList<>());
@@ -79,7 +79,7 @@ public class Day16 {
                         orDefault.add( currentSession.totalRelease);
                     }
                 }
-                results.put(currentSession.time, orDefault);
+                 results.put(currentSession.time, orDefault);
                 for (String leadsToValves : currentSession.position.LeadsToValves) {
                     Valve valve = valves.get(leadsToValves);
                     if (currentSession.opened.contains(valve.name)) {
