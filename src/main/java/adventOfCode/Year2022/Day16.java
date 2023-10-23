@@ -24,14 +24,14 @@ public class Day16 {
     }
 
     static long sum = 0;
-    static HashMap<Integer, Long> results = new HashMap<>();
+    static HashMap<Integer, ArrayList<Long>> results = new HashMap<>();
 
     private static void oneStar(List<String> l) {
-        ArrayList< Valve> valves = parseStringIntoValves(l);
+        ArrayList<Valve> valves = parseStringIntoValves(l);
         Session session = new Session();
-        HashMap<String,Valve>  valvesMap=new HashMap<>();
+        HashMap<String, Valve> valvesMap = new HashMap<>();
         for (Valve valve : valves) {
-            valvesMap.put(valve.name,valve);
+            valvesMap.put(valve.name, valve);
         }
         for (Valve valve : valves) {
             session.position = valve;
@@ -54,19 +54,32 @@ public class Day16 {
                 currentSession.currentlyOpening = null;
             }
             currentSession.totalRelease += currentSession.pressureFlowRate;
-            results.put(currentSession.time, (results.getOrDefault(currentSession.time, 0L) + currentSession.totalRelease) / 2);
 
-
-            if (results.getOrDefault(currentSession.time - 2, 0L)*1.1 > currentSession.totalRelease) {
-                System.out.println("thrown");
-                continue;
-            }
             System.out.println("time: " + currentSession.time);
             if (currentSession.time >= 30) {
                 sum = Math.max(currentSession.totalRelease, sum);
-//                System.out.println(sum);
-                return;
             } else {
+                ArrayList<Long> orDefault = results.getOrDefault(currentSession.time, new ArrayList<>());
+                if (orDefault.size() <= 500) {
+                    orDefault.add(currentSession.totalRelease);
+                } else {
+                    boolean foundSmaller = false;
+                    int i = 0;
+                    for (; i < orDefault.size(); i++) {
+                        if (orDefault.get(i)< currentSession.totalRelease) {
+                            foundSmaller=true;
+                            break;
+                        }
+                    }
+                    if (!foundSmaller) {
+                        System.out.println("thrown");
+                        continue;
+                    }else {
+                        orDefault.remove(i);
+                        orDefault.add( currentSession.totalRelease);
+                    }
+                }
+                results.put(currentSession.time, orDefault);
                 for (String leadsToValves : currentSession.position.LeadsToValves) {
                     Valve valve = valves.get(leadsToValves);
                     if (currentSession.opened.contains(valve.name)) {
@@ -87,8 +100,8 @@ public class Day16 {
         }
     }
 
-    private static ArrayList< Valve>  parseStringIntoValves(List<String> l) {
-        ArrayList< Valve> valves = new ArrayList<>();
+    private static ArrayList<Valve> parseStringIntoValves(List<String> l) {
+        ArrayList<Valve> valves = new ArrayList<>();
         for (String s : l) {
             String[] strings = s.split(" ");
             Valve valve = new Valve();
