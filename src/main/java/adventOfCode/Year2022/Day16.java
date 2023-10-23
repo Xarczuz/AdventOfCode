@@ -27,11 +27,15 @@ public class Day16 {
     static HashMap<Integer, Long> results = new HashMap<>();
 
     private static void oneStar(List<String> l) {
-        HashMap<String, Valve> valves = parseStringIntoValves(l);
+        ArrayList< Valve> valves = parseStringIntoValves(l);
         Session session = new Session();
-        for (Valve valve : valves.values()) {
+        HashMap<String,Valve>  valvesMap=new HashMap<>();
+        for (Valve valve : valves) {
+            valvesMap.put(valve.name,valve);
+        }
+        for (Valve valve : valves) {
             session.position = valve;
-            startOpeningValves(session, valves);
+            startOpeningValves(session, valvesMap);
             break;
         }
         System.out.println(valves);
@@ -45,7 +49,7 @@ public class Day16 {
             Session currentSession = sessions.removeFirst();
             currentSession.time++;
             if (currentSession.currentlyOpening != null) {
-                currentSession.opened.add(currentSession.currentlyOpening);
+                currentSession.opened.add(currentSession.currentlyOpening.name);
                 currentSession.pressureFlowRate += currentSession.currentlyOpening.flowRate;
                 currentSession.currentlyOpening = null;
             }
@@ -53,7 +57,7 @@ public class Day16 {
             results.put(currentSession.time, (results.getOrDefault(currentSession.time, 0L) + currentSession.totalRelease) / 2);
 
 
-            if (results.getOrDefault(currentSession.time - 3, 0L) > currentSession.totalRelease) {
+            if (results.getOrDefault(currentSession.time - 2, 0L)*1.1 > currentSession.totalRelease) {
                 System.out.println("thrown");
                 continue;
             }
@@ -65,7 +69,7 @@ public class Day16 {
             } else {
                 for (String leadsToValves : currentSession.position.LeadsToValves) {
                     Valve valve = valves.get(leadsToValves);
-                    if (currentSession.opened.contains(valve)) {
+                    if (currentSession.opened.contains(valve.name)) {
                         Session newSession = currentSession.deepcopy();
                         currentSession.position = valve;
                         sessions.addLast(newSession);
@@ -83,8 +87,8 @@ public class Day16 {
         }
     }
 
-    private static HashMap<String, Valve> parseStringIntoValves(List<String> l) {
-        HashMap<String, Valve> valves = new HashMap<>();
+    private static ArrayList< Valve>  parseStringIntoValves(List<String> l) {
+        ArrayList< Valve> valves = new ArrayList<>();
         for (String s : l) {
             String[] strings = s.split(" ");
             Valve valve = new Valve();
@@ -94,7 +98,7 @@ public class Day16 {
             for (String valvesString : valvesStrings) {
                 valve.LeadsToValves.add(valvesString.trim());
             }
-            valves.put(valve.name, valve);
+            valves.add(valve);
         }
         return valves;
     }
@@ -105,7 +109,7 @@ public class Day16 {
         int pressureFlowRate = 0;
         long totalRelease = 0;
         Valve currentlyOpening;
-        HashSet<Valve> opened = new HashSet<>();
+        HashSet<String> opened = new HashSet<>();
 
         Session deepcopy() {
             Session session = new Session();
