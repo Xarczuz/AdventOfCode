@@ -24,7 +24,7 @@ public class Day16 {
     }
 
     static long sum = 0;
-    static LinkedList<Integer> topTenFlowRate = new LinkedList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+    static HashMap<Integer, Long> results = new HashMap<>();
 
     private static void oneStar(List<String> l) {
         HashMap<String, Valve> valves = parseStringIntoValves(l);
@@ -32,55 +32,53 @@ public class Day16 {
         for (Valve valve : valves.values()) {
             session.position = valve;
             startOpeningValves(session, valves);
+            break;
         }
         System.out.println(valves);
-        System.out.println("Resulr: " + sum);
+        System.out.println("Result: " + sum);
     }
 
     private static void startOpeningValves(Session session, HashMap<String, Valve> valves) {
-        session.time++;
-        if (session.currentlyOpening != null) {
-            session.opened.add(session.currentlyOpening);
-            session.pressureFlowRate += session.currentlyOpening.flowRate;
-            session.currentlyOpening = null;
-        }
-        boolean lower = false;
-        if (session.time > 20) {
-
-            for (Integer i : topTenFlowRate) {
-                if (session.totalRelease < i) {
-                    lower = true;
-                    break;
-                }
+        LinkedList<Session> sessions = new LinkedList<>();
+        sessions.add(session);
+        while (!sessions.isEmpty()) {
+            Session currentSession = sessions.removeFirst();
+            currentSession.time++;
+            if (currentSession.currentlyOpening != null) {
+                currentSession.opened.add(currentSession.currentlyOpening);
+                currentSession.pressureFlowRate += currentSession.currentlyOpening.flowRate;
+                currentSession.currentlyOpening = null;
             }
-            if (lower) {
+            currentSession.totalRelease += currentSession.pressureFlowRate;
+            results.put(currentSession.time, (results.getOrDefault(currentSession.time, 0L) + currentSession.totalRelease) / 2);
+
+
+            if (results.getOrDefault(currentSession.time - 3, 0L) > currentSession.totalRelease) {
+                System.out.println("thrown");
+                continue;
+            }
+            System.out.println("time: " + currentSession.time);
+            if (currentSession.time >= 30) {
+                sum = Math.max(currentSession.totalRelease, sum);
+//                System.out.println(sum);
                 return;
             } else {
-                topTenFlowRate.add((int) session.totalRelease);
-                topTenFlowRate.sort(Integer::compareTo);
-                topTenFlowRate.removeFirst();
-            }
-        }
-        session.totalRelease += session.pressureFlowRate;
-        if (session.time == 30) {
-            sum = Math.max(session.totalRelease, sum);
-            return;
-        }
-
-        for (String leadsToValves : session.position.LeadsToValves) {
-            Valve valve = valves.get(leadsToValves);
-            if (session.opened.contains(valve)) {
-                Session newSession = session.deepcopy();
-                newSession.position = valve;
-                startOpeningValves(newSession, valves);
-            } else {
-                Session newSession = session.deepcopy();
-                newSession.position = valve;
-                newSession.currentlyOpening = valve;
-                startOpeningValves(newSession, valves);
-                newSession = session.deepcopy();
-                newSession.position = valve;
-                startOpeningValves(newSession, valves);
+                for (String leadsToValves : currentSession.position.LeadsToValves) {
+                    Valve valve = valves.get(leadsToValves);
+                    if (currentSession.opened.contains(valve)) {
+                        Session newSession = currentSession.deepcopy();
+                        currentSession.position = valve;
+                        sessions.addLast(newSession);
+                    } else {
+                        Session newSession = currentSession.deepcopy();
+                        currentSession.position = valve;
+                        currentSession.currentlyOpening = valve;
+                        sessions.addLast(newSession);
+                        newSession = currentSession.deepcopy();
+                        newSession.position = valve;
+                        sessions.addLast(newSession);
+                    }
+                }
             }
         }
     }
@@ -103,7 +101,7 @@ public class Day16 {
 
     private static class Session {
         Valve position;
-        int time = 1;
+        int time = 0;
         int pressureFlowRate = 0;
         long totalRelease = 0;
         Valve currentlyOpening;
@@ -115,8 +113,9 @@ public class Day16 {
             session.time = this.time;
             session.pressureFlowRate = this.pressureFlowRate;
             session.totalRelease = this.totalRelease;
-            session.opened = new HashSet<>(opened);
             session.currentlyOpening = this.currentlyOpening;
+            session.opened = new HashSet<>();
+            session.opened.addAll(opened);
             return session;
         }
     }
