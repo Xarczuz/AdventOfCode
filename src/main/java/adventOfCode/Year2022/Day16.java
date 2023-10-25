@@ -105,6 +105,7 @@ public class Day16 {
         }
         return sum;
     }
+
     private static void twoStar(List<String> l) {
         ArrayList<Valve> valves = parseStringIntoValves(l);
         Session session = new Session();
