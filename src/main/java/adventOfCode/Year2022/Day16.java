@@ -14,8 +14,8 @@ public class Day16 {
         List<String> l2 = FileUtil.readfileExempel(Day16.class);
 
         TimeUtil.startTime();
-//        oneStar(l2);
-        oneStar(l);
+//        oneStar(l2); //1651
+        oneStar(l); //1720
         TimeUtil.endTime();
 //        TimeUtil.startTime();
 //        twoStar(l2);
@@ -23,20 +23,19 @@ public class Day16 {
 //        TimeUtil.endTime();
     }
 
-    static long sum = 0;
-    static HashMap<Integer, ArrayList<Long>> results = new HashMap<>();
-
     private static void oneStar(List<String> l) {
         ArrayList<Valve> valves = parseStringIntoValves(l);
         Session session = new Session();
         HashMap<String, Valve> valvesMap = new HashMap<>();
+        long sum = 0;
+        HashMap<Integer, ArrayList<Long>> results = new HashMap<>();
         for (Valve valve : valves) {
             valvesMap.put(valve.name, valve);
         }
         for (Valve valve : valves) {
             if (valve.name.equals("AA")) {
                 session.position = valve;
-                startOpeningValves(session, valvesMap);
+                sum = startOpeningValves(session, valvesMap, sum, results);
                 break;
             }
         }
@@ -44,7 +43,7 @@ public class Day16 {
         System.out.println("Result: " + sum);
     }
 
-    private static void startOpeningValves(Session session, HashMap<String, Valve> valves) {
+    private static long startOpeningValves(Session session, HashMap<String, Valve> valves, long sum, HashMap<Integer, ArrayList<Long>> results) {
         LinkedList<Session> sessions = new LinkedList<>();
         sessions.add(session);
         while (!sessions.isEmpty()) {
@@ -104,6 +103,30 @@ public class Day16 {
                 }
             }
         }
+        return sum;
+    }
+    private static void twoStar(List<String> l) {
+        ArrayList<Valve> valves = parseStringIntoValves(l);
+        Session session = new Session();
+        HashMap<String, Valve> valvesMap = new HashMap<>();
+        long sum = 0;
+        HashMap<Integer, ArrayList<Long>> results = new HashMap<>();
+        for (Valve valve : valves) {
+            valvesMap.put(valve.name, valve);
+        }
+        for (Valve valve : valves) {
+            if (valve.name.equals("AA")) {
+                session.position = valve;
+                sum = startOpeningValves2(session, valvesMap, sum, results);
+                break;
+            }
+        }
+        System.out.println(valves);
+        System.out.println("Result: " + sum);
+    }
+
+    private static long startOpeningValves2(Session session, HashMap<String, Valve> valvesMap, long sum, HashMap<Integer, ArrayList<Long>> results) {
+        return 0;
     }
 
     private static ArrayList<Valve> parseStringIntoValves(List<String> l) {
