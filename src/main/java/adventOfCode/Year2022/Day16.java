@@ -14,8 +14,8 @@ public class Day16 {
         List<String> l2 = FileUtil.readfileExempel(Day16.class);
 
         TimeUtil.startTime();
-        oneStar(l2);
-        oneStar(l); //To High 2649 1917
+//        oneStar(l2);
+        oneStar(l); //To High 2649 1917  not right 1704
         TimeUtil.endTime();
 //        TimeUtil.startTime();
 //        twoStar(l2);
@@ -34,9 +34,11 @@ public class Day16 {
             valvesMap.put(valve.name, valve);
         }
         for (Valve valve : valves) {
-            session.position = valve;
-            startOpeningValves(session, valvesMap);
-            break;
+            if (valve.name.equals("AA")) {
+                session.position = valve;
+                startOpeningValves(session, valvesMap);
+                break;
+            }
         }
         System.out.println(valves);
         System.out.println("Result: " + sum);
@@ -48,7 +50,6 @@ public class Day16 {
         while (!sessions.isEmpty()) {
             Session currentSession = sessions.removeFirst();
             currentSession.time++;
-
             if (currentSession.currentlyOpening != null && currentSession.tick == 1) {
                 currentSession.opened.add(currentSession.currentlyOpening.name);
                 currentSession.pressureFlowRate += currentSession.currentlyOpening.flowRate;
@@ -68,7 +69,7 @@ public class Day16 {
                     currentSession.tick = 0;
                 }
                 ArrayList<Long> orDefault = results.getOrDefault(currentSession.time, new ArrayList<>());
-                if (orDefault.size() <= 500) {
+                if (orDefault.size() <= 3500) {
                     orDefault.add(currentSession.totalRelease);
                 } else {
                     boolean foundSmaller = false;
