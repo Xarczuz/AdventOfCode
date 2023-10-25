@@ -15,7 +15,7 @@ public class Day16 {
 
         TimeUtil.startTime();
         oneStar(l2);
-//        oneStar(l );
+        oneStar(l); //To High 2649 1917
         TimeUtil.endTime();
 //        TimeUtil.startTime();
 //        twoStar(l2);
@@ -48,17 +48,25 @@ public class Day16 {
         while (!sessions.isEmpty()) {
             Session currentSession = sessions.removeFirst();
             currentSession.time++;
-            if (currentSession.currentlyOpening != null) {
+
+            if (currentSession.currentlyOpening != null && currentSession.tick == 1) {
                 currentSession.opened.add(currentSession.currentlyOpening.name);
                 currentSession.pressureFlowRate += currentSession.currentlyOpening.flowRate;
                 currentSession.currentlyOpening = null;
+            } else if (currentSession.currentlyOpening != null && currentSession.tick == 0) {
+                currentSession.tick++;
             }
             currentSession.totalRelease += currentSession.pressureFlowRate;
 
-            System.out.println("time: " + currentSession.time);
             if (currentSession.time == 30) {
                 sum = Math.max(currentSession.totalRelease, sum);
             } else {
+                if (currentSession.currentlyOpening != null && currentSession.tick == 1) {
+                    sessions.addLast(currentSession);
+                    continue;
+                } else {
+                    currentSession.tick = 0;
+                }
                 ArrayList<Long> orDefault = results.getOrDefault(currentSession.time, new ArrayList<>());
                 if (orDefault.size() <= 500) {
                     orDefault.add(currentSession.totalRelease);
@@ -66,35 +74,32 @@ public class Day16 {
                     boolean foundSmaller = false;
                     int i = 0;
                     for (; i < orDefault.size(); i++) {
-                        if (orDefault.get(i)< currentSession.totalRelease) {
-                            foundSmaller=true;
+                        if (orDefault.get(i) < currentSession.totalRelease) {
+                            foundSmaller = true;
                             break;
                         }
                     }
                     if (!foundSmaller) {
-                        System.out.println("thrown");
                         continue;
-                    }else {
+                    } else {
                         orDefault.remove(i);
-                        orDefault.add( currentSession.totalRelease);
+                        orDefault.add(currentSession.totalRelease);
                     }
                 }
-                 results.put(currentSession.time, orDefault);
+                results.put(currentSession.time, orDefault);
                 for (String leadsToValves : currentSession.position.LeadsToValves) {
                     Valve valve = valves.get(leadsToValves);
-                    if (currentSession.opened.contains(valve.name)) {
-                        Session newSession = currentSession.deepcopy();
-                        currentSession.position = valve;
-                        sessions.addLast(newSession);
-                    } else {
-                        Session newSession = currentSession.deepcopy();
-                        currentSession.position = valve;
-                        currentSession.currentlyOpening = valve;
-                        sessions.addLast(newSession);
-                        newSession = currentSession.deepcopy();
-                        newSession.position = valve;
-                        sessions.addLast(newSession);
+                    Session newSession = currentSession.deepcopy();
+                    if (!currentSession.opened.contains(valve.name)) {
+                        if (valve.flowRate != 0) {
+                            newSession.position = valve;
+                            newSession.currentlyOpening = valve;
+                            sessions.addLast(newSession);
+                        }
                     }
+                    newSession = currentSession.deepcopy();
+                    newSession.position = valve;
+                    sessions.addLast(newSession);
                 }
             }
         }
@@ -122,6 +127,7 @@ public class Day16 {
         int pressureFlowRate = 0;
         long totalRelease = 0;
         Valve currentlyOpening;
+        int tick = 0;
         HashSet<String> opened = new HashSet<>();
 
         Session deepcopy() {
@@ -131,6 +137,7 @@ public class Day16 {
             session.pressureFlowRate = this.pressureFlowRate;
             session.totalRelease = this.totalRelease;
             session.currentlyOpening = this.currentlyOpening;
+            session.tick = this.tick;
             session.opened = new HashSet<>();
             session.opened.addAll(opened);
             return session;
