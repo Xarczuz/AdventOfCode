@@ -15,7 +15,7 @@ public class Day16 {
 
         TimeUtil.startTime();
 //        oneStar(l2);
-        oneStar(l); //To High 2649 1917  not right 1704
+        oneStar(l);
         TimeUtil.endTime();
 //        TimeUtil.startTime();
 //        twoStar(l2);
