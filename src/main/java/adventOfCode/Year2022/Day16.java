@@ -159,7 +159,7 @@ public class Day16 {
                     continue;
                 }
                 ArrayList<Long> orDefault = results.getOrDefault(currentSession.time, new ArrayList<>());
-                if (orDefault.size() <= 2500) {
+                if (orDefault.size() <= 600) {
                     orDefault.add(currentSession.totalRelease);
                 } else {
                     boolean foundSmaller = false;
@@ -183,33 +183,30 @@ public class Day16 {
                         Session newSession = currentSession.deepcopy();
                         Valve valve = valvesMap.get(leadsToValves);
                         Valve valve2 = valvesMap.get(leadsToValves2);
-
                         if (!currentSession.opened.contains(valve.name)) {
                             if (valve.flowRate != 0 && isSame(newSession, valve)) {
                                 newSession.position = valve;
                                 newSession.currentlyOpening = valve;
-
+                                newSession.tick = 0;
                             }
                         }
                         if (!currentSession.opened.contains(valve2.name)) {
                             if (valve2.flowRate != 0 && isSame2(newSession, valve2)) {
                                 newSession.position2 = valve2;
                                 newSession.currentlyOpening2 = valve2;
-
+                                newSession.tick2 = 0;
                             }
                         }
-                        if (newSession.currentlyOpening != null || newSession.currentlyOpening2 != null) {
+                        if (newSession.currentlyOpening != null && newSession.currentlyOpening2 != null) {
                             sessions.addLast(newSession);
-                        }
-                        if (newSession.currentlyOpening != null && newSession.currentlyOpening2 == null) {
+                        } else if (newSession.currentlyOpening != null) {
                             Session variant = newSession.deepcopy();
                             variant.position2 = valve2;
-                            sessions.addLast(newSession);
-                        }
-                        if (newSession.currentlyOpening == null && newSession.currentlyOpening2 != null) {
+                            sessions.addLast(variant);
+                        } else if (newSession.currentlyOpening2 != null) {
                             Session variant = newSession.deepcopy();
                             variant.position = valve;
-                            sessions.addLast(newSession);
+                            sessions.addLast(variant);
                         }
                         newSession = currentSession.deepcopy();
                         newSession.position = valve;
@@ -217,6 +214,7 @@ public class Day16 {
                         sessions.addLast(newSession);
                     }
                 }
+
             }
         }
         return sum;
@@ -288,11 +286,7 @@ public class Day16 {
 
         @Override
         public String toString() {
-            return "Valve{" +
-                    "flowRate=" + flowRate +
-                    ", LeadsToValves=" + LeadsToValves +
-                    ", name='" + name +
-                    '}';
+            return "Valve{" + "flowRate=" + flowRate + ", LeadsToValves=" + LeadsToValves + ", name='" + name + '}';
         }
 
         @Override
@@ -303,8 +297,7 @@ public class Day16 {
             Valve valve = (Valve) o;
 
             if (flowRate != valve.flowRate) return false;
-            if (!Objects.equals(LeadsToValves, valve.LeadsToValves))
-                return false;
+            if (!Objects.equals(LeadsToValves, valve.LeadsToValves)) return false;
             return Objects.equals(name, valve.name);
         }
 
