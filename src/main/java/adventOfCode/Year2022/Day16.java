@@ -154,7 +154,7 @@ public class Day16 {
                 sum = Math.max(currentSession.totalRelease, sum);
             } else {
                 ArrayList<Long> orDefault = results.getOrDefault(currentSession.time, new ArrayList<>());
-                if (orDefault.size() <= 1200) {
+                if (orDefault.size() <= 10000) {
                     orDefault.add(currentSession.totalRelease);
                 } else {
                     boolean foundSmaller = false;
@@ -191,17 +191,30 @@ public class Day16 {
                             }
                         }
                         if (newSession.currentlyOpening != null && newSession.currentlyOpening2 != null) {
-                            sessions.addLast(newSession);
+                            if (!s.contains(newSession)) {
+                                sessions.addLast(newSession);
+                                s.add(newSession);
+                            }
                         } else if (newSession.currentlyOpening != null) {
                             newSession.position2 = valve2;
-                            sessions.addLast(newSession);
+                            if (!s.contains(newSession)) {
+                                sessions.addLast(newSession);
+                                s.add(newSession);
+                            }
                         } else if (newSession.currentlyOpening2 != null) {
                             newSession.position = valve;
-                            sessions.addLast(newSession);
+                            if (!s.contains(newSession)) {
+                                sessions.addLast(newSession);
+                                s.add(newSession);
+                            }
+
                         } else if (currentSession.currentlyOpening2 == null && currentSession.currentlyOpening == null) {
                             newSession.position = valve;
                             newSession.position2 = valve2;
-                            sessions.addLast(newSession);
+                            if (!s.contains(newSession)) {
+                                sessions.addLast(newSession);
+                                s.add(newSession);
+                            }
                         }
                     }
                 }
@@ -209,6 +222,8 @@ public class Day16 {
         }
         return sum;
     }
+
+    static HashSet<Session> s = new HashSet<>();
 
     private static boolean isSame(Session newSession, Valve valve) {
         if (newSession.currentlyOpening2 == null) {
@@ -266,6 +281,42 @@ public class Day16 {
             session.opened = new HashSet<>();
             session.opened.addAll(opened);
             return session;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Session session = (Session) o;
+
+            if (time != session.time) return false;
+            if (pressureFlowRate != session.pressureFlowRate) return false;
+            if (totalRelease != session.totalRelease) return false;
+            if (tick != session.tick) return false;
+            if (tick2 != session.tick2) return false;
+            if (!Objects.equals(position, session.position)) return false;
+            if (!Objects.equals(position2, session.position2)) return false;
+            if (!Objects.equals(currentlyOpening, session.currentlyOpening))
+                return false;
+            if (!Objects.equals(currentlyOpening2, session.currentlyOpening2))
+                return false;
+            return Objects.equals(opened, session.opened);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = position != null ? position.hashCode() : 0;
+            result = 31 * result + (position2 != null ? position2.hashCode() : 0);
+            result = 31 * result + time;
+            result = 31 * result + pressureFlowRate;
+            result = 31 * result + (int) (totalRelease ^ (totalRelease >>> 32));
+            result = 31 * result + (currentlyOpening != null ? currentlyOpening.hashCode() : 0);
+            result = 31 * result + (currentlyOpening2 != null ? currentlyOpening2.hashCode() : 0);
+            result = 31 * result + tick;
+            result = 31 * result + tick2;
+            result = 31 * result + (opened != null ? opened.hashCode() : 0);
+            return result;
         }
     }
 
