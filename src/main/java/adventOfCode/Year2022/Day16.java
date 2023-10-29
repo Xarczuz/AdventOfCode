@@ -159,7 +159,7 @@ public class Day16 {
                     continue;
                 }
                 ArrayList<Long> orDefault = results.getOrDefault(currentSession.time, new ArrayList<>());
-                if (orDefault.size() <= 1500) {
+                if (orDefault.size() <= 2500) {
                     orDefault.add(currentSession.totalRelease);
                 } else {
                     boolean foundSmaller = false;
@@ -199,6 +199,16 @@ public class Day16 {
                             }
                         }
                         if (newSession.currentlyOpening != null || newSession.currentlyOpening2 != null) {
+                            sessions.addLast(newSession);
+                        }
+                        if (newSession.currentlyOpening != null && newSession.currentlyOpening2 == null) {
+                            Session variant = newSession.deepcopy();
+                            variant.position2 = valve2;
+                            sessions.addLast(newSession);
+                        }
+                        if (newSession.currentlyOpening == null && newSession.currentlyOpening2 != null) {
+                            Session variant = newSession.deepcopy();
+                            variant.position = valve;
                             sessions.addLast(newSession);
                         }
                         newSession = currentSession.deepcopy();
