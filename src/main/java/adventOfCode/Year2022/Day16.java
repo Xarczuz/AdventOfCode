@@ -159,6 +159,10 @@ public class Day16 {
             if (currentSession.time == 26) {
                 sum = Math.max(currentSession.totalRelease, sum);
             } else {
+                if (currentSession.tick == 1 && currentSession.tick2 == 1) {
+                    addIfNotVisited(visited, currentSession, sessions);
+                    continue;
+                }
                 for (String leadsToValves : currentSession.position.LeadsToValves) {
                     for (String leadsToValves2 : currentSession.position2.LeadsToValves) {
                         Session newSession = currentSession.deepcopy();
