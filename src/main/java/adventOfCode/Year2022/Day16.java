@@ -130,9 +130,13 @@ public class Day16 {
     private static long startOpeningValves2(Session session, HashMap<String, Valve> valvesMap, long sum, HashMap<Integer, ArrayList<Long>> results) {
         LinkedList<Session> sessions = new LinkedList<>();
         sessions.add(session);
+        int prevTime = session.time;
         while (!sessions.isEmpty()) {
             Session currentSession = sessions.removeFirst();
             currentSession.time++;
+            if (prevTime != currentSession.time) {
+                s.clear();
+            }
             if (currentSession.currentlyOpening != null && currentSession.tick == 1) {
                 currentSession.opened.add(currentSession.currentlyOpening.name);
                 currentSession.pressureFlowRate += currentSession.currentlyOpening.flowRate;
@@ -153,26 +157,7 @@ public class Day16 {
             if (currentSession.time == 26) {
                 sum = Math.max(currentSession.totalRelease, sum);
             } else {
-                ArrayList<Long> orDefault = results.getOrDefault(currentSession.time, new ArrayList<>());
-                if (orDefault.size() <= 10000) {
-                    orDefault.add(currentSession.totalRelease);
-                } else {
-                    boolean foundSmaller = false;
-                    int i = 0;
-                    for (; i < orDefault.size(); i++) {
-                        if (orDefault.get(i) < currentSession.totalRelease) {
-                            foundSmaller = true;
-                            break;
-                        }
-                    }
-                    if (!foundSmaller) {
-                        continue;
-                    } else {
-                        orDefault.remove(i);
-                        orDefault.add(currentSession.totalRelease);
-                    }
-                }
-                results.put(currentSession.time, orDefault);
+
                 for (String leadsToValves : currentSession.position.LeadsToValves) {
                     for (String leadsToValves2 : currentSession.position2.LeadsToValves) {
                         Session newSession = currentSession.deepcopy();
@@ -208,7 +193,7 @@ public class Day16 {
                                 s.add(newSession);
                             }
 
-                        } else if (currentSession.currentlyOpening2 == null && currentSession.currentlyOpening == null) {
+                        } else {
                             newSession.position = valve;
                             newSession.position2 = valve2;
                             if (!s.contains(newSession)) {
@@ -219,6 +204,7 @@ public class Day16 {
                     }
                 }
             }
+            prevTime= currentSession.time;
         }
         return sum;
     }
