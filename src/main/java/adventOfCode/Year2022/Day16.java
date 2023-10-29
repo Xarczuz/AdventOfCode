@@ -19,7 +19,7 @@ public class Day16 {
         TimeUtil.endTime();
         TimeUtil.startTime();
         twoStar(l2); //1707
-//        twoStar(l);
+//        twoStar(l); // wrong to low:2577-2578
         TimeUtil.endTime();
     }
 
@@ -150,14 +150,11 @@ public class Day16 {
                 currentSession.tick2++;
             }
             currentSession.totalRelease += currentSession.pressureFlowRate;
-//            if (currentSession.time == 10 && currentSession.pressureFlowRate >= 78) {
-//                System.out.println("test");
-//            }
             if (currentSession.time == 26) {
                 sum = Math.max(currentSession.totalRelease, sum);
             } else {
                 ArrayList<Long> orDefault = results.getOrDefault(currentSession.time, new ArrayList<>());
-                if (orDefault.size() <= 5000) {
+                if (orDefault.size() <= 1200) {
                     orDefault.add(currentSession.totalRelease);
                 } else {
                     boolean foundSmaller = false;
@@ -180,14 +177,14 @@ public class Day16 {
                     for (String leadsToValves2 : currentSession.position2.LeadsToValves) {
                         Session newSession = currentSession.deepcopy();
                         Valve valve = valvesMap.get(leadsToValves);
-                        if (!currentSession.opened.contains(valve.name)) {
+                        if (!newSession.opened.contains(valve.name)) {
                             if (valve.flowRate != 0 && isSame(newSession, valve) && currentSession.currentlyOpening == null) {
                                 newSession.position = valve;
                                 newSession.currentlyOpening = valve;
                             }
                         }
                         Valve valve2 = valvesMap.get(leadsToValves2);
-                        if (!currentSession.opened.contains(valve2.name)) {
+                        if (!newSession.opened.contains(valve2.name)) {
                             if (valve2.flowRate != 0 && isSame2(newSession, valve2) && currentSession.currentlyOpening2 == null) {
                                 newSession.position2 = valve2;
                                 newSession.currentlyOpening2 = valve2;
@@ -196,22 +193,18 @@ public class Day16 {
                         if (newSession.currentlyOpening != null && newSession.currentlyOpening2 != null) {
                             sessions.addLast(newSession);
                         } else if (newSession.currentlyOpening != null) {
-                            Session variant = newSession.deepcopy();
-                            variant.position2 = valve2;
-                            sessions.addLast(variant);
+                            newSession.position2 = valve2;
+                            sessions.addLast(newSession);
                         } else if (newSession.currentlyOpening2 != null) {
-                            Session variant = newSession.deepcopy();
-                            variant.position = valve;
-                            sessions.addLast(variant);
-                        }
-                        if (currentSession.currentlyOpening2 == null && currentSession.currentlyOpening == null) {
+                            newSession.position = valve;
+                            sessions.addLast(newSession);
+                        } else if (currentSession.currentlyOpening2 == null && currentSession.currentlyOpening == null) {
                             newSession.position = valve;
                             newSession.position2 = valve2;
                             sessions.addLast(newSession);
                         }
                     }
                 }
-
             }
         }
         return sum;
