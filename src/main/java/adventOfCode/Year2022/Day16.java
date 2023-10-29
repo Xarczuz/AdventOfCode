@@ -150,14 +150,9 @@ public class Day16 {
                 currentSession.tick2++;
             }
             currentSession.totalRelease += currentSession.pressureFlowRate;
-
             if (currentSession.time == 26) {
                 sum = Math.max(currentSession.totalRelease, sum);
             } else {
-                if (currentSession.currentlyOpening != null && currentSession.tick == 1 && currentSession.currentlyOpening2 != null && currentSession.tick2 == 1) {
-                    sessions.addLast(currentSession);
-                    continue;
-                }
                 ArrayList<Long> orDefault = results.getOrDefault(currentSession.time, new ArrayList<>());
                 if (orDefault.size() <= 600) {
                     orDefault.add(currentSession.totalRelease);
@@ -184,17 +179,15 @@ public class Day16 {
                         Valve valve = valvesMap.get(leadsToValves);
                         Valve valve2 = valvesMap.get(leadsToValves2);
                         if (!currentSession.opened.contains(valve.name)) {
-                            if (valve.flowRate != 0 && isSame(newSession, valve)) {
+                            if (valve.flowRate != 0 && isSame(newSession, valve) && currentSession.currentlyOpening == null && currentSession.tick < 1) {
                                 newSession.position = valve;
                                 newSession.currentlyOpening = valve;
-                                newSession.tick = 0;
                             }
                         }
                         if (!currentSession.opened.contains(valve2.name)) {
-                            if (valve2.flowRate != 0 && isSame2(newSession, valve2)) {
+                            if (valve2.flowRate != 0 && isSame2(newSession, valve2) && currentSession.currentlyOpening2 == null && currentSession.tick2 < 1) {
                                 newSession.position2 = valve2;
                                 newSession.currentlyOpening2 = valve2;
-                                newSession.tick2 = 0;
                             }
                         }
                         if (newSession.currentlyOpening != null && newSession.currentlyOpening2 != null) {
