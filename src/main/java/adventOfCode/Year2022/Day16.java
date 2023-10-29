@@ -19,6 +19,8 @@ public class Day16 {
         TimeUtil.endTime();
         TimeUtil.startTime();
         twoStar(l2); //1707
+        TimeUtil.endTime();
+        TimeUtil.startTime();
 //        twoStar(l); // wrong to low:2577-2578
         TimeUtil.endTime();
     }
@@ -111,7 +113,6 @@ public class Day16 {
         Session session = new Session();
         HashMap<String, Valve> valvesMap = new HashMap<>();
         long sum = 0;
-        HashMap<Integer, ArrayList<Long>> results = new HashMap<>();
         for (Valve valve : valves) {
             valvesMap.put(valve.name, valve);
         }
@@ -120,7 +121,7 @@ public class Day16 {
             if (valve.name.equals("AA")) {
                 session.position = valve;
                 session.position2 = valve;
-                sum = startOpeningValves2(session, valvesMap, sum, results, visited);
+                sum = startOpeningValves2(session, valvesMap, sum, visited);
                 break;
             }
         }
@@ -128,7 +129,7 @@ public class Day16 {
         System.out.println("Result: " + sum);
     }
 
-    private static long startOpeningValves2(Session session, HashMap<String, Valve> valvesMap, long sum, HashMap<Integer, ArrayList<Long>> results, HashSet<Session> visited) {
+    private static long startOpeningValves2(Session session, HashMap<String, Valve> valvesMap, long sum, HashSet<Session> visited) {
         ArrayDeque<Session> sessions = new ArrayDeque<>(100000);
         sessions.add(session);
         int prevTime = session.time;
@@ -329,4 +330,5 @@ public class Day16 {
             return result;
         }
     }
+
 }
