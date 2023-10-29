@@ -17,11 +17,11 @@ public class Day16 {
 //        oneStar(l2); //1651
 //        oneStar(l); //1720
         TimeUtil.endTime();
-//        TimeUtil.startTime();
-//        twoStar(l2); //1707
-//        TimeUtil.endTime();
         TimeUtil.startTime();
-        twoStar(l); // wrong to low:2577-2578 2581
+        twoStar(l2); //1707
+        TimeUtil.endTime();
+        TimeUtil.startTime();
+        twoStar(l); // wrong to low:2577-2578 2581  ,  2597 2671
         TimeUtil.endTime();
     }
 
@@ -89,25 +89,28 @@ public class Day16 {
                     }
                 }
                 results.put(currentSession.time, orDefault);
-                for (String leadsToValves : currentSession.position.LeadsToValves) {
-                    Valve valve = valves.get(leadsToValves);
-                    Session newSession = currentSession.deepcopy();
-                    if (!currentSession.opened.contains(valve.name)) {
-                        if (valve.flowRate != 0) {
-                            newSession.position = valve;
-                            newSession.currentlyOpening = valve;
-                            sessions.addLast(newSession);
-                        }
-                    }
-                    newSession = currentSession.deepcopy();
-                    newSession.position = valve;
-                    sessions.addLast(newSession);
-                }
+                visitOne(valves, currentSession, sessions);
             }
         }
         return sum;
     }
 
+    private static void visitOne(HashMap<String, Valve> valves, Session currentSession, Deque<Session> sessions) {
+        for (String leadsToValves : currentSession.position.LeadsToValves) {
+            Valve valve = valves.get(leadsToValves);
+            Session newSession = currentSession.deepcopy();
+            if (!currentSession.opened.contains(valve.name)) {
+                if (valve.flowRate != 0) {
+                    newSession.position = valve;
+                    newSession.currentlyOpening = valve;
+                    sessions.addLast(newSession);
+                }
+            }
+            newSession = currentSession.deepcopy();
+            newSession.position = valve;
+            sessions.addLast(newSession);
+        }
+    }
     private static void twoStar(List<String> l) {
         ArrayList<Valve> valves = parseStringIntoValves(l);
         Session session = new Session();
@@ -160,12 +163,8 @@ public class Day16 {
             if (currentSession.time == 26) {
                 sum = Math.max(currentSession.totalRelease, sum);
             } else {
-                if (currentSession.tick == 1 && currentSession.tick2 == 1) {
-                    addIfNotVisited(visited, currentSession, sessions);
-                    continue;
-                }
                 ArrayList<Long> orDefault = results.getOrDefault(currentSession.time, new ArrayList<>());
-                if (orDefault.size() <= 5000) {
+                if (orDefault.size() <= 1000) {
                     orDefault.add(currentSession.totalRelease);
                 } else {
                     boolean foundSmaller = false;
@@ -184,21 +183,65 @@ public class Day16 {
                     }
                 }
                 results.put(currentSession.time, orDefault);
-                for (String leadsToValves : currentSession.position.LeadsToValves) {
-                    for (String leadsToValves2 : currentSession.position2.LeadsToValves) {
-                        Session newSession = currentSession.deepcopy();
-                        Valve valve = valvesMap.get(leadsToValves);
-                        Valve valve2 = valvesMap.get(leadsToValves2);
-                        a1(newSession, valve, currentSession);
-                        a2(newSession, valve2, currentSession);
-                        if (newSession.currentlyOpening != null && newSession.currentlyOpening2 != null
-                                || newSession.currentlyOpening != null
-                                || newSession.currentlyOpening2 != null) {
+                if (currentSession.tick == 1 && currentSession.tick2 == 1) {
+                    addIfNotVisited(visited, currentSession, sessions);
+                    continue;
+                } else {
+                    if (currentSession.tick == 1 && currentSession.currentlyOpening != null && currentSession.currentlyOpening2 == null && currentSession.tick2 == 0) {
+                        for (String leadsToValves : currentSession.position2.LeadsToValves) { //TODO
+                            if (!leadsToValves.equals(currentSession.position.name)) {
+                                continue;
+                            }
+                            Valve valve = valvesMap.get(leadsToValves);
+                            Session newSession = currentSession.deepcopy();
+                            if (!currentSession.opened.contains(valve.name)) {
+                                if (valve.flowRate != 0) {
+                                    newSession.position2 = valve;
+                                    newSession.currentlyOpening2 = valve;
+                                    addIfNotVisited(visited, newSession, sessions);
+                                }
+                            }
+                            newSession.position2 = valve;
                             addIfNotVisited(visited, newSession, sessions);
-                        } else {
+
+                        }
+                        continue;
+                    } else if (currentSession.tick2 == 1 && currentSession.currentlyOpening2 != null && currentSession.currentlyOpening == null && currentSession.tick == 0) {
+                        for (String leadsToValves : currentSession.position.LeadsToValves) {//TODO
+                            if (!leadsToValves.equals(currentSession.position2.name)) {
+                                continue;
+                            }
+                            Valve valve = valvesMap.get(leadsToValves);
+                            Session newSession = currentSession.deepcopy();
+                            if (!currentSession.opened.contains(valve.name)) {
+                                if (valve.flowRate != 0) {
+                                    newSession.position = valve;
+                                    newSession.currentlyOpening = valve;
+                                    addIfNotVisited(visited, newSession, sessions);
+                                }
+                            }
                             newSession.position = valve;
-                            newSession.position2 = valve2;
                             addIfNotVisited(visited, newSession, sessions);
+
+                        }
+                        continue;
+                    } else {
+
+                        for (String leadsToValves : currentSession.position.LeadsToValves) {
+                            for (String leadsToValves2 : currentSession.position2.LeadsToValves) {
+                                Session newSession = currentSession.deepcopy();
+                                Valve valve = valvesMap.get(leadsToValves);
+                                Valve valve2 = valvesMap.get(leadsToValves2);
+                                a1(newSession, valve, currentSession);
+                                a2(newSession, valve2, currentSession);
+                                if (newSession.currentlyOpening != null && newSession.currentlyOpening2 != null || newSession.currentlyOpening != null || newSession.currentlyOpening2 != null) {
+                                    addIfNotVisited(visited, newSession, sessions);
+                                } else {
+                                    newSession.position = valve;
+                                    newSession.position2 = valve2;
+                                    addIfNotVisited(visited, newSession, sessions);
+                                }
+                            }
                         }
                     }
                 }
@@ -310,10 +353,8 @@ public class Day16 {
             if (tick2 != session.tick2) return false;
             if (!Objects.equals(position, session.position)) return false;
             if (!Objects.equals(position2, session.position2)) return false;
-            if (!Objects.equals(currentlyOpening, session.currentlyOpening))
-                return false;
-            if (!Objects.equals(currentlyOpening2, session.currentlyOpening2))
-                return false;
+            if (!Objects.equals(currentlyOpening, session.currentlyOpening)) return false;
+            if (!Objects.equals(currentlyOpening2, session.currentlyOpening2)) return false;
             return Objects.equals(opened, session.opened);
         }
 
