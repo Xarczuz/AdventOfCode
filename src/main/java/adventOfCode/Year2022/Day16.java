@@ -193,7 +193,7 @@ public class Day16 {
             System.arraycopy(orDefault, 0, a, 0, orDefault.length);
             orDefault = a;
         }
-        int i = 50;
+        int i = 150;
         if (orDefault.length / 2 > totalRelease) {
             return true;
         }
