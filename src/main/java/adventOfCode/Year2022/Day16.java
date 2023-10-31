@@ -137,13 +137,9 @@ public class Day16 {
     private static long startOpeningValves2(Session session, HashMap<String, Valve> valvesMap, long sum, HashMap<Integer, ArrayList<Long>> results, HashSet<Session> visited) {
         ArrayDeque<Session> sessions = new ArrayDeque<>(100000);
         sessions.add(session);
-        int prevTime = session.time;
         while (!sessions.isEmpty()) {
             Session currentSession = sessions.removeFirst();
             currentSession.time++;
-            if (prevTime != currentSession.time) {
-                visited.clear();
-            }
             addPressureToSession(currentSession);
             currentSession.totalRelease += currentSession.pressureFlowRate;
             if (currentSession.time == 26) {
@@ -158,7 +154,6 @@ public class Day16 {
                 }
                 branchingValvesOpenings(valvesMap, visited, currentSession, sessions);
             }
-            prevTime = currentSession.time;
         }
         return sum;
     }
