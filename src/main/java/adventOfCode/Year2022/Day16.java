@@ -144,7 +144,7 @@ public class Day16 {
             if (prevTime != currentSession.time) {
                 visited.clear();
             }
-            addPressureToSession(currentSession,valvesMap);
+            addPressureToSession(currentSession, valvesMap);
             currentSession.totalRelease += currentSession.pressureFlowRate;
             if (currentSession.time == 26) {
                 sum = Math.max(currentSession.totalRelease, sum);
@@ -250,7 +250,6 @@ public class Day16 {
             visited.add(newSession);
         }
     }
-
 
     private static boolean isSame(Session newSession, Valve valve) {
         if (newSession.currentlyOpening2 == null) {
