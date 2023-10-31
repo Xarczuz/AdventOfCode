@@ -96,9 +96,9 @@ public class Day16 {
     }
 
     private static void visitOne(HashMap<String, Valve> valves, Session currentSession, Deque<Session> sessions) {
-        for (String leadsToValves : currentSession.position.LeadsToValves) {
+        for (String leadsToValves : currentSession.position.leadsToValves) {
             Valve valve = valves.get(leadsToValves);
-            Session newSession = currentSession.deepcopy();
+            Session newSession = currentSession.deepCopy();
             if (!currentSession.opened.contains(valve.name)) {
                 if (valve.flowRate != 0) {
                     newSession.position = valve;
@@ -106,7 +106,7 @@ public class Day16 {
                     sessions.addLast(newSession);
                 }
             }
-            newSession = currentSession.deepcopy();
+            newSession = currentSession.deepCopy();
             newSession.position = valve;
             sessions.addLast(newSession);
         }
@@ -159,9 +159,9 @@ public class Day16 {
     }
 
     private static void branchingValvesOpenings(HashMap<String, Valve> valvesMap, HashSet<Session> visited, Session currentSession, ArrayDeque<Session> sessions) {
-        for (String leadsToValves : currentSession.position.LeadsToValves) {
-            for (String leadsToValves2 : currentSession.position2.LeadsToValves) {
-                Session newSession = currentSession.deepcopy();
+        for (String leadsToValves : currentSession.position.leadsToValves) {
+            for (String leadsToValves2 : currentSession.position2.leadsToValves) {
+                Session newSession = currentSession.deepCopy();
                 Valve valve = valvesMap.get(leadsToValves);
                 Valve valve2 = valvesMap.get(leadsToValves2);
                 a1(newSession, valve, currentSession);
@@ -273,7 +273,7 @@ public class Day16 {
             valve.flowRate = Integer.parseInt(strings[4].replace("rate=", "").replace(";", ""));
             String[] valvesStrings = s.substring(s.lastIndexOf("valve") + 6).split(",");
             for (String valvesString : valvesStrings) {
-                valve.LeadsToValves.add(valvesString.trim());
+                valve.leadsToValves.add(valvesString.trim());
             }
             valves.add(valve);
         }
@@ -292,7 +292,7 @@ public class Day16 {
         int tick2 = 0;
         HashSet<String> opened = new HashSet<>();
 
-        Session deepcopy() {
+        Session deepCopy() {
             Session session = new Session();
             session.position = this.position;
             session.position2 = this.position2;
@@ -345,12 +345,12 @@ public class Day16 {
 
     private static class Valve {
         int flowRate;
-        List<String> LeadsToValves = new ArrayList<>();
+        List<String> leadsToValves = new ArrayList<>();
         String name;
 
         @Override
         public String toString() {
-            return "Valve{" + "flowRate=" + flowRate + ", LeadsToValves=" + LeadsToValves + ", name='" + name + '}';
+            return "Valve{" + "flowRate=" + flowRate + ", LeadsToValves=" + leadsToValves + ", name='" + name + '}';
         }
 
         @Override
@@ -361,14 +361,14 @@ public class Day16 {
             Valve valve = (Valve) o;
 
             if (flowRate != valve.flowRate) return false;
-            if (!Objects.equals(LeadsToValves, valve.LeadsToValves)) return false;
+            if (!Objects.equals(leadsToValves, valve.leadsToValves)) return false;
             return Objects.equals(name, valve.name);
         }
 
         @Override
         public int hashCode() {
             int result = flowRate;
-            result = 31 * result + (LeadsToValves != null ? LeadsToValves.hashCode() : 0);
+            result = 31 * result + (leadsToValves != null ? leadsToValves.hashCode() : 0);
             result = 31 * result + (name != null ? name.hashCode() : 0);
             return result;
         }
