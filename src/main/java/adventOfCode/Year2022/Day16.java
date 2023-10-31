@@ -166,6 +166,9 @@ public class Day16 {
     private static void branchingValvesOpenings(HashMap<String, Valve> valvesMap, HashSet<Session> visited, Session currentSession, ArrayDeque<Session> sessions) {
         for (String leadsToValves : currentSession.position.leadsToValves) {
             for (String leadsToValves2 : currentSession.position2.leadsToValves) {
+                if (leadsToValves2.equals(leadsToValves)) {
+                    continue;
+                }
                 Session newSession = currentSession.deepCopy();
                 Valve valve = valvesMap.get(leadsToValves);
                 Valve valve2 = valvesMap.get(leadsToValves2);
@@ -184,9 +187,10 @@ public class Day16 {
 
     private static boolean branchKiller(HashMap<Integer, Integer[]> results, Session currentSession) {
         Integer[] orDefault = results.getOrDefault(currentSession.time, initArray());
-        if (orDefault[currentSession.totalRelease]<300) {
+        int i = 50;
+        if (orDefault[currentSession.totalRelease] < i) {
             orDefault[currentSession.totalRelease]++;
-        }else if (orDefault[currentSession.totalRelease]>=300) {
+        } else if (orDefault[currentSession.totalRelease] >= i) {
             return true;
         }
         results.put(currentSession.time, orDefault);
@@ -194,8 +198,8 @@ public class Day16 {
     }
 
     private static Integer[] initArray() {
-        Integer[] integers = new Integer[5000];
-        Arrays.fill(integers,0);
+        Integer[] integers = new Integer[3000];
+        Arrays.fill(integers, 0);
         return integers;
     }
 
