@@ -193,20 +193,15 @@ public class Day16 {
             System.arraycopy(orDefault, 0, a, 0, orDefault.length);
             orDefault = a;
         }
-        int i = 150;
         if (orDefault.length / 2 > totalRelease) {
             return true;
         }
-        if (orDefault[totalRelease] < i) {
-            orDefault[totalRelease]++;
-        }else if (orDefault.length-200 < totalRelease){
+        if (orDefault.length - 200 < totalRelease) {
             results.put(currentSession.time, orDefault);
             return false;
-        } else if (orDefault[totalRelease] >= i) {
+        } else {
             return true;
         }
-        results.put(currentSession.time, orDefault);
-        return false;
     }
 
     private static void addPressureToSession(Session currentSession, HashMap<String, Valve> valvesMap) {
