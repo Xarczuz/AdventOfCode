@@ -117,7 +117,7 @@ public class Day16 {
         Session session = new Session();
         HashMap<String, Valve> valvesMap = new HashMap<>();
         long sum = 0;
-        HashMap<Integer, Integer[]> results = new HashMap<>();
+        HashMap<Integer, int[]> results = new HashMap<>();
         for (Valve valve : valves) {
             valvesMap.put(valve.name, valve);
         }
@@ -134,7 +134,7 @@ public class Day16 {
         System.out.println("Result: " + sum);
     }
 
-    private static long startOpeningValves2(Session session, HashMap<String, Valve> valvesMap, long sum, HashMap<Integer, Integer[]> results, HashSet<Session> visited) {
+    private static long startOpeningValves2(Session session, HashMap<String, Valve> valvesMap, long sum, HashMap<Integer, int[]> results, HashSet<Session> visited) {
         ArrayDeque<Session> sessions = new ArrayDeque<>(100000);
         sessions.add(session);
         int prevTime = 0;
@@ -185,9 +185,14 @@ public class Day16 {
         }
     }
 
-    private static boolean branchKiller(HashMap<Integer, Integer[]> results, Session currentSession) {
-        Integer[] orDefault = results.getOrDefault(currentSession.time, initArray());
-        int i = 2050;
+    private static boolean branchKiller(HashMap<Integer, int[]> results, Session currentSession) {
+        int[] orDefault = results.getOrDefault(currentSession.time, new int[0]);
+        if (orDefault.length < currentSession.totalRelease + 1) {
+            int[] a = new int[currentSession.totalRelease + 1];
+            System.arraycopy(orDefault, 0, a, 0, orDefault.length);
+            orDefault = a;
+        }
+        int i = 5000;
         if (orDefault[currentSession.totalRelease] < i) {
             orDefault[currentSession.totalRelease]++;
         } else if (orDefault[currentSession.totalRelease] >= i) {
@@ -195,12 +200,6 @@ public class Day16 {
         }
         results.put(currentSession.time, orDefault);
         return false;
-    }
-
-    private static Integer[] initArray() {
-        Integer[] integers = new Integer[3000];
-        Arrays.fill(integers, 0);
-        return integers;
     }
 
     private static void addPressureToSession(Session currentSession, HashMap<String, Valve> valvesMap) {
