@@ -30,7 +30,7 @@ public class Day16 {
         Session session = new Session();
         HashMap<String, Valve> valvesMap = new HashMap<>();
         long sum = 0;
-        HashMap<Integer, ArrayList<Long>> results = new HashMap<>();
+        HashMap<Integer, ArrayList<Integer>> results = new HashMap<>();
         for (Valve valve : valves) {
             valvesMap.put(valve.name, valve);
         }
@@ -45,7 +45,7 @@ public class Day16 {
         System.out.println("Result: " + sum);
     }
 
-    private static long startOpeningValves(Session session, HashMap<String, Valve> valves, long sum, HashMap<Integer, ArrayList<Long>> results) {
+    private static long startOpeningValves(Session session, HashMap<String, Valve> valves, long sum, HashMap<Integer, ArrayList<Integer>> results) {
         LinkedList<Session> sessions = new LinkedList<>();
         sessions.add(session);
         while (!sessions.isEmpty()) {
@@ -69,7 +69,7 @@ public class Day16 {
                 } else {
                     currentSession.tick1 = 0;
                 }
-                ArrayList<Long> orDefault = results.getOrDefault(currentSession.time, new ArrayList<>());
+                ArrayList<Integer> orDefault = results.getOrDefault(currentSession.time, new ArrayList<>());
                 if (orDefault.size() <= 3500) {
                     orDefault.add(currentSession.totalRelease);
                 } else {
@@ -117,7 +117,7 @@ public class Day16 {
         Session session = new Session();
         HashMap<String, Valve> valvesMap = new HashMap<>();
         long sum = 0;
-        HashMap<Integer, ArrayList<Long>> results = new HashMap<>();
+        HashMap<Integer, Integer[]> results = new HashMap<>();
         for (Valve valve : valves) {
             valvesMap.put(valve.name, valve);
         }
@@ -134,12 +134,16 @@ public class Day16 {
         System.out.println("Result: " + sum);
     }
 
-    private static long startOpeningValves2(Session session, HashMap<String, Valve> valvesMap, long sum, HashMap<Integer, ArrayList<Long>> results, HashSet<Session> visited) {
+    private static long startOpeningValves2(Session session, HashMap<String, Valve> valvesMap, long sum, HashMap<Integer, Integer[]> results, HashSet<Session> visited) {
         ArrayDeque<Session> sessions = new ArrayDeque<>(100000);
         sessions.add(session);
+        int prevTime = 0;
         while (!sessions.isEmpty()) {
             Session currentSession = sessions.removeFirst();
             currentSession.time++;
+            if (prevTime != currentSession.time) {
+                visited.clear();
+            }
             addPressureToSession(currentSession);
             currentSession.totalRelease += currentSession.pressureFlowRate;
             if (currentSession.time == 26) {
@@ -154,6 +158,7 @@ public class Day16 {
                 }
                 branchingValvesOpenings(valvesMap, visited, currentSession, sessions);
             }
+            prevTime = currentSession.time;
         }
         return sum;
     }
@@ -177,28 +182,21 @@ public class Day16 {
         }
     }
 
-    private static boolean branchKiller(HashMap<Integer, ArrayList<Long>> results, Session currentSession) {
-        ArrayList<Long> orDefault = results.getOrDefault(currentSession.time, new ArrayList<>());
-        if (orDefault.size() <= 1000) {
-            orDefault.add(currentSession.totalRelease);
-        } else {
-            boolean foundSmaller = false;
-            int i = 0;
-            for (; i < orDefault.size(); i++) {
-                if (orDefault.get(i) < currentSession.totalRelease) {
-                    foundSmaller = true;
-                    break;
-                }
-            }
-            if (!foundSmaller) {
-                return true;
-            } else {
-                orDefault.remove(i);
-                orDefault.add(currentSession.totalRelease);
-            }
+    private static boolean branchKiller(HashMap<Integer, Integer[]> results, Session currentSession) {
+        Integer[] orDefault = results.getOrDefault(currentSession.time, initArray());
+        if (orDefault[currentSession.totalRelease]<300) {
+            orDefault[currentSession.totalRelease]++;
+        }else if (orDefault[currentSession.totalRelease]>=300) {
+            return true;
         }
         results.put(currentSession.time, orDefault);
         return false;
+    }
+
+    private static Integer[] initArray() {
+        Integer[] integers = new Integer[5000];
+        Arrays.fill(integers,0);
+        return integers;
     }
 
     private static void addPressureToSession(Session currentSession) {
@@ -285,7 +283,7 @@ public class Day16 {
         Valve position2;
         int time = 0;
         int pressureFlowRate = 0;
-        long totalRelease = 0;
+        int totalRelease = 0;
         Valve currentlyOpening1;
         Valve currentlyOpening2;
         int tick1 = 0;
