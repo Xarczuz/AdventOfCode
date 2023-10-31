@@ -199,6 +199,9 @@ public class Day16 {
         }
         if (orDefault[totalRelease] < i) {
             orDefault[totalRelease]++;
+        }else if (orDefault.length-200 < totalRelease){
+            results.put(currentSession.time, orDefault);
+            return false;
         } else if (orDefault[totalRelease] >= i) {
             return true;
         }
