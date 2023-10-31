@@ -187,18 +187,19 @@ public class Day16 {
 
     private static boolean branchKiller(HashMap<Integer, int[]> results, Session currentSession) {
         int[] orDefault = results.getOrDefault(currentSession.time, new int[0]);
-        if (orDefault.length < currentSession.totalRelease + 1) {
-            int[] a = new int[currentSession.totalRelease + 1];
+        int totalRelease = currentSession.totalRelease;
+        if (orDefault.length < totalRelease + 1) {
+            int[] a = new int[totalRelease + 1];
             System.arraycopy(orDefault, 0, a, 0, orDefault.length);
             orDefault = a;
         }
-        int i = 200;
-        if (orDefault.length/2 > currentSession.totalRelease) {
+        int i = 50;
+        if (orDefault.length / 2 > totalRelease) {
             return true;
         }
-        if (orDefault[currentSession.totalRelease] < i) {
-            orDefault[currentSession.totalRelease]++;
-        } else if (orDefault[currentSession.totalRelease] >= i) {
+        if (orDefault[totalRelease] < i) {
+            orDefault[totalRelease]++;
+        } else if (orDefault[totalRelease] >= i) {
             return true;
         }
         results.put(currentSession.time, orDefault);
