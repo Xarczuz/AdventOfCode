@@ -52,7 +52,7 @@ public class Day16 {
             Session currentSession = sessions.removeFirst();
             currentSession.time++;
             if (currentSession.currentlyOpening1 != null && currentSession.tick1 == 1) {
-                currentSession.opened.add(currentSession.currentlyOpening1);
+                currentSession.opened += "," + (currentSession.currentlyOpening1);
                 currentSession.pressureFlowRate += valves.get(currentSession.currentlyOpening1).flowRate;
                 currentSession.currentlyOpening1 = null;
             } else if (currentSession.currentlyOpening1 != null && currentSession.tick1 == 0) {
@@ -137,13 +137,10 @@ public class Day16 {
     private static long startOpeningValves2(Session session, HashMap<String, Valve> valvesMap, long sum, HashMap<Integer, Integer> results, HashSet<Session> visited) {
         ArrayDeque<Session> sessions = new ArrayDeque<>(100000);
         sessions.add(session);
-        int prevTime = 0;
         while (!sessions.isEmpty()) {
             Session currentSession = sessions.removeFirst();
             currentSession.time++;
-            if (prevTime != currentSession.time) {
-                visited.clear();
-            }
+
             addPressureToSession(currentSession, valvesMap);
             currentSession.totalRelease += currentSession.pressureFlowRate;
             if (currentSession.time == 26) {
@@ -158,7 +155,6 @@ public class Day16 {
                 }
                 branchingValvesOpenings(valvesMap, visited, currentSession, sessions);
             }
-            prevTime = currentSession.time;
         }
         return sum;
     }
@@ -206,7 +202,7 @@ public class Day16 {
 
     private static void addPressureToSession(Session currentSession, HashMap<String, Valve> valvesMap) {
         if (currentSession.currentlyOpening1 != null && currentSession.tick1 == 1) {
-            currentSession.opened.add(currentSession.currentlyOpening1);
+            currentSession.opened += "," + (currentSession.currentlyOpening1);
             currentSession.pressureFlowRate += valvesMap.get(currentSession.currentlyOpening1).flowRate;
             currentSession.currentlyOpening1 = null;
             currentSession.tick1 = 0;
@@ -214,7 +210,7 @@ public class Day16 {
             currentSession.tick1++;
         }
         if (currentSession.currentlyOpening2 != null && currentSession.tick2 == 1) {
-            currentSession.opened.add(currentSession.currentlyOpening2);
+            currentSession.opened += "," + (currentSession.currentlyOpening2);
             currentSession.pressureFlowRate += valvesMap.get(currentSession.currentlyOpening2).flowRate;
             currentSession.currentlyOpening2 = null;
             currentSession.tick2 = 0;
@@ -246,9 +242,10 @@ public class Day16 {
     }
 
     private static void addIfNotVisited(HashSet<Session> visited, Session newSession, ArrayDeque<Session> sessions) {
-        if (!visited.contains(newSession)) {
-            sessions.addLast(newSession);
-            visited.add(newSession);
+        Session copy = newSession.deepCopy();
+        if (!visited.contains(copy)) {
+            sessions.addFirst(newSession);
+            visited.add(copy);
         }
     }
 
@@ -292,7 +289,7 @@ public class Day16 {
         String currentlyOpening2;
         int tick1 = 0;
         int tick2 = 0;
-        HashSet<String> opened = new HashSet<>();
+        String opened = "";
 
         Session deepCopy() {
             Session session = new Session();
@@ -305,8 +302,7 @@ public class Day16 {
             session.currentlyOpening2 = this.currentlyOpening2;
             session.tick1 = this.tick1;
             session.tick2 = this.tick2;
-            session.opened = new HashSet<>();
-            session.opened.addAll(opened);
+            session.opened = this.opened;
             return session;
         }
 
