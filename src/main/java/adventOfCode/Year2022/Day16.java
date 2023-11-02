@@ -121,7 +121,7 @@ public class Day16 {
         for (Valve valve : valves) {
             valvesMap.put(valve.name, valve);
         }
-        HashSet<Session> visited = new HashSet<>(100000);
+        HashSet<Session> visited = new HashSet<>(1400000);
         for (Valve valve : valves) {
             if (valve.name.equals("AA")) {
                 session.position1 = valve.name;
@@ -135,7 +135,7 @@ public class Day16 {
     }
 
     private static long startOpeningValves2(Session session, HashMap<String, Valve> valvesMap, long sum, HashMap<Integer, Integer> results, HashSet<Session> visited) {
-        ArrayDeque<Session> sessions = new ArrayDeque<>(100000);
+        ArrayDeque<Session> sessions = new ArrayDeque<>(200000);
         sessions.add(session);
         while (!sessions.isEmpty()) {
             Session currentSession = sessions.removeFirst();
@@ -171,11 +171,15 @@ public class Day16 {
                 a1(newSession, valve);
                 a2(newSession, valve2);
                 if (newSession.currentlyOpening1 != null && newSession.currentlyOpening2 != null || newSession.currentlyOpening1 != null || newSession.currentlyOpening2 != null) {
-                    addIfNotVisited(visited, newSession, sessions);
+                    if (!Objects.equals(newSession.position1, newSession.position2)) {
+                        addIfNotVisited(visited, newSession, sessions);
+                    }
                 } else {
                     newSession.position1 = valve.name;
                     newSession.position2 = valve2.name;
-                    addIfNotVisited(visited, newSession, sessions);
+                    if (!Objects.equals(newSession.position1, newSession.position2)) {
+                        addIfNotVisited(visited, newSession, sessions);
+                    }
                 }
             }
         }
