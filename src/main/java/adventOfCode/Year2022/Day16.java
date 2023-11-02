@@ -166,7 +166,7 @@ public class Day16 {
         for (String leadsToValves : valvesMap.get(currentSession.position1).leadsToValves) {
             Session newSession = currentSession.deepCopy();
             Valve valve1 = valvesMap.get(leadsToValves);
-            if (!newSession.opened.contains(valve1.name) && !valve1.name.equals(newSession.currentlyOpening2) && newSession.currentlyOpening1 == null && valve1.flowRate != 0) {
+            if (!newSession.opened.contains(valve1.name) && newSession.currentlyOpening1 == null && valve1.flowRate != 0) {
                 newSession.position1 = valve1.name;
                 newSession.currentlyOpening1 = valve1.name;
                 newSession.opened += "," + valve1.name;
