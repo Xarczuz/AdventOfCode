@@ -36,7 +36,7 @@ public class Day16 {
         }
         for (Valve valve : valves) {
             if (valve.name.equals("AA")) {
-                session.position = valve.name;
+                session.position1 = valve.name;
                 sum = startOpeningValves(session, valvesMap, sum, results);
                 break;
             }
@@ -96,18 +96,18 @@ public class Day16 {
     }
 
     private static void visitOne(HashMap<String, Valve> valves, Session currentSession, Deque<Session> sessions) {
-        for (String leadsToValves : valves.get(currentSession.position).leadsToValves) {
+        for (String leadsToValves : valves.get(currentSession.position1).leadsToValves) {
             Valve valve = valves.get(leadsToValves);
             Session newSession = currentSession.deepCopy();
             if (!currentSession.opened.contains(valve.name)) {
                 if (valve.flowRate != 0) {
-                    newSession.position = valve.name;
+                    newSession.position1 = valve.name;
                     newSession.currentlyOpening1 = valve.name;
                     sessions.addLast(newSession);
                 }
             }
             newSession = currentSession.deepCopy();
-            newSession.position = valve.name;
+            newSession.position1 = valve.name;
             sessions.addLast(newSession);
         }
     }
@@ -124,7 +124,7 @@ public class Day16 {
         HashSet<Session> visited = new HashSet<>(100000);
         for (Valve valve : valves) {
             if (valve.name.equals("AA")) {
-                session.position = valve.name;
+                session.position1 = valve.name;
                 session.position2 = valve.name;
                 sum = startOpeningValves2(session, valvesMap, sum, results, visited);
                 break;
@@ -162,7 +162,7 @@ public class Day16 {
     private static void branchingValvesOpenings(HashMap<String, Valve> valvesMap, HashSet<Session> visited, Session currentSession, ArrayDeque<Session> sessions) {
 
 
-        for (String leadsToValves : valvesMap.get(currentSession.position).leadsToValves) {
+        for (String leadsToValves : valvesMap.get(currentSession.position1).leadsToValves) {
             for (String leadsToValves2 : valvesMap.get(currentSession.position2).leadsToValves) {
                 if (leadsToValves2.equals(leadsToValves)) {
                     continue;
@@ -175,7 +175,7 @@ public class Day16 {
                 if (newSession.currentlyOpening1 != null && newSession.currentlyOpening2 != null || newSession.currentlyOpening1 != null || newSession.currentlyOpening2 != null) {
                     addIfNotVisited(visited, newSession, sessions);
                 } else {
-                    newSession.position = valve.name;
+                    newSession.position1 = valve.name;
                     newSession.position2 = valve2.name;
                     addIfNotVisited(visited, newSession, sessions);
                 }
@@ -233,10 +233,10 @@ public class Day16 {
     private static void a1(Session newSession, Valve valve) {
         if (!newSession.opened.contains(valve.name)) {
             if (valve.flowRate != 0 && isSame(newSession, valve) && newSession.currentlyOpening1 == null) {
-                newSession.position = valve.name;
+                newSession.position1 = valve.name;
                 newSession.currentlyOpening1 = valve.name;
             } else if (newSession.currentlyOpening1 == null) {
-                newSession.position = valve.name;
+                newSession.position1 = valve.name;
             }
         }
     }
@@ -280,7 +280,7 @@ public class Day16 {
     }
 
     private static class Session {
-        String position;
+        String position1;
         String position2;
         int time = 0;
         int pressureFlowRate = 0;
@@ -293,7 +293,7 @@ public class Day16 {
 
         Session deepCopy() {
             Session session = new Session();
-            session.position = this.position;
+            session.position1 = this.position1;
             session.position2 = this.position2;
             session.time = this.time;
             session.pressureFlowRate = this.pressureFlowRate;
@@ -318,7 +318,7 @@ public class Day16 {
             if (totalRelease != session.totalRelease) return false;
             if (tick1 != session.tick1) return false;
             if (tick2 != session.tick2) return false;
-            if (!Objects.equals(position, session.position)) return false;
+            if (!Objects.equals(position1, session.position1)) return false;
             if (!Objects.equals(position2, session.position2)) return false;
             if (!Objects.equals(currentlyOpening1, session.currentlyOpening1))
                 return false;
@@ -329,7 +329,7 @@ public class Day16 {
 
         @Override
         public int hashCode() {
-            int result = position != null ? position.hashCode() : 0;
+            int result = position1 != null ? position1.hashCode() : 0;
             result = 31 * result + (position2 != null ? position2.hashCode() : 0);
             result = 31 * result + time;
             result = 31 * result + pressureFlowRate;
