@@ -130,7 +130,7 @@ public class Day16 {
                 break;
             }
         }
-        System.out.println(valves);
+
         System.out.println("Result: " + sum);
     }
 
@@ -138,18 +138,21 @@ public class Day16 {
         ArrayDeque<Session> sessions = new ArrayDeque<>(200000);
         sessions.add(session);
         while (!sessions.isEmpty()) {
-            Session currentSession = sessions.removeFirst();
-            currentSession.time++;
+            Session currentSession = sessions.removeFirst().deepCopy();
+            if (branchKiller(results, currentSession)) {
+                continue;
+            }
 
+            currentSession.time++;
             addPressureToSession(currentSession, valvesMap);
             currentSession.totalRelease += currentSession.pressureFlowRate;
+
             if (currentSession.time == 26) {
                 sum = Math.max(currentSession.totalRelease, sum);
             } else {
                 if (branchKiller(results, currentSession)) {
                     continue;
-                }
-                if (currentSession.tick1 == 1 && currentSession.tick2 == 1) {
+                } else if (currentSession.tick1 == 1 && currentSession.tick2 == 1) {
                     addIfNotVisited(visited, currentSession, sessions);
                     continue;
                 }
@@ -161,25 +164,35 @@ public class Day16 {
 
     private static void branchingValvesOpenings(HashMap<String, Valve> valvesMap, HashSet<Session> visited, Session currentSession, ArrayDeque<Session> sessions) {
         for (String leadsToValves : valvesMap.get(currentSession.position1).leadsToValves) {
+            Session newSession = currentSession.deepCopy();
+            Valve valve1 = valvesMap.get(leadsToValves);
+            if (!newSession.opened.contains(valve1.name) && !valve1.name.equals(newSession.currentlyOpening2) && newSession.currentlyOpening1 == null && valve1.flowRate != 0) {
+                newSession.position1 = valve1.name;
+                newSession.currentlyOpening1 = valve1.name;
+            }
             for (String leadsToValves2 : valvesMap.get(currentSession.position2).leadsToValves) {
-                if (leadsToValves2.equals(leadsToValves)) {
-                    continue;
-                }
-                Session newSession = currentSession.deepCopy();
-                Valve valve = valvesMap.get(leadsToValves);
+                Session newSession2 = newSession.deepCopy();
                 Valve valve2 = valvesMap.get(leadsToValves2);
-                a1(newSession, valve);
-                a2(newSession, valve2);
-                if (newSession.currentlyOpening1 != null && newSession.currentlyOpening2 != null || newSession.currentlyOpening1 != null || newSession.currentlyOpening2 != null) {
-                    if (!Objects.equals(newSession.position1, newSession.position2)) {
-                        addIfNotVisited(visited, newSession, sessions);
-                    }
-                } else {
-                    newSession.position1 = valve.name;
-                    newSession.position2 = valve2.name;
-                    if (!Objects.equals(newSession.position1, newSession.position2)) {
-                        addIfNotVisited(visited, newSession, sessions);
-                    }
+                if (!newSession2.opened.contains(valve2.name) && !valve2.name.equals(newSession2.currentlyOpening1) && newSession2.currentlyOpening2 == null && valve2.flowRate != 0) {
+                    newSession2.position2 = valve2.name;
+                    newSession2.currentlyOpening2 = valve2.name;
+                }
+                if (newSession2.currentlyOpening1 != null && newSession2.currentlyOpening2 != null) {
+                    addIfNotVisited(visited, newSession2, sessions);
+                } else if (newSession2.currentlyOpening1 == null && newSession2.currentlyOpening2 == null) {
+                    newSession2.position1 = valve1.name;
+                    newSession2.position2 = valve2.name;
+                    addIfNotVisited(visited, newSession2, sessions);
+                }
+                newSession2 = newSession2.deepCopy();
+                if (newSession2.currentlyOpening1 == null) {
+                    newSession2.position1 = valve1.name;
+                    addIfNotVisited(visited, newSession2, sessions);
+                }
+                newSession2 = newSession2.deepCopy();
+                if (newSession2.currentlyOpening2 == null) {
+                    newSession2.position2 = valve2.name;
+                    addIfNotVisited(visited, newSession2, sessions);
                 }
             }
         }
@@ -194,7 +207,7 @@ public class Day16 {
         if (orDefault / 2 > totalRelease) {
             return true;
         }
-        if (orDefault - 120 < totalRelease) {
+        if (orDefault - 200 < totalRelease) {
             results.put(currentSession.time, orDefault);
             return false;
         } else {
@@ -221,49 +234,14 @@ public class Day16 {
         }
     }
 
-    private static void a2(Session newSession, Valve valve2) {
-        if (!newSession.opened.contains(valve2.name)) {
-            if (valve2.flowRate != 0 && isSame2(newSession, valve2) && newSession.currentlyOpening2 == null) {
-                newSession.position2 = valve2.name;
-                newSession.currentlyOpening2 = valve2.name;
-            } else if (newSession.currentlyOpening2 == null) {
-                newSession.position2 = valve2.name;
-            }
-        }
-    }
-
-    private static void a1(Session newSession, Valve valve) {
-        if (!newSession.opened.contains(valve.name)) {
-            if (valve.flowRate != 0 && isSame(newSession, valve) && newSession.currentlyOpening1 == null) {
-                newSession.position1 = valve.name;
-                newSession.currentlyOpening1 = valve.name;
-            } else if (newSession.currentlyOpening1 == null) {
-                newSession.position1 = valve.name;
-            }
-        }
-    }
 
     private static void addIfNotVisited(HashSet<Session> visited, Session newSession, ArrayDeque<Session> sessions) {
-        Session copy = newSession.deepCopy();
-        if (!visited.contains(copy)) {
+        if (!visited.contains(newSession) && !newSession.position1.equals(newSession.position2)) {
             sessions.addLast(newSession);
-            visited.add(copy);
+            visited.add(newSession);
         }
     }
 
-    private static boolean isSame(Session newSession, Valve valve) {
-        if (newSession.currentlyOpening2 == null) {
-            return true;
-        }
-        return !newSession.currentlyOpening2.equals(valve.name);
-    }
-
-    private static boolean isSame2(Session newSession, Valve valve2) {
-        if (newSession.currentlyOpening1 == null) {
-            return true;
-        }
-        return !newSession.currentlyOpening1.equals(valve2.name);
-    }
 
     private static ArrayList<Valve> parseStringIntoValves(List<String> l) {
         ArrayList<Valve> valves = new ArrayList<>();
