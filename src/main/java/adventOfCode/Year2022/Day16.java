@@ -179,9 +179,6 @@ public class Day16 {
                     newSession2.currentlyOpening2 = valve2.name;
                     newSession2.opened += "," + valve2.name;
                 }
-                if (newSession2.currentlyOpening1 != null && newSession2.currentlyOpening2 != null) {
-                    addIfNotVisited(visited, newSession2, sessions);
-                }
                 if (newSession2.currentlyOpening1 == null) {
                     newSession2.position1 = valve1.name;
                 }
