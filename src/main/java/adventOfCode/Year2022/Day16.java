@@ -21,7 +21,7 @@ public class Day16 {
         twoStar(l2); //1707
         TimeUtil.endTime();
         TimeUtil.startTime();
-        twoStar(l); // wrong to low:2577-2578 2581  ,  2597 2671
+        twoStar(l); // wrong to low:2577-2578 2579 2581  ,  2597 2671
         TimeUtil.endTime();
     }
 
@@ -166,7 +166,7 @@ public class Day16 {
         for (String leadsToValves : valvesMap.get(currentSession.position1).leadsToValves) {
             Session newSession = currentSession.deepCopy();
             Valve valve1 = valvesMap.get(leadsToValves);
-            if (!newSession.opened.contains(valve1.name) && newSession.currentlyOpening1 == null && valve1.flowRate != 0) {
+            if (valve1.flowRate != 0 && newSession.currentlyOpening1 == null && !newSession.opened.contains(valve1.name)) {
                 newSession.position1 = valve1.name;
                 newSession.currentlyOpening1 = valve1.name;
                 newSession.opened += "," + valve1.name;
@@ -174,7 +174,7 @@ public class Day16 {
             for (String leadsToValves2 : valvesMap.get(currentSession.position2).leadsToValves) {
                 Session newSession2 = newSession.deepCopy();
                 Valve valve2 = valvesMap.get(leadsToValves2);
-                if (!newSession2.opened.contains(valve2.name) && newSession2.currentlyOpening2 == null && valve2.flowRate != 0) {
+                if (valve2.flowRate != 0 && newSession2.currentlyOpening2 == null && !newSession2.opened.contains(valve2.name)) {
                     newSession2.position2 = valve2.name;
                     newSession2.currentlyOpening2 = valve2.name;
                     newSession2.opened += "," + valve2.name;
