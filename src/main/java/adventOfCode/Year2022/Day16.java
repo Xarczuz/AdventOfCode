@@ -169,13 +169,15 @@ public class Day16 {
             if (!newSession.opened.contains(valve1.name) && !valve1.name.equals(newSession.currentlyOpening2) && newSession.currentlyOpening1 == null && valve1.flowRate != 0) {
                 newSession.position1 = valve1.name;
                 newSession.currentlyOpening1 = valve1.name;
+                newSession.opened += "," + valve1.name;
             }
             for (String leadsToValves2 : valvesMap.get(currentSession.position2).leadsToValves) {
                 Session newSession2 = newSession.deepCopy();
                 Valve valve2 = valvesMap.get(leadsToValves2);
-                if (!newSession2.opened.contains(valve2.name) && !valve2.name.equals(newSession2.currentlyOpening1) && newSession2.currentlyOpening2 == null && valve2.flowRate != 0) {
+                if (!newSession2.opened.contains(valve2.name) && newSession2.currentlyOpening2 == null && valve2.flowRate != 0) {
                     newSession2.position2 = valve2.name;
                     newSession2.currentlyOpening2 = valve2.name;
+                    newSession2.opened += "," + valve2.name;
                 }
                 if (newSession2.currentlyOpening1 != null && newSession2.currentlyOpening2 != null) {
                     addIfNotVisited(visited, newSession2, sessions);
@@ -200,7 +202,7 @@ public class Day16 {
         if (orDefault / 2 > totalRelease) {
             return true;
         }
-        if (orDefault - 200 < totalRelease) {
+        if (orDefault - 300 < totalRelease) {
             results.put(currentSession.time, orDefault);
             return false;
         } else {
@@ -210,7 +212,6 @@ public class Day16 {
 
     private static void addPressureToSession(Session currentSession, HashMap<String, Valve> valvesMap) {
         if (currentSession.currentlyOpening1 != null && currentSession.tick1 == 1) {
-            currentSession.opened += "," + (currentSession.currentlyOpening1);
             currentSession.pressureFlowRate += valvesMap.get(currentSession.currentlyOpening1).flowRate;
             currentSession.currentlyOpening1 = null;
             currentSession.tick1 = 0;
@@ -218,7 +219,6 @@ public class Day16 {
             currentSession.tick1++;
         }
         if (currentSession.currentlyOpening2 != null && currentSession.tick2 == 1) {
-            currentSession.opened += "," + (currentSession.currentlyOpening2);
             currentSession.pressureFlowRate += valvesMap.get(currentSession.currentlyOpening2).flowRate;
             currentSession.currentlyOpening2 = null;
             currentSession.tick2 = 0;
