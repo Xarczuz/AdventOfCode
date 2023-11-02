@@ -117,7 +117,7 @@ public class Day16 {
         Session session = new Session();
         HashMap<String, Valve> valvesMap = new HashMap<>();
         long sum = 0;
-        HashMap<Integer, int[]> results = new HashMap<>();
+        HashMap<Integer, Integer> results = new HashMap<>();
         for (Valve valve : valves) {
             valvesMap.put(valve.name, valve);
         }
@@ -134,7 +134,7 @@ public class Day16 {
         System.out.println("Result: " + sum);
     }
 
-    private static long startOpeningValves2(Session session, HashMap<String, Valve> valvesMap, long sum, HashMap<Integer, int[]> results, HashSet<Session> visited) {
+    private static long startOpeningValves2(Session session, HashMap<String, Valve> valvesMap, long sum, HashMap<Integer, Integer> results, HashSet<Session> visited) {
         ArrayDeque<Session> sessions = new ArrayDeque<>(100000);
         sessions.add(session);
         int prevTime = 0;
@@ -187,18 +187,16 @@ public class Day16 {
         }
     }
 
-    private static boolean branchKiller(HashMap<Integer, int[]> results, Session currentSession) {
-        int[] orDefault = results.getOrDefault(currentSession.time, new int[0]);
+    private static boolean branchKiller(HashMap<Integer, Integer> results, Session currentSession) {
+        int orDefault = results.getOrDefault(currentSession.time, 0);
         int totalRelease = currentSession.totalRelease;
-        if (orDefault.length < totalRelease + 1) {
-            int[] a = new int[totalRelease + 1];
-            System.arraycopy(orDefault, 0, a, 0, orDefault.length);
-            orDefault = a;
+        if (orDefault < totalRelease) {
+            orDefault = totalRelease;
         }
-        if (orDefault.length / 2 > totalRelease) {
+        if (orDefault / 2 > totalRelease) {
             return true;
         }
-        if (orDefault.length - 120 < totalRelease) {
+        if (orDefault - 120 < totalRelease) {
             results.put(currentSession.time, orDefault);
             return false;
         } else {
@@ -230,7 +228,7 @@ public class Day16 {
             if (valve2.flowRate != 0 && isSame2(newSession, valve2) && newSession.currentlyOpening2 == null) {
                 newSession.position2 = valve2.name;
                 newSession.currentlyOpening2 = valve2.name;
-            } else if (  newSession.currentlyOpening2 == null) {
+            } else if (newSession.currentlyOpening2 == null) {
                 newSession.position2 = valve2.name;
             }
         }
@@ -241,7 +239,7 @@ public class Day16 {
             if (valve.flowRate != 0 && isSame(newSession, valve) && newSession.currentlyOpening1 == null) {
                 newSession.position = valve.name;
                 newSession.currentlyOpening1 = valve.name;
-            } else if (  newSession.currentlyOpening1 == null) {
+            } else if (newSession.currentlyOpening1 == null) {
                 newSession.position = valve.name;
             }
         }
