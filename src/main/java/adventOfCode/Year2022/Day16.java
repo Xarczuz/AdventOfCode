@@ -160,8 +160,6 @@ public class Day16 {
     }
 
     private static void branchingValvesOpenings(HashMap<String, Valve> valvesMap, HashSet<Session> visited, Session currentSession, ArrayDeque<Session> sessions) {
-
-
         for (String leadsToValves : valvesMap.get(currentSession.position1).leadsToValves) {
             for (String leadsToValves2 : valvesMap.get(currentSession.position2).leadsToValves) {
                 if (leadsToValves2.equals(leadsToValves)) {
@@ -244,7 +242,7 @@ public class Day16 {
     private static void addIfNotVisited(HashSet<Session> visited, Session newSession, ArrayDeque<Session> sessions) {
         Session copy = newSession.deepCopy();
         if (!visited.contains(copy)) {
-            sessions.addFirst(newSession);
+            sessions.addLast(newSession);
             visited.add(copy);
         }
     }
@@ -320,10 +318,8 @@ public class Day16 {
             if (tick2 != session.tick2) return false;
             if (!Objects.equals(position1, session.position1)) return false;
             if (!Objects.equals(position2, session.position2)) return false;
-            if (!Objects.equals(currentlyOpening1, session.currentlyOpening1))
-                return false;
-            if (!Objects.equals(currentlyOpening2, session.currentlyOpening2))
-                return false;
+            if (!Objects.equals(currentlyOpening1, session.currentlyOpening1)) return false;
+            if (!Objects.equals(currentlyOpening2, session.currentlyOpening2)) return false;
             return Objects.equals(opened, session.opened);
         }
 
@@ -356,8 +352,7 @@ public class Day16 {
             Valve valve = (Valve) o;
 
             if (flowRate != valve.flowRate) return false;
-            if (!Objects.equals(leadsToValves, valve.leadsToValves))
-                return false;
+            if (!Objects.equals(leadsToValves, valve.leadsToValves)) return false;
             return Objects.equals(name, valve.name);
         }
 
