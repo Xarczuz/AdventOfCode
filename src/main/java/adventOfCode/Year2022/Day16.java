@@ -179,21 +179,14 @@ public class Day16 {
                 }
                 if (newSession2.currentlyOpening1 != null && newSession2.currentlyOpening2 != null) {
                     addIfNotVisited(visited, newSession2, sessions);
-                } else if (newSession2.currentlyOpening1 == null && newSession2.currentlyOpening2 == null) {
-                    newSession2.position1 = valve1.name;
-                    newSession2.position2 = valve2.name;
-                    addIfNotVisited(visited, newSession2, sessions);
                 }
-                newSession2 = newSession2.deepCopy();
                 if (newSession2.currentlyOpening1 == null) {
                     newSession2.position1 = valve1.name;
-                    addIfNotVisited(visited, newSession2, sessions);
                 }
-                newSession2 = newSession2.deepCopy();
                 if (newSession2.currentlyOpening2 == null) {
                     newSession2.position2 = valve2.name;
-                    addIfNotVisited(visited, newSession2, sessions);
                 }
+                addIfNotVisited(visited, newSession2, sessions);
             }
         }
     }
