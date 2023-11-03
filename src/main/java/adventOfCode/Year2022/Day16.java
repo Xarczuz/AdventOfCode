@@ -14,14 +14,14 @@ public class Day16 {
         List<String> l2 = FileUtil.readfileExempel(Day16.class);
 
         TimeUtil.startTime();
-//        oneStar(l2); //1651
-//        oneStar(l); //1720
+        oneStar(l2); //1651
+        oneStar(l); //1720
         TimeUtil.endTime();
         TimeUtil.startTime();
         twoStar(l2); //1707
         TimeUtil.endTime();
         TimeUtil.startTime();
-        twoStar(l); // wrong to low:2577-2578 2579 2581  ,  2597 2671
+        twoStar(l); //2582
         TimeUtil.endTime();
     }
 
@@ -59,7 +59,6 @@ public class Day16 {
                 currentSession.tick1++;
             }
             currentSession.totalRelease += currentSession.pressureFlowRate;
-
             if (currentSession.time == 30) {
                 sum = Math.max(currentSession.totalRelease, sum);
             } else {
@@ -130,7 +129,6 @@ public class Day16 {
                 break;
             }
         }
-
         System.out.println("Result: " + sum);
     }
 
@@ -142,11 +140,9 @@ public class Day16 {
             if (branchKiller(results, currentSession)) {
                 continue;
             }
-
             currentSession.time++;
             addPressureToSession(currentSession, valvesMap);
             currentSession.totalRelease += currentSession.pressureFlowRate;
-
             if (currentSession.time == 26) {
                 sum = Math.max(currentSession.totalRelease, sum);
             } else {
@@ -171,6 +167,9 @@ public class Day16 {
                 newSession.currentlyOpening1 = valve1.name;
                 newSession.opened += "," + valve1.name;
             }
+            if (newSession.currentlyOpening1 == null) {
+                newSession.position1 = valve1.name;
+            }
             for (String leadsToValves2 : valvesMap.get(currentSession.position2).leadsToValves) {
                 Session newSession2 = newSession.deepCopy();
                 Valve valve2 = valvesMap.get(leadsToValves2);
@@ -179,10 +178,15 @@ public class Day16 {
                     newSession2.currentlyOpening2 = valve2.name;
                     newSession2.opened += "," + valve2.name;
                 }
-                if (newSession2.currentlyOpening1 == null) {
+                if (newSession2.currentlyOpening2 == null) {
+                    newSession2.position2 = valve2.name;
+                }
+                addIfNotVisited(visited, newSession2, sessions);
+                newSession2 = currentSession.deepCopy();
+                if (currentSession.currentlyOpening1 == null) {
                     newSession2.position1 = valve1.name;
                 }
-                if (newSession2.currentlyOpening2 == null) {
+                if (currentSession.currentlyOpening2 == null) {
                     newSession2.position2 = valve2.name;
                 }
                 addIfNotVisited(visited, newSession2, sessions);
@@ -199,7 +203,7 @@ public class Day16 {
         if (orDefault / 2 > totalRelease) {
             return true;
         }
-        if (orDefault - 300 < totalRelease) {
+        if (orDefault - 123 < totalRelease) {
             results.put(currentSession.time, orDefault);
             return false;
         } else {
@@ -260,7 +264,6 @@ public class Day16 {
         int tick1 = 0;
         int tick2 = 0;
         String opened = "";
-
         Session deepCopy() {
             Session session = new Session();
             session.position1 = this.position1;
@@ -290,8 +293,10 @@ public class Day16 {
             if (tick2 != session.tick2) return false;
             if (!Objects.equals(position1, session.position1)) return false;
             if (!Objects.equals(position2, session.position2)) return false;
-            if (!Objects.equals(currentlyOpening1, session.currentlyOpening1)) return false;
-            if (!Objects.equals(currentlyOpening2, session.currentlyOpening2)) return false;
+            if (!Objects.equals(currentlyOpening1, session.currentlyOpening1))
+                return false;
+            if (!Objects.equals(currentlyOpening2, session.currentlyOpening2))
+                return false;
             return Objects.equals(opened, session.opened);
         }
 
