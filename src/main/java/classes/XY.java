@@ -2,8 +2,8 @@ package classes;
 
 public class XY {
 
-        public int x;
-        public int y;
+    public int x;
+    public int y;
 
     public XY() {
     }
@@ -14,12 +14,12 @@ public class XY {
     }
 
     @Override
-        public String toString() {
-            return "XY{" +
-                    "x=" + x +
-                    ", y=" + y +
-                    '}';
-        }
+    public String toString() {
+        return "XY{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -37,5 +37,9 @@ public class XY {
         int result = x;
         result = 31 * result + y;
         return result;
+    }
+
+    public XY deepCopy() {
+        return new XY(this.x, this.y);
     }
 }

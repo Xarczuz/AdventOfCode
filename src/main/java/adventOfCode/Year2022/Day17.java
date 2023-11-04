@@ -85,9 +85,18 @@ public class Day17 {
 
         public XY[] getNextRock() {
             rockIndex = getNextRockIndex(rockIndex, getShapes().size());
-            XY[] shapes = getShapes().get(rockIndex);
+            XY[] shape = getShapes().get(rockIndex);
             rockIndex++;
-            return shapes;
+            return copyShape(shape);
+        }
+
+        public XY[] copyShape(XY[] shape) {
+            XY[] copy = new XY[shape.length];
+            for (int i = 0; i < shape.length; i++) {
+                XY xy = shape[i];
+                copy[i] = xy.deepCopy();
+            }
+            return copy;
         }
     }
 }
