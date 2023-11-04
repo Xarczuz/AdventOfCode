@@ -3,6 +3,7 @@ package adventOfCode.Year2022;
 import classes.XY;
 import util.FileUtil;
 import util.TimeUtil;
+import util.Util;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -28,14 +29,36 @@ public class Day17 {
 
     private static void oneStar(List<String> l2) {
 
-        Shapes shapes = new Shapes();
-        for (int i = 0; i < 100; i++) {
-            XY[] shape = shapes.getNextRock();
-
-
-            System.out.println(Arrays.toString(shape));
+        int lastRockPositionY = 0;
+        String[][] cave = new String[10 * 4][7];
+        for (String[] strings : cave) {
+            Arrays.fill(strings, ".");
         }
 
+        Shapes shapes = new Shapes();
+        for (int i = 0; i < 1; i++) {
+            XY[] shape = shapes.getNextRock();
+            offsettShape(shape, lastRockPositionY);
+            //TODO falling
+            addShapeToCave(shape,cave);
+
+        }
+            Util.print(cave);
+
+
+    }
+
+    private static void addShapeToCave(XY[] shape, String[][] cave) {
+        for (XY xy : shape) {
+            cave[xy.y][xy.x] ="@";
+        }
+    }
+
+    private static void offsettShape(XY[] shape, int lastRockPositionY) {
+        for (XY xy : shape) {
+            xy.x += 2;
+            xy.y += lastRockPositionY + 3;
+        }
 
     }
 
