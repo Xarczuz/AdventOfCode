@@ -59,8 +59,7 @@ public class Day17 {
             }
         }
     }
-firs
-        t =false;
+
     private static boolean moveShapeDown(XY[] shape, CaveAndAirJets caveAndAirJets) {
         boolean move = true;
         for (XY xy : shape) {
