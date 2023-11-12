@@ -31,27 +31,94 @@ public class Day17 {
     private static void oneStar(List<String> l) {
         CaveAndAirJets caveAndAirJets = new CaveAndAirJets(new ArrayList<>(l));
         Shapes shapes = new Shapes();
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 2; i++) {
             XY[] shape = shapes.getNextRock();
             offsettShape(shape, caveAndAirJets);
             fallingRock(shape, caveAndAirJets);
             addShapeToCave(shape, caveAndAirJets);
-
         }
-        Util.print(caveAndAirJets.cave);
 
-
+        String[][] cave = caveAndAirJets.cave;
+        for (int i = cave.length - 1; i >= 0; i--) {
+            String[] s = cave[i];
+            for (String string : s) {
+                System.out.print(string);
+            }
+            System.out.println();
+        }
     }
 
     private static void fallingRock(XY[] shape, CaveAndAirJets caveAndAirJets) {
-//TODO
+        boolean collision = false;
+        while (!collision) {
+            Direction direction = caveAndAirJets.getNextAirJet();
+            moveShapeLeftOrRight(direction, shape);
+            collision = moveShapeDown(shape, caveAndAirJets);
+            if (collision){
+                moveShapeLeftOrRight(direction, shape);
+            }
+        }
+    }
+firs
+        t =false;
+    private static boolean moveShapeDown(XY[] shape, CaveAndAirJets caveAndAirJets) {
+        boolean move = true;
+        for (XY xy : shape) {
+            String strings = caveAndAirJets.cave[Math.max(xy.y - 1, 0)][xy.x];
+            if (strings.equals("#")) {
+                move = false;
+                break;
+            }
+        }
+        if (move) {
+            for (XY xy : shape) {
+                if (xy.y == 0) {
+                    move = false;
+                    break;
+                } else {
+                    xy.y -= 1;
+                }
+            }
+        }
+        return !move;
+    }
 
+    private static void moveShapeLeftOrRight(Direction direction, XY[] shape) {
+        boolean move = true;
+        if (direction == Direction.LEFT) {
+            for (XY xy : shape) {
+                if (xy.x == 0) {
+                    move = false;
+                    break;
+                }
+            }
+            if (move) {
+                for (XY xy : shape) {
+                    xy.x -= 1;
+                }
+            }
+        } else {
+            for (XY xy : shape) {
+                if (xy.x == 6) {
+                    move = false;
+                    break;
+                }
+            }
+            if (move) {
+                for (XY xy : shape) {
+                    xy.x += 1;
+                }
+            }
+        }
     }
 
     private static void addShapeToCave(XY[] shape, CaveAndAirJets caveAndAirJets) {
+        int lastYPosition = 0;
         for (XY xy : shape) {
-            caveAndAirJets.cave[xy.y][xy.x] = "@";
+            caveAndAirJets.cave[xy.y][xy.x] = "#";
+            lastYPosition = Math.max(xy.y, lastYPosition);
         }
+        caveAndAirJets.lastRockPositionY = lastYPosition;
     }
 
     private static void offsettShape(XY[] shape, CaveAndAirJets caveAndAirJets) {
@@ -69,7 +136,7 @@ public class Day17 {
         ArrayList<Direction> airJets = new ArrayList<>();
         int airIndex = 0;
         int lastRockPositionY = 0;
-        String[][] cave = new String[10 * 4][7];
+        String[][] cave = new String[3 * 4][7];
 
 
         public CaveAndAirJets(ArrayList<String> airJets) {
@@ -109,9 +176,7 @@ public class Day17 {
     }
 
     private static class Shapes {
-
         int rockIndex = 0;
-
         //####
         static XY[] horizontalBar = new XY[]{new XY(0, 0), new XY(1, 0), new XY(2, 0), new XY(3, 0)};
         //.#.
