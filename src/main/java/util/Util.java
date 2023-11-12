@@ -33,4 +33,13 @@ public class Util {
         System.out.println();
     }
 
+    public static String[][] deepCopyMatrix(String[][] cave) {
+        String[][] copy = new String[cave.length][cave[0].length];
+        for (int i = 0; i < cave.length; i++) {
+            for (int j = 0; j < cave[0].length; j++) {
+                copy[i][j]=cave[i][j];
+            }
+        }
+        return copy;
+    }
 }
