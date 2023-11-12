@@ -1,5 +1,6 @@
 package adventOfCode.Year2022;
 
+import classes.Direction;
 import classes.XY;
 import util.FileUtil;
 import util.TimeUtil;
@@ -27,43 +28,84 @@ public class Day17 {
     }
 
 
-    private static void oneStar(List<String> l2) {
-
-        int lastRockPositionY = 0;
-        String[][] cave = new String[10 * 4][7];
-        for (String[] strings : cave) {
-            Arrays.fill(strings, ".");
-        }
-
+    private static void oneStar(List<String> l) {
+        CaveAndAirJets caveAndAirJets = new CaveAndAirJets(new ArrayList<>(l));
         Shapes shapes = new Shapes();
         for (int i = 0; i < 1; i++) {
             XY[] shape = shapes.getNextRock();
-            offsettShape(shape, lastRockPositionY);
-            //TODO falling
-            addShapeToCave(shape,cave);
+            offsettShape(shape, caveAndAirJets);
+            fallingRock(shape, caveAndAirJets);
+            addShapeToCave(shape, caveAndAirJets);
 
         }
-            Util.print(cave);
+        Util.print(caveAndAirJets.cave);
 
 
     }
 
-    private static void addShapeToCave(XY[] shape, String[][] cave) {
+    private static void fallingRock(XY[] shape, CaveAndAirJets caveAndAirJets) {
+//TODO
+
+    }
+
+    private static void addShapeToCave(XY[] shape, CaveAndAirJets caveAndAirJets) {
         for (XY xy : shape) {
-            cave[xy.y][xy.x] ="@";
+            caveAndAirJets.cave[xy.y][xy.x] = "@";
         }
     }
 
-    private static void offsettShape(XY[] shape, int lastRockPositionY) {
+    private static void offsettShape(XY[] shape, CaveAndAirJets caveAndAirJets) {
         for (XY xy : shape) {
             xy.x += 2;
-            xy.y += lastRockPositionY + 3;
+            xy.y += caveAndAirJets.nextRockIndexY();
         }
+    }
 
+    private static void twoStar(List<String> l) {
     }
 
 
-    private static void twoStar(List<String> l2) {
+    private static class CaveAndAirJets {
+        ArrayList<Direction> airJets = new ArrayList<>();
+        int airIndex = 0;
+        int lastRockPositionY = 0;
+        String[][] cave = new String[10 * 4][7];
+
+
+        public CaveAndAirJets(ArrayList<String> airJets) {
+            this.airJets = parseAirJets(airJets);
+            for (String[] strings : cave) {
+                Arrays.fill(strings, ".");
+            }
+        }
+
+        public int nextRockIndexY() {
+            return lastRockPositionY + 3;
+        }
+
+        private ArrayList<Direction> parseAirJets(ArrayList<String> airJets) {
+            ArrayList<Direction> directions = new ArrayList<>();
+            for (String airJet : airJets) {
+                for (char c : airJet.toCharArray()) {
+                    if (c == '<') {
+                        directions.add(Direction.LEFT);
+                    } else {
+                        directions.add(Direction.RIGHT);
+                    }
+                }
+            }
+            return directions;
+        }
+
+        public Direction getNextAirJet() {
+            int index = airIndex % airJets.size();
+            if (index == 0) {
+                airIndex = 0;
+            }
+            Direction direction = airJets.get(airIndex);
+            airIndex++;
+            return direction;
+        }
     }
 
     private static class Shapes {
