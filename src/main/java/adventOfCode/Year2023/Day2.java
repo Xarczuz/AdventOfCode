@@ -18,14 +18,26 @@ public class Day2 {
         oneStar(l2);
         TimeUtil.endTime();
         TimeUtil.startTime();
-//        twoStar(l);
+        twoStar(l);//69929
         twoStar(l2);
         TimeUtil.endTime();
     }
 
     private static void twoStar(List<String> l) {
         ArrayList<Game> games = parseString(l);
-
+        long sum = 0;
+        for (Game game : games) {
+            long green = 0;
+            long blue = 0;
+            long red = 0;
+            for (Set set : game.sets) {
+                green = Math.max(set.green, green);
+                red = Math.max(set.red, red);
+                blue = Math.max(set.blue, blue);
+            }
+            sum += green * blue * red;
+        }
+        System.out.println("Two Star: " + sum);
     }
 
     private static void oneStar(List<String> l) {
