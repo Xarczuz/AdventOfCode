@@ -24,6 +24,7 @@ public class Day2 {
     }
 
     private static void twoStar(List<String> l) {
+        ArrayList<Game> games = parseString(l);
 
     }
 
@@ -31,7 +32,14 @@ public class Day2 {
         ArrayList<Game> games = parseString(l);
         int sum = 0;
         for (Game game : games) {
-            if (game.red && game.blue && game.green) {
+            boolean valid = true;
+            for (Set set : game.sets) {
+                if (set.green > 13 || set.red > 12 || set.blue > 14) {
+                    valid = false;
+                    break;
+                }
+            }
+            if (valid) {
                 sum += game.id;
             }
         }
@@ -42,38 +50,35 @@ public class Day2 {
         ArrayList<Game> games = new ArrayList<>();
         for (String s : l) {
             int id = getID(s);
-            boolean blue = getCubes(s, "blue");
-            boolean red = getCubes(s, "red");
-            boolean green = getCubes(s, "green");
-            Game game = new Game(id, blue, red, green);
+            ArrayList<Set> set = getCubes(s);
+            Game game = new Game(id, set);
             games.add(game);
         }
         return games;
     }
 
-    private static boolean getCubes(String s, String color) {
+    private static ArrayList<Set> getCubes(String s) {
         String games = s.split(":")[1];
         String[] game = games.split(";");
-        boolean validGame = true;
+        ArrayList<Set> arr = new ArrayList<>();
         for (String g : game) {
             String[] cubes = g.split(",");
+            Set gameSet = new Set(0, 0, 0);
+            arr.add(gameSet);
             for (String cube : cubes) {
-                if (cube.contains(color)) {
-                    String[] splits = cube.trim().split(" ");
-                    String amount = splits[0].trim();
-                    int cubesColor = Integer.parseInt(amount);
-                    if ("blue".equals(color)) {
-                        validGame = validGame && cubesColor <= 14;
-                    } else if ("red".equals(color)) {
-                        validGame = validGame && cubesColor <= 12;
-                    } else if ("green".equals(color)) {
-                        validGame = validGame && cubesColor <= 13;
-                    }
-
+                String[] splits = cube.trim().split(" ");
+                String amount = splits[0].trim();
+                int cubesColor = Integer.parseInt(amount);
+                if ("blue".equals(splits[1])) {
+                    gameSet.blue = cubesColor;
+                } else if ("red".equals(splits[1])) {
+                    gameSet.red = cubesColor;
+                } else if ("green".equals(splits[1])) {
+                    gameSet.green = cubesColor;
                 }
             }
         }
-        return validGame;
+        return arr;
     }
 
     private static int getID(String s) {
@@ -81,6 +86,27 @@ public class Day2 {
         return Integer.parseInt(idString);
     }
 
-    private record Game(int id, boolean blue, boolean red, boolean green) {
+    private record Game(int id, ArrayList<Set> sets) {
+    }
+
+    private static final class Set {
+        int red;
+        int green;
+        int blue;
+
+        private Set(int red, int green, int blue) {
+            this.red = red;
+            this.green = green;
+            this.blue = blue;
+        }
+
+        @Override
+        public String toString() {
+            return "Set{" +
+                    "red=" + red +
+                    ", green=" + green +
+                    ", blue=" + blue +
+                    '}';
+        }
     }
 }
