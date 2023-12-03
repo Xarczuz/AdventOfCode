@@ -1,10 +1,12 @@
 package adventOfCode.Year2023;
 
+import classes.XY;
 import util.FileUtil;
 import util.TimeUtil;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Day3 {
@@ -16,28 +18,45 @@ public class Day3 {
         List<String> l2 = FileUtil.readfileExempel(Day3.class);
         List<String> l3 = FileUtil.readfileExempel2(Day3.class);
         TimeUtil.startTime();
-        oneStar(l); // wrong 549292
+        oneStar(l); // 550934
         oneStar(l2);
         oneStar(l3);
         TimeUtil.endTime();
         TimeUtil.startTime();
-//        twoStar(l);
-//        twoStar(l2);
+        twoStar(l);
+        twoStar(l2); // 81997870
         TimeUtil.endTime();
     }
 
     private static void twoStar(List<String> l) {
-
+        String[][] schematic = parseString(l);
+        ArrayList<Save> sharedPoints = new ArrayList<>();
+        sumOfValidSchematics(schematic, sharedPoints);
+        long sum = 0;
+        for (int i = 0; i < sharedPoints.size(); i++) {
+            for (int j = 0; j < sharedPoints.size(); j++) {
+                if (i == j) {
+                    continue;
+                }
+                Save a = sharedPoints.get(i);
+                Save b = sharedPoints.get(j);
+                if (a.point.equals(b.point)) {
+                    sum += (long) a.nr * b.nr;
+                    a.point.x = -1;
+                }
+            }
+        }
+        System.out.println("Two star: " + sum);
     }
 
     private static void oneStar(List<String> l) {
         String[][] schematic = parseString(l);
-
-        int sum = sumOfValidSchematics(schematic);
-        System.out.println(sum);
+        ArrayList<Save> sx = new ArrayList<>();
+        int sum = sumOfValidSchematics(schematic, sx);
+        System.out.println("One star: " + sum);
     }
 
-    private static int sumOfValidSchematics(String[][] schematic) {
+    private static int sumOfValidSchematics(String[][] schematic, ArrayList<Save> XY) {
         int sum = 0;
         StringBuilder sb = new StringBuilder();
         boolean valid = false;
@@ -47,10 +66,12 @@ public class Day3 {
                 char c = point.charAt(0);
                 if (c >= '0' && c <= '9') {
                     sb.append(point);
-                    valid = valid || validPoint(y, x, schematic);
+                    valid = valid || validPoint(y, x, schematic, XY);
                 } else {
                     if (valid) {
-                        sum += Integer.parseInt(sb.toString());
+                        int sum1 = Integer.parseInt(sb.toString());
+                        sum += sum1;
+                        XY.get(XY.size() - 1).nr = sum1;
                         valid = false;
                     }
                     sb = new StringBuilder();
@@ -60,16 +81,15 @@ public class Day3 {
         return sum;
     }
 
-    private static boolean validPoint(int y, int x, String[][] schematic) {
-
+    private static boolean validPoint(int y, int x, String[][] schematic, ArrayList<Save> XY) {
         for (int[] ints : yx) {
             int y1 = y + ints[0];
             int x1 = x + ints[1];
             if (y1 >= 0 && x1 >= 0 && y1 < schematic.length && x1 < schematic[0].length) {
                 String point = schematic[y1][x1];
                 char c = point.charAt(0);
-                if (c == '.' || c >= '0' && c <= '9') {
-                } else {
+                if (c != '.' && (c < '0' || c > '9')) {
+                    XY.add(new Save(new XY(x1, y1), 0));
                     return true;
                 }
             }
@@ -89,5 +109,17 @@ public class Day3 {
         }
         return schematic;
     }
+
+    static final class Save {
+        XY point;
+        int nr;
+
+        Save(XY point, int nr) {
+            this.point = point;
+            this.nr = nr;
+        }
+
+    }
+
 
 }
