@@ -6,6 +6,7 @@ import util.TimeUtil;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Day4 {
@@ -15,8 +16,8 @@ public class Day4 {
         List<String> l = FileUtil.readfile(Day4.class);
         List<String> l2 = FileUtil.readfileExempel(Day4.class);
         TimeUtil.startTime();
-        oneStar(l);
-        oneStar(l2);
+//        oneStar(l);
+//        oneStar(l2);
         TimeUtil.endTime();
         TimeUtil.startTime();
         twoStar(l);
@@ -25,7 +26,32 @@ public class Day4 {
     }
 
     private static void twoStar(List<String> l) {
-
+        ArrayList<Ticket> tickets = parseString(l);
+        int[] scratchcards = new int[tickets.size()];
+        Arrays.fill(scratchcards, 1);
+        for (int i = 0; i < tickets.size(); i++) {
+            Ticket ticket = tickets.get(i);
+            int result = 0;
+            for (Integer playingNr : ticket.playingNrs) {
+                for (Integer winningNr : ticket.winningNrs) {
+                    if (playingNr.compareTo(winningNr) == 0) {
+                        result++;
+                    }
+                }
+            }
+            for (int j = 1; j <= result; j++) {
+                if (i + j < scratchcards.length) {
+                    for (int k = 0; k < scratchcards[i]; k++) {
+                        scratchcards[i + j]++;
+                    }
+                }
+            }
+        }
+        long sum = 0;
+        for (int scratchcard : scratchcards) {
+            sum += scratchcard;
+        }
+        System.out.println("Two star: " + sum);
     }
 
     private static void oneStar(List<String> l) {
