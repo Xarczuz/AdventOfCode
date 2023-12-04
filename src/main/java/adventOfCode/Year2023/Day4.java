@@ -16,8 +16,8 @@ public class Day4 {
         List<String> l = FileUtil.readfile(Day4.class);
         List<String> l2 = FileUtil.readfileExempel(Day4.class);
         TimeUtil.startTime();
-//        oneStar(l);
-//        oneStar(l2);
+        oneStar(l);
+        oneStar(l2);
         TimeUtil.endTime();
         TimeUtil.startTime();
         twoStar(l);
