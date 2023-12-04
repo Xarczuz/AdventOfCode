@@ -5,6 +5,7 @@ import util.TimeUtil;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Day4 {
@@ -28,7 +29,55 @@ public class Day4 {
     }
 
     private static void oneStar(List<String> l) {
+        ArrayList<Ticket> tickets = parseString(l);
+        long sum = 0;
+        for (Ticket ticket : tickets) {
+            long result = 0;
+            for (Integer playingNr : ticket.playingNrs) {
+                for (Integer winningNr : ticket.winningNrs) {
+                    if (playingNr.compareTo(winningNr) == 0) {
+                        if (result == 0) {
+                            result++;
+                        } else {
+                            result *= 2;
+                        }
+                    }
+                }
+            }
+            sum += result;
+        }
+        System.out.println("One star: " + sum);
+    }
 
+    private static ArrayList<Ticket> parseString(List<String> l) {
+        ArrayList<Ticket> tickets = new ArrayList<>();
+        for (String s : l) {
+            String[] strings = s.split(":");
+            String id = strings[0].replace("Card", "").trim();
+            String[] numbers = strings[1].split("\\|");
+            String[] winningNrs = numbers[0].trim().split(" ");
+            String[] playingNrs = numbers[1].trim().split(" ");
+
+            ArrayList<Integer> winningNumbersInts = convertStringToIntArraylist(winningNrs);
+            ArrayList<Integer> playingNumbersInts = convertStringToIntArraylist(playingNrs);
+
+            tickets.add(new Ticket(Integer.parseInt(id), winningNumbersInts, playingNumbersInts));
+        }
+
+        return tickets;
+    }
+
+    private static ArrayList<Integer> convertStringToIntArraylist(String[] winningNrs) {
+        ArrayList<Integer> arr = new ArrayList<>();
+        for (String winningNr : winningNrs) {
+            if (!winningNr.isEmpty()) {
+                arr.add(Integer.parseInt(winningNr));
+            }
+        }
+        return arr;
+    }
+
+    record Ticket(int id, ArrayList<Integer> winningNrs, ArrayList<Integer> playingNrs) {
     }
 
 }
