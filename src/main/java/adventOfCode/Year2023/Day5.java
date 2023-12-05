@@ -16,23 +16,43 @@ public class Day5 {
         List<String> l = FileUtil.readfile(Day5.class);
         List<String> l2 = FileUtil.readfileExempel(Day5.class);
         TimeUtil.startTime();
-        oneStar(l);
-        oneStar(l2);
+//        oneStar(l); // 910845529
+//        oneStar(l2);
         TimeUtil.endTime();
         TimeUtil.startTime();
 //        twoStar(l);
-//        twoStar(l2);
+        twoStar(l2);
         TimeUtil.endTime();
     }
 
     private static void twoStar(List<String> l) {
+        Farm farm = parseStrings(l);
+        initSeeds(farm);
+        long location = Long.MAX_VALUE;
+        for (Long seed : farm.seeds) {
+            for (SeedMap seedMap : farm.seedMaps) {
+                seed = convertSeed(seed, seedMap);
+            }
+            location = Math.min(seed, location);
+        }
+        System.out.println("Two star: " + location);
+    }
 
+    private static void initSeeds(Farm farm) {
+        ArrayList<Long> newSeeds = new ArrayList<>();
+        ArrayList<Long> seeds = farm.seeds;
+
+        for (int i = 0; i < seeds.size(); i += 2) {
+
+
+        }
+        System.out.println();
     }
 
     private static void oneStar(List<String> l) {
         Farm farm = parseStrings(l);
         long location = Long.MAX_VALUE;
-        for (Long seed : farm.seed) {
+        for (Long seed : farm.seeds) {
             for (SeedMap seedMap : farm.seedMaps) {
                 seed = convertSeed(seed, seedMap);
             }
@@ -86,7 +106,7 @@ public class Day5 {
         return new Farm(seeds, seedMaps);
     }
 
-    record Farm(ArrayList<Long> seed, ArrayList<SeedMap> seedMaps) {
+    record Farm(ArrayList<Long> seeds, ArrayList<SeedMap> seedMaps) {
     }
 
     private static final class SeedMap {
