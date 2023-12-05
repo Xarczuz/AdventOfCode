@@ -106,7 +106,7 @@ public class Day5 {
     private static Long convertSeed(Long seed, SeedMap seedMap) {
         ArrayList<SeedMap.TheMap> theMaps = seedMap.theMaps;
         for (SeedMap.TheMap map : theMaps) {
-            if (seed >= map.source && seed <= map.source + map.range) {
+            if (seed >= map.source && seed < map.source + map.range) {
                 if (map.source > map.destination) {
                     seed = seed - Math.abs(map.source - map.destination);
                 } else if (map.source < map.destination) {
