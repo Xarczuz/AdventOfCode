@@ -42,9 +42,6 @@ public class Day5 {
             } else {
                 location = Long.MAX_VALUE;
             }
-            if (i % 100000 == 0) {
-                System.out.println(i);
-            }
         }
         System.out.println("Two star: " + location);
     }
