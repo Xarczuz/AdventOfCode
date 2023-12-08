@@ -61,8 +61,8 @@ public class Day8 {
         Long result = solutions.get(0);
         for (int j = 1; j < startLocations.size(); j++) {
             Long solution2 = solutions.get(j);
-            long gdc = gcd(result, solution2);
-            result = (solution2 / gdc) * result;
+            long gcd = gcd(result, solution2);
+            result = (solution2 / gcd) * result;
         }
         System.out.println("Two Star: " + result);
     }
