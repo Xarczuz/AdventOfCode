@@ -15,11 +15,11 @@ public class Day8 {
         List<String> l2 = FileUtil.readfileExempel(Day8.class);
         List<String> l3 = FileUtil.readfileExempel2(Day8.class);
         TimeUtil.startTime();
-//        oneStar(l);
-//        oneStar(l2);
+        oneStar(l);
+        oneStar(l2);
         TimeUtil.endTime();
         TimeUtil.startTime();
-//        twoStar(l3);
+        twoStar(l3);
         twoStar(l);
         TimeUtil.endTime();
     }
@@ -41,7 +41,6 @@ public class Day8 {
             String startLocation = startLocations.get(i);
             locs[i] = convertToInt(startLocation);
         }
-        int a = 0;
         ArrayList<Long> solutions = new ArrayList<>();
         for (int i = 0; i < locs.length; i++) {
             long steps = 0;
@@ -81,17 +80,6 @@ public class Day8 {
     private static boolean atZ(int startLocations) {
         int ss = startLocations % 100;
         return ss == 'Z';
-    }
-
-    private static boolean allAtZ(int[] startLocations) {
-        for (int i = 0; i < 1; i++) {
-            int startLocation = startLocations[i];
-            int ss = startLocation % 100;
-            if (ss != 'Z') {
-                return false;
-            }
-        }
-        return true;
     }
 
     private static void convertToIntMap(Nodes node, Path[] path) {
