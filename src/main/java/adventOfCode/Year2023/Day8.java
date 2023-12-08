@@ -41,23 +41,57 @@ public class Day8 {
             String startLocation = startLocations.get(i);
             locs[i] = convertToInt(startLocation);
         }
-        long steps = 0;
-        do {
-            char direction = node.getDirection();
-            for (int i = 0; i < locs.length; i++) {
+        int a = 0;
+        ArrayList<Long> solutions = new ArrayList<>();
+        for (int i = 0; i < locs.length; i++) {
+            long steps = 0;
+            node.index = 0;
+            while (!atZ(locs[i])) {
+                char direction = node.getDirection();
                 int startLocation = locs[i];
                 if (direction == 'R') {
                     locs[i] = paths[startLocation].rightInt;
                 } else {
                     locs[i] = paths[startLocation].leftInt;
                 }
+                steps++;
             }
-            steps++;
-            if (steps % 1000000 == 0) {
-                System.out.println(steps);
+            solutions.add(steps);
+        }
+        Long result = solutions.get(0);
+        for (int j = 1; j < startLocations.size(); j++) {
+            Long solution2 = solutions.get(j);
+            long gdc = gcd(result, solution2);
+            result = (solution2 / gdc) * result;
+        }
+        System.out.println("Two Star: " + result);
+    }
+
+    private static long gcd(long i, long i1) {
+        while (i != i1) {
+            if (i > i1) {
+                i = i - i1;
+            } else {
+                i1 = i1 - i;
             }
-        } while (!allAtZ(locs));
-        System.out.println("Two Star: " + steps);
+        }
+        return i;
+    }
+
+    private static boolean atZ(int startLocations) {
+        int ss = startLocations % 100;
+        return ss == 'Z';
+    }
+
+    private static boolean allAtZ(int[] startLocations) {
+        for (int i = 0; i < 1; i++) {
+            int startLocation = startLocations[i];
+            int ss = startLocation % 100;
+            if (ss != 'Z') {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static void convertToIntMap(Nodes node, Path[] path) {
@@ -77,17 +111,6 @@ public class Day8 {
             stringBuilder.append((int) c);
         }
         return Integer.parseInt(stringBuilder.toString());
-    }
-
-    private static boolean allAtZ(int[] startLocations) {
-        for (int i = 1; i < startLocations.length; i++) {
-            int startLocation = startLocations[i];
-            int ss = startLocation % 100;
-            if (ss != 'Z') {
-                return false;
-            }
-        }
-        return true;
     }
 
     private static void oneStar(List<String> l) {
