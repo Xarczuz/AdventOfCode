@@ -273,5 +273,4 @@ public class Day7 {
         int nr;
     }
 
-
 }
