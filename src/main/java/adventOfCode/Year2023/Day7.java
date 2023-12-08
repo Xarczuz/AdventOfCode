@@ -226,53 +226,31 @@ public class Day7 {
         for (char c : cards.toCharArray()) {
             ints[c]++;
         }
-        boolean pair1 = false;
-        boolean pair2 = false;
+        int pairs = 0;
+        for (int nr : ints) {
+            if (nr == 2) {
+                pairs++;
+            }
+        }
         for (int nr : ints) {
             if (nr == 5) {
                 return 7;
             }
-        }
-        for (int nr : ints) {
             if (nr == 4) {
                 return 6;
             }
-        }
-        for (int nr : ints) {
-            if (nr == 2 && !pair1) {
-                pair1 = true;
-            } else if (nr == 2 && !pair2) {
-                pair2 = true;
-            }
-        }
-        for (int nr : ints) {
-            if (nr == 2 && !pair1) {
-                pair1 = true;
-            } else if (nr == 3 && pair1) {
+            if (nr == 3 && pairs == 1) {
                 return 5;
             }
-        }
-        for (int nr : ints) {
             if (nr == 3) {
                 return 4;
             }
         }
-        pair1 = false;
-        pair2 = false;
-        for (int nr : ints) {
-            if (nr == 2 && !pair1) {
-                pair1 = true;
-            } else if (nr == 2 && !pair2) {
-                pair2 = true;
-            }
-        }
-        if (pair1 && pair2) {
+        if (pairs == 2) {
             return 3;
         }
-        for (int nr : ints) {
-            if (nr == 2) {
-                return 2;
-            }
+        if (pairs == 1) {
+            return 2;
         }
         return 1;
     }
