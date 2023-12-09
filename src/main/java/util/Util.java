@@ -42,4 +42,15 @@ public class Util {
         }
         return copy;
     }
+
+    public static long gcd(long i, long i1) {
+        while (i != i1) {
+            if (i > i1) {
+                i = i - i1;
+            } else {
+                i1 = i1 - i;
+            }
+        }
+        return i;
+    }
 }

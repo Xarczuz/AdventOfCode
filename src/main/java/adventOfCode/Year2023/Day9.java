@@ -28,6 +28,10 @@ public class Day9 {
     }
 
     private static void oneStar(List<String> l) {
+        parseString(l);
+    }
+
+    private static void parseString(List<String> l) {
 
     }
 

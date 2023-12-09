@@ -2,6 +2,7 @@ package adventOfCode.Year2023;
 
 import util.FileUtil;
 import util.TimeUtil;
+import util.Util;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -57,25 +58,15 @@ public class Day8 {
             }
             solutions.add(steps);
         }
-        Long result = solutions.get(0);
+        Long result = solutions.getFirst();
         for (int j = 1; j < startLocations.size(); j++) {
             Long solution2 = solutions.get(j);
-            long gcd = gcd(result, solution2);
+            long gcd = Util.gcd(result, solution2);
             result = (solution2 / gcd) * result;
         }
         System.out.println("Two Star: " + result);
     }
 
-    private static long gcd(long i, long i1) {
-        while (i != i1) {
-            if (i > i1) {
-                i = i - i1;
-            } else {
-                i1 = i1 - i;
-            }
-        }
-        return i;
-    }
 
     private static boolean atZ(int startLocations) {
         int ss = startLocations % 100;
