@@ -19,13 +19,30 @@ public class Day9 {
         oneStar(l2);
         TimeUtil.endTime();
         TimeUtil.startTime();
-//        twoStar(l);
-//        twoStar(l2);
+        twoStar(l);
+        twoStar(l2);
         TimeUtil.endTime();
     }
 
     private static void twoStar(List<String> l) {
+        ArrayList<Board> boards = parseString(l);
+        long sum = 0;
+        for (Board board : boards) {
+            createHistoryOfSequences(board);
+            sum += addAllPreviousValues(board);
+        }
+        System.out.println("One star: " + sum);
+    }
 
+    private static long addAllPreviousValues(Board board) {
+        ArrayList<NumberSequence> numberSequences = board.numberSequences;
+        Integer lastHistoryNr = numberSequences.getLast().nrs.getFirst();
+        for (int i = numberSequences.size() - 2; i >= 0; i--) {
+            NumberSequence numberSequence = numberSequences.get(i);
+            Integer historyNr = numberSequence.nrs.getFirst();
+            lastHistoryNr = historyNr - lastHistoryNr;
+        }
+        return lastHistoryNr;
     }
 
     private static void oneStar(List<String> l) {
@@ -50,7 +67,6 @@ public class Day9 {
     }
 
     private static void createHistoryOfSequences(Board board) {
-
         ArrayList<NumberSequence> numberSequences = board.numberSequences;
         while (!isDifferenceAllZero(numberSequences.getLast())) {
             NumberSequence newDifference = new NumberSequence();
