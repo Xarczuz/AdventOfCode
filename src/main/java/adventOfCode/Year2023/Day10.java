@@ -23,15 +23,15 @@ public class Day10 {
         List<String> l5 = FileUtil.readfileExempelX(Day10.class, 4);
         initSetup();
         TimeUtil.startTime();
-//        oneStar(l);
-//        oneStar(l2);
-//        oneStar(l3);
+        oneStar(l);
+        oneStar(l2);
+        oneStar(l3);
         TimeUtil.endTime();
         TimeUtil.startTime();
-        twoStar(l); // 597 to low  x to high:624
-//        twoStar(l2);
-//        twoStar(l4);
-//        twoStar(l5);
+        twoStar(l);
+        twoStar(l2);
+        twoStar(l4);
+        twoStar(l5);
         TimeUtil.endTime();
     }
 
@@ -97,7 +97,7 @@ public class Day10 {
     private static void findAllInnerAndOuterWalls(HashSet<XY> visitedPaths, Pipe[][] pipes, char[][] matrixWithoutTilesOutside) {
         Pipe[][] p = findAndFillConnections(visitedPaths, pipes, matrixWithoutTilesOutside);
         findAndFillOutside(visitedPaths, p, matrixWithoutTilesOutside);
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 100; i++) {
             applyLogic(p);
             checkSurroundings(p, matrixWithoutTilesOutside);
         }
@@ -169,7 +169,6 @@ public class Day10 {
                         }
                     }
                 }
-
                 if (pipe.west == Type.EMPTY) {
                     XY dir = directionXYHashMap.get(CardinalDirection.WEST);
                     int y = xy.y + dir.y;
