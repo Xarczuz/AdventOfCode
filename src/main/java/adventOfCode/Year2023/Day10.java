@@ -29,7 +29,7 @@ public class Day10 {
 //        oneStar(l3);
         TimeUtil.endTime();
         TimeUtil.startTime();
-        twoStar(l);
+//        twoStar(l);
         twoStar(l2);
         twoStar(l4);
         TimeUtil.endTime();
@@ -38,12 +38,12 @@ public class Day10 {
 
     private static void initSetup() {
         directions = new ArrayList<>();
-        directions.add(new Direction('|', new XY[]{new XY(0, 1), new XY(0, -1)}));
-        directions.add(new Direction('-', new XY[]{new XY(1, 0), new XY(-1, 0)}));
-        directions.add(new Direction('L', new XY[]{new XY(0, -1), new XY(1, 0)}));
-        directions.add(new Direction('J', new XY[]{new XY(0, -1), new XY(-1, 0)}));
-        directions.add(new Direction('7', new XY[]{new XY(0, 1), new XY(-1, 0)}));
-        directions.add(new Direction('F', new XY[]{new XY(0, 1), new XY(1, 0)}));
+        directions.add(new Direction('|', new XY[]{new XY(0, 1), new XY(0, -1)}, new CardinalDirection[]{CardinalDirection.SOUTH, CardinalDirection.NORTH}));
+        directions.add(new Direction('-', new XY[]{new XY(1, 0), new XY(-1, 0)}, new CardinalDirection[]{CardinalDirection.EAST, CardinalDirection.WEST}));
+        directions.add(new Direction('L', new XY[]{new XY(0, -1), new XY(1, 0)}, new CardinalDirection[]{CardinalDirection.NORTH, CardinalDirection.EAST}));
+        directions.add(new Direction('J', new XY[]{new XY(0, -1), new XY(-1, 0)}, new CardinalDirection[]{CardinalDirection.WEST, CardinalDirection.NORTH}));
+        directions.add(new Direction('7', new XY[]{new XY(0, 1), new XY(-1, 0)}, new CardinalDirection[]{CardinalDirection.SOUTH, CardinalDirection.WEST}));
+        directions.add(new Direction('F', new XY[]{new XY(0, 1), new XY(1, 0)}, new CardinalDirection[]{CardinalDirection.SOUTH, CardinalDirection.EAST}));
     }
 
     private static void twoStar(List<String> l) {
@@ -59,12 +59,174 @@ public class Day10 {
         Util.print(matrixWithoutTilesOutside);
         Pipe[][] pipes = convertToPipes(l, matrixWithoutTilesOutside);
         findAllInnerAndOuterWalls(possibleSolution.visitedPaths, pipes, matrixWithoutTilesOutside);
+        int sum = countInnerPoints(pipes, matrixWithoutTilesOutside);
 
-        System.out.println("One star: " + possibleSolution.nr / 2);
+        System.out.println("Two star: " + sum);
+    }
+
+    private static int countInnerPoints(Pipe[][] pipes, char[][] matrixWithoutTilesOutside) {
+
+        return 0;
     }
 
     private static void findAllInnerAndOuterWalls(HashSet<XY> visitedPaths, Pipe[][] pipes, char[][] matrixWithoutTilesOutside) {
+        Pipe[][] p = findAndFillConnections(visitedPaths, pipes, matrixWithoutTilesOutside);
+        findAndFillOutside(visitedPaths, p, matrixWithoutTilesOutside);
+        for (int i = 0; i < 1000; i++) {
+            applyLogic(p);
+            checkSurroundings(p, visitedPaths);
+        }
+    }
 
+    private static void checkSurroundings(Pipe[][] p, HashSet<XY> visitedPaths) {
+        for (XY xy : visitedPaths) {
+
+        }
+    }
+
+    private static void applyLogic(Pipe[][] p) {
+        for (Pipe[] pipes : p) {
+            for (Pipe pipe : pipes) {
+                if (pipe.symbol != 'O' && pipe.symbol != '.' && !pipe.isAllSet()) {
+                    if (pipe.symbol == '-') {
+                        if (pipe.north == Type.OUTSIDE) {
+                            pipe.south = Type.INSIDE;
+                        } else if (pipe.north == Type.INSIDE) {
+                            pipe.south = Type.OUTSIDE;
+                        } else if (pipe.south == Type.OUTSIDE) {
+                            pipe.north = Type.INSIDE;
+                        } else if (pipe.south == Type.INSIDE) {
+                            pipe.north = Type.OUTSIDE;
+                        }
+                    } else if (pipe.symbol == '|') {
+                        if (pipe.west == Type.OUTSIDE) {
+                            pipe.east = Type.INSIDE;
+                        } else if (pipe.west == Type.INSIDE) {
+                            pipe.east = Type.OUTSIDE;
+                        } else if (pipe.east == Type.OUTSIDE) {
+                            pipe.west = Type.INSIDE;
+                        } else if (pipe.east == Type.INSIDE) {
+                            pipe.west = Type.OUTSIDE;
+                        }
+                    } else if (pipe.symbol == 'F') {
+                        if (pipe.north == Type.OUTSIDE) {
+                            pipe.west = Type.OUTSIDE;
+                        } else if (pipe.north == Type.INSIDE) {
+                            pipe.west = Type.INSIDE;
+                        } else if (pipe.west == Type.OUTSIDE) {
+                            pipe.north = Type.OUTSIDE;
+                        } else if (pipe.west == Type.INSIDE) {
+                            pipe.north = Type.INSIDE;
+                        }
+                    } else if (pipe.symbol == 'L') {
+                        if (pipe.west == Type.OUTSIDE) {
+                            pipe.south = Type.OUTSIDE;
+                        } else if (pipe.west == Type.INSIDE) {
+                            pipe.south = Type.INSIDE;
+                        } else if (pipe.south == Type.OUTSIDE) {
+                            pipe.west = Type.OUTSIDE;
+                        } else if (pipe.south == Type.INSIDE) {
+                            pipe.west = Type.INSIDE;
+                        }
+                    } else if (pipe.symbol == 'J') {
+                        if (pipe.east == Type.OUTSIDE) {
+                            pipe.south = Type.OUTSIDE;
+                        } else if (pipe.east == Type.INSIDE) {
+                            pipe.south = Type.INSIDE;
+                        } else if (pipe.south == Type.OUTSIDE) {
+                            pipe.east = Type.OUTSIDE;
+                        } else if (pipe.south == Type.INSIDE) {
+                            pipe.east = Type.INSIDE;
+                        }
+                    } else if (pipe.symbol == '7') {
+                        if (pipe.north == Type.OUTSIDE) {
+                            pipe.east = Type.OUTSIDE;
+                        } else if (pipe.north == Type.INSIDE) {
+                            pipe.east = Type.INSIDE;
+                        } else if (pipe.east == Type.OUTSIDE) {
+                            pipe.north = Type.OUTSIDE;
+                        } else if (pipe.east == Type.INSIDE) {
+                            pipe.north = Type.INSIDE;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private static void findAndFillOutside(HashSet<XY> visited, Pipe[][] pipe, char[][] matrix) {
+        for (XY xy : visited) {
+            Pipe pipe1 = pipe[xy.y][xy.x];
+            if (pipe1.north == Type.EMPTY) {
+                if (Util.isWithinRangeOfMatrix(xy.y - 1, xy.x, matrix)) {
+                    char symbol = matrix[xy.y - 1][xy.x];
+                    if (symbol == 'O') {
+                        pipe1.north = Type.OUTSIDE;
+                    }
+                } else {
+                    pipe1.north = Type.OUTSIDE;
+                }
+            }
+            if (pipe1.east == Type.EMPTY) {
+                if (Util.isWithinRangeOfMatrix(xy.y, xy.x + 1, matrix)) {
+                    char symbol = matrix[xy.y][xy.x + 1];
+                    if (symbol == 'O') {
+                        pipe1.east = Type.OUTSIDE;
+                    }
+                } else {
+                    pipe1.east = Type.OUTSIDE;
+                }
+            }
+            if (pipe1.south == Type.EMPTY) {
+                if (Util.isWithinRangeOfMatrix(xy.y + 1, xy.x, matrix)) {
+                    char symbol = matrix[xy.y + 1][xy.x];
+                    if (symbol == 'O') {
+                        pipe1.south = Type.OUTSIDE;
+                    }
+                } else {
+                    pipe1.south = Type.OUTSIDE;
+
+                }
+            }
+            if (pipe1.west == Type.EMPTY) {
+                if (Util.isWithinRangeOfMatrix(xy.y, xy.x - 1, matrix)) {
+                    char symbol = matrix[xy.y][xy.x - 1];
+                    if (symbol == 'O') {
+                        pipe1.west = Type.OUTSIDE;
+                    }
+                } else {
+                    pipe1.west = Type.OUTSIDE;
+                }
+            }
+        }
+    }
+
+    private static Pipe[][] findAndFillConnections(HashSet<XY> visited, Pipe[][] pipe, char[][] matrix) {
+
+        for (XY xy : visited) {
+            char symbol = matrix[xy.y][xy.x];
+            for (int i = 0; i < directions.size(); i++) {
+                Direction direction = directions.get(i);
+                if (symbol == direction.symbol) {
+                    for (int j = 0; j < direction.type.length; j++) {
+                        if (direction.type[j] == CardinalDirection.SOUTH) {
+                            pipe[xy.y][xy.x].south = Type.CONNECTED;
+                        }
+                        if (direction.type[j] == CardinalDirection.WEST) {
+                            pipe[xy.y][xy.x].west = Type.CONNECTED;
+                        }
+                        if (direction.type[j] == CardinalDirection.EAST) {
+                            pipe[xy.y][xy.x].east = Type.CONNECTED;
+                        }
+                        if (direction.type[j] == CardinalDirection.NORTH) {
+                            pipe[xy.y][xy.x].north = Type.CONNECTED;
+                        }
+                    }
+                }
+
+            }
+        }
+        return pipe;
     }
 
     private static Pipe[][] convertToPipes(List<String> l, char[][] matrixWithoutTilesOutside) {
@@ -78,38 +240,6 @@ public class Day10 {
             }
         }
         return pipes;
-    }
-
-    private enum Type {
-        INNER,
-        OUTER,
-        EMPTY,
-        CONNECTED
-    }
-
-    private static class Pipe {
-        char symbol;
-        XY point = new XY();
-        Type north = Type.EMPTY;
-        Type east = Type.EMPTY;
-        Type south = Type.EMPTY;
-        Type west = Type.EMPTY;
-
-        boolean isAllSet() {
-            if (north == Type.EMPTY) {
-                return false;
-            }
-            if (east == Type.EMPTY) {
-                return false;
-            }
-            if (south == Type.EMPTY) {
-                return false;
-            }
-            if (west == Type.EMPTY) {
-                return false;
-            }
-            return true;
-        }
     }
 
     private static char[][] removeAllTilesOutside(List<String> l, char[][] matrix, PossibleSolution possibleSolution) {
@@ -140,12 +270,51 @@ public class Day10 {
                 if (inside) {
                     matrixWithoutTilesOutside[y][x] = matrix[y][x];
                 } else {
-                    matrixWithoutTilesOutside[y][x] = '0';
+                    matrixWithoutTilesOutside[y][x] = 'O';
                 }
 
             }
         }
         return matrixWithoutTilesOutside;
+    }
+
+    private enum Type {
+        INSIDE,
+        OUTSIDE,
+        EMPTY,
+        CONNECTED,
+    }
+
+    private static class Pipe {
+        char symbol;
+        XY point = new XY();
+        Type north = Type.EMPTY;
+        Type east = Type.EMPTY;
+        Type south = Type.EMPTY;
+        Type west = Type.EMPTY;
+
+        boolean isAllSet() {
+            if (north == Type.EMPTY) {
+                return false;
+            }
+            if (east == Type.EMPTY) {
+                return false;
+            }
+            if (south == Type.EMPTY) {
+                return false;
+            }
+            if (west == Type.EMPTY) {
+                return false;
+            }
+            return true;
+        }
+    }
+
+    private enum CardinalDirection {
+        NORTH,
+        EAST,
+        SOUTH,
+        WEST
     }
 
     private static char[][] removeAllExtraSymbols(List<String> l, char[][] matrix, PossibleSolution possibleSolution) {
@@ -294,11 +463,14 @@ public class Day10 {
     private static class Direction {
         char symbol;
         XY[] directions;
+        CardinalDirection[] type;
 
-        public Direction(char symbol, XY[] directions) {
+        public Direction(char symbol, XY[] directions, CardinalDirection[] type) {
             this.symbol = symbol;
             this.directions = directions;
+            this.type = type;
         }
+
     }
 
 }
