@@ -84,9 +84,8 @@ public class Day10 {
                         matrixWithoutTilesOutside[pipe1.point.y][pipe1.point.x] = 'O';
                     } else {
                         matrixWithoutTilesOutside[pipe1.point.y][pipe1.point.x] = '?';
-                        sum++;
+                        System.out.println("y: " + pipe1.point.y + ", x: " + pipe1.point.x);
                     }
-
                 } else {
                     matrixWithoutTilesOutside[pipe1.point.y][pipe1.point.x] = 'X';
                 }
