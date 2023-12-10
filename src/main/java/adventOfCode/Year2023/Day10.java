@@ -34,10 +34,6 @@ public class Day10 {
     }
 
 
-    private static void twoStar(List<String> l) {
-
-    }
-
     private static void initSetup() {
         directions = new ArrayList<>();
         directions.add(new Direction('|', new XY[]{new XY(0, 1), new XY(0, -1)}));
@@ -46,6 +42,13 @@ public class Day10 {
         directions.add(new Direction('J', new XY[]{new XY(0, -1), new XY(-1, 0)}));
         directions.add(new Direction('7', new XY[]{new XY(0, 1), new XY(-1, 0)}));
         directions.add(new Direction('F', new XY[]{new XY(0, 1), new XY(1, 0)}));
+    }
+
+    private static void twoStar(List<String> l) {
+        char[][] matrix = parseString(l);
+        int steps = findLoop(matrix);
+        Util.print(matrix);
+        System.out.println("One star: " + steps);
     }
 
     private static void oneStar(List<String> l) {
@@ -58,19 +61,28 @@ public class Day10 {
 
     private static int findLoop(char[][] matrix) {
         int steps = 0;
+        char startingSymbol = ' ';
+        int startingX = 0;
+        int startingY = 0;
         for (int y = 0; y < matrix.length; y++) {
             for (int x = 0; x < matrix[0].length; x++) {
-                int currentLoopSteps = 0;
+                int currentLoopSteps;
                 if (matrix[y][x] == 'S') {
                     for (Direction direction : directions) {
                         matrix[y][x] = direction.symbol;
                         currentLoopSteps = findSteps(y, x, matrix);
-                        steps = Math.max(steps, currentLoopSteps);
+                        if (currentLoopSteps > steps) {
+                            steps = currentLoopSteps;
+                            startingX = x;
+                            startingY = y;
+                            startingSymbol = direction.symbol;
+                        }
                     }
                     break;
                 }
             }
         }
+        matrix[startingY][startingX] = startingSymbol;
 
         return steps / 2;
     }
