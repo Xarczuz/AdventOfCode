@@ -114,9 +114,10 @@ public class Day10 {
                     int y = xy.y + dir.y;
                     int x = xy.x + dir.x;
                     if (Util.isWithinRangeOfMatrix(y, x, matrix)) {
-                        if (p[y][x].south == Type.INSIDE) {
+                        Pipe pipe1 = p[y][x];
+                        if (pipe1.south == Type.INSIDE) {
                             pipe.north = Type.INSIDE;
-                        } else if (p[y][x].south == Type.OUTSIDE) {
+                        } else if (pipe1.south == Type.OUTSIDE) {
                             pipe.north = Type.OUTSIDE;
                         }
                     }
@@ -126,10 +127,33 @@ public class Day10 {
                     int y = xy.y + dir.y;
                     int x = xy.x + dir.x;
                     if (Util.isWithinRangeOfMatrix(y, x, matrix)) {
-                        if (p[y][x].west == Type.INSIDE) {
+                        Pipe pipe1 = p[y][x];
+                        if (pipe1.west == Type.INSIDE) {
                             pipe.east = Type.INSIDE;
-                        } else if (p[y][x].west == Type.OUTSIDE) {
+                        } else if (pipe1.west == Type.OUTSIDE) {
                             pipe.east = Type.OUTSIDE;
+                        }
+                    }
+                }
+                if (pipe.east == Type.EMPTY) {
+                    XY dir = directionXYHashMap.get(CardinalDirection.NORTH);
+                    int y = xy.y + dir.y;
+                    int x = xy.x + dir.x;
+                    if (Util.isWithinRangeOfMatrix(y, x, matrix)) {
+                        Pipe pipe1 = p[y][x];
+                        if (pipe.north == Type.CONNECTED && pipe1.south == Type.CONNECTED && pipe1.east != Type.CONNECTED) {
+                            pipe.east = pipe1.east;
+                        }
+                    }
+                }
+                if (pipe.east == Type.EMPTY) {
+                    XY dir = directionXYHashMap.get(CardinalDirection.SOUTH);
+                    int y = xy.y + dir.y;
+                    int x = xy.x + dir.x;
+                    if (Util.isWithinRangeOfMatrix(y, x, matrix)) {
+                        Pipe pipe1 = p[y][x];
+                        if (pipe.south == Type.CONNECTED && pipe1.north == Type.CONNECTED && pipe1.east != Type.CONNECTED) {
+                            pipe.east = pipe1.east;
                         }
                     }
                 }
@@ -145,15 +169,39 @@ public class Day10 {
                         }
                     }
                 }
+
                 if (pipe.west == Type.EMPTY) {
                     XY dir = directionXYHashMap.get(CardinalDirection.WEST);
                     int y = xy.y + dir.y;
                     int x = xy.x + dir.x;
                     if (Util.isWithinRangeOfMatrix(y, x, matrix)) {
-                        if (p[y][x].east == Type.INSIDE) {
+                        Pipe pipe1 = p[y][x];
+                        if (pipe1.east == Type.INSIDE) {
                             pipe.west = Type.INSIDE;
-                        } else if (p[y][x].east == Type.OUTSIDE) {
+                        } else if (pipe1.east == Type.OUTSIDE) {
                             pipe.west = Type.OUTSIDE;
+                        }
+                    }
+                }
+                if (pipe.east == Type.EMPTY) {
+                    XY dir = directionXYHashMap.get(CardinalDirection.NORTH);
+                    int y = xy.y + dir.y;
+                    int x = xy.x + dir.x;
+                    if (Util.isWithinRangeOfMatrix(y, x, matrix)) {
+                        Pipe pipe1 = p[y][x];
+                        if (pipe.north == Type.CONNECTED && pipe1.south == Type.CONNECTED && pipe1.east != Type.CONNECTED) {
+                            pipe.east = pipe1.east;
+                        }
+                    }
+                }
+                if (pipe.east == Type.EMPTY) {
+                    XY dir = directionXYHashMap.get(CardinalDirection.SOUTH);
+                    int y = xy.y + dir.y;
+                    int x = xy.x + dir.x;
+                    if (Util.isWithinRangeOfMatrix(y, x, matrix)) {
+                        Pipe pipe1 = p[y][x];
+                        if (pipe.south == Type.CONNECTED && pipe1.north == Type.CONNECTED && pipe1.east != Type.CONNECTED) {
+                            pipe.east = pipe1.east;
                         }
                     }
                 }
