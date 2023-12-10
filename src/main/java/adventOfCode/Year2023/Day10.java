@@ -58,7 +58,27 @@ public class Day10 {
         Util.print(matrixWithoutExtraSymbols);
         System.out.println();
         Util.print(matrixWithoutTilesOutside);
+
+
         System.out.println("One star: " + possibleSolution.nr / 2);
+    }
+
+    private enum Type {
+        NORTH,
+        EAST,
+        SOUTH,
+        WEST,
+        EMPTY,
+        CONNECTED
+    }
+
+    private static class Pipe {
+        char symbol;
+        XY point = new XY();
+        Type north = Type.EMPTY;
+        Type east = Type.EMPTY;
+        Type south = Type.EMPTY;
+        Type west = Type.EMPTY;
     }
 
     private static char[][] removeAllTilesOutside(List<String> l, char[][] matrix, PossibleSolution possibleSolution) {
@@ -88,7 +108,6 @@ public class Day10 {
                 }
                 if (inside) {
                     matrixWithoutTilesOutside[y][x] = matrix[y][x];
-
                 } else {
                     matrixWithoutTilesOutside[y][x] = '0';
                 }
