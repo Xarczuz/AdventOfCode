@@ -58,9 +58,25 @@ public class Day10 {
         Util.print(matrixWithoutExtraSymbols);
         System.out.println();
         Util.print(matrixWithoutTilesOutside);
+        Pipe[][] pipes = convertToPipes(l, matrixWithoutTilesOutside);
 
 
         System.out.println("One star: " + possibleSolution.nr / 2);
+    }
+
+    private static Pipe[][] convertToPipes(List<String> l, char[][] matrixWithoutTilesOutside) {
+        Pipe[][] pipes = new Pipe[l.size()][l.getFirst().toCharArray().length];
+
+        for (int y = 0; y < pipes.length; y++) {
+            for (int x = 0; x < pipes[0].length; x++) {
+                pipes[y][x] = new Pipe();
+                pipes[y][x].symbol = matrixWithoutTilesOutside[y][x];
+                pipes[y][x].point.y = y;
+                pipes[y][x].point.x = x;
+            }
+        }
+
+        return pipes;
     }
 
     private enum Type {
