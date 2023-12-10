@@ -1,5 +1,6 @@
 package adventOfCode.Year2023;
 
+import classes.CardinalDirection;
 import classes.XY;
 import util.FileUtil;
 import util.TimeUtil;
@@ -102,7 +103,6 @@ public class Day10 {
             checkSurroundings(p, matrixWithoutTilesOutside);
         }
     }
-
 
     private static void checkSurroundings(Pipe[][] p, char[][] matrix) {
         for (int y1 = 0; y1 < matrix.length; y1++) {
@@ -290,8 +290,6 @@ public class Day10 {
                             pipe.west = Type.INSIDE;
                         }
                     }
-
-
                 }
             }
         }
@@ -422,10 +420,7 @@ public class Day10 {
     }
 
     private enum Type {
-        INSIDE,
-        OUTSIDE,
-        EMPTY,
-        CONNECTED,
+        INSIDE, OUTSIDE, EMPTY, CONNECTED,
     }
 
     private static class Pipe {
@@ -451,13 +446,6 @@ public class Day10 {
             }
             return true;
         }
-    }
-
-    private enum CardinalDirection {
-        NORTH,
-        EAST,
-        SOUTH,
-        WEST
     }
 
     private static char[][] removeAllExtraSymbols(List<String> l, char[][] matrix, PossibleSolution possibleSolution) {
