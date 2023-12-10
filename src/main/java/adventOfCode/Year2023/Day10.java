@@ -50,7 +50,6 @@ public class Day10 {
         char[][] matrix = parseString(l);
         PossibleSolution possibleSolution = findLoop(matrix);
         char[][] matrixWithoutExtraSymbols = removeAllExtraSymbols(l, matrix, possibleSolution);
-
         char[][] matrixWithoutTilesOutside = removeAllTilesOutside(l, matrixWithoutExtraSymbols, possibleSolution);
 
         Util.print(matrix);
@@ -59,14 +58,17 @@ public class Day10 {
         System.out.println();
         Util.print(matrixWithoutTilesOutside);
         Pipe[][] pipes = convertToPipes(l, matrixWithoutTilesOutside);
-
+        findAllInnerAndOuterWalls(possibleSolution.visitedPaths, pipes, matrixWithoutTilesOutside);
 
         System.out.println("One star: " + possibleSolution.nr / 2);
     }
 
+    private static void findAllInnerAndOuterWalls(HashSet<XY> visitedPaths, Pipe[][] pipes, char[][] matrixWithoutTilesOutside) {
+
+    }
+
     private static Pipe[][] convertToPipes(List<String> l, char[][] matrixWithoutTilesOutside) {
         Pipe[][] pipes = new Pipe[l.size()][l.getFirst().toCharArray().length];
-
         for (int y = 0; y < pipes.length; y++) {
             for (int x = 0; x < pipes[0].length; x++) {
                 pipes[y][x] = new Pipe();
@@ -75,15 +77,12 @@ public class Day10 {
                 pipes[y][x].point.x = x;
             }
         }
-
         return pipes;
     }
 
     private enum Type {
-        NORTH,
-        EAST,
-        SOUTH,
-        WEST,
+        INNER,
+        OUTER,
         EMPTY,
         CONNECTED
     }
@@ -95,6 +94,22 @@ public class Day10 {
         Type east = Type.EMPTY;
         Type south = Type.EMPTY;
         Type west = Type.EMPTY;
+
+        boolean isAllSet() {
+            if (north == Type.EMPTY) {
+                return false;
+            }
+            if (east == Type.EMPTY) {
+                return false;
+            }
+            if (south == Type.EMPTY) {
+                return false;
+            }
+            if (west == Type.EMPTY) {
+                return false;
+            }
+            return true;
+        }
     }
 
     private static char[][] removeAllTilesOutside(List<String> l, char[][] matrix, PossibleSolution possibleSolution) {
