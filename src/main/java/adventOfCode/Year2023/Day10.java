@@ -28,10 +28,10 @@ public class Day10 {
 //        oneStar(l3);
         TimeUtil.endTime();
         TimeUtil.startTime();
-        twoStar(l); // 597 to low
-        twoStar(l2);
-        twoStar(l4);
-        twoStar(l5);
+        twoStar(l); // 597 to low  x to high:624
+//        twoStar(l2);
+//        twoStar(l4);
+//        twoStar(l5);
         TimeUtil.endTime();
     }
 
@@ -63,21 +63,32 @@ public class Day10 {
         Util.print(matrixWithoutExtraSymbols);
         System.out.println();
         Util.print(matrixWithoutTilesOutside);
+        System.out.println();
         Pipe[][] pipes = convertToPipes(l, matrixWithoutTilesOutside);
         findAllInnerAndOuterWalls(possibleSolution.visitedPaths, pipes, matrixWithoutTilesOutside);
-        int sum = countInnerPoints(pipes);
-
+        int sum = countInnerPoints(pipes, matrixWithoutTilesOutside);
+        Util.print(matrixWithoutTilesOutside);
+        System.out.println();
         System.out.println("Two star: " + sum);
     }
 
-    private static int countInnerPoints(Pipe[][] pipes) {
+    private static int countInnerPoints(Pipe[][] pipes, char[][] matrixWithoutTilesOutside) {
         int sum = 0;
         for (Pipe[] pipe : pipes) {
             for (Pipe pipe1 : pipe) {
                 if (pipe1.symbol == '.') {
                     if (pipe1.north == Type.INSIDE && pipe1.east == Type.INSIDE && pipe1.south == Type.INSIDE && pipe1.west == Type.INSIDE) {
                         sum++;
+                        matrixWithoutTilesOutside[pipe1.point.y][pipe1.point.x] = 'I';
+                    } else if (pipe1.north == Type.OUTSIDE && pipe1.east == Type.OUTSIDE && pipe1.south == Type.OUTSIDE && pipe1.west == Type.OUTSIDE) {
+                        matrixWithoutTilesOutside[pipe1.point.y][pipe1.point.x] = 'O';
+                    } else {
+                        matrixWithoutTilesOutside[pipe1.point.y][pipe1.point.x] = '?';
+                        sum++;
                     }
+
+                } else {
+                    matrixWithoutTilesOutside[pipe1.point.y][pipe1.point.x] = 'X';
                 }
             }
         }
