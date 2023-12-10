@@ -53,4 +53,8 @@ public class Util {
         }
         return i;
     }
+
+    public static boolean isWithinRangeOfMatrix(int y, int x, char[][] matrix) {
+        return y <= matrix.length - 1 && y >= 0 && x <= matrix[0].length - 1 && x >= 0;
+    }
 }

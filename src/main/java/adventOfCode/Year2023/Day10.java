@@ -21,15 +21,17 @@ public class Day10 {
         List<String> l = FileUtil.readfile(Day10.class);
         List<String> l2 = FileUtil.readfileExempel(Day10.class);
         List<String> l3 = FileUtil.readfileExempel2(Day10.class);
+        List<String> l4 = FileUtil.readfileExempelX(Day10.class, 3);
         initSetup();
         TimeUtil.startTime();
-        oneStar(l);
-        oneStar(l2);
-        oneStar(l3);
+//        oneStar(l);
+//        oneStar(l2);
+//        oneStar(l3);
         TimeUtil.endTime();
         TimeUtil.startTime();
-//        twoStar(l);
-//        twoStar(l2);
+        twoStar(l);
+        twoStar(l2);
+        twoStar(l4);
         TimeUtil.endTime();
     }
 
@@ -46,35 +48,96 @@ public class Day10 {
 
     private static void twoStar(List<String> l) {
         char[][] matrix = parseString(l);
-        int steps = findLoop(matrix);
+        PossibleSolution possibleSolution = findLoop(matrix);
+        char[][] matrixWithoutExtraSymbols = removeAllExtraSymbols(l, matrix, possibleSolution);
+
+        char[][] matrixWithoutTilesOutside = removeAllTilesOutside(l, matrixWithoutExtraSymbols, possibleSolution);
+
         Util.print(matrix);
-        System.out.println("One star: " + steps);
+        System.out.println();
+        Util.print(matrixWithoutExtraSymbols);
+        System.out.println();
+        Util.print(matrixWithoutTilesOutside);
+        System.out.println("One star: " + possibleSolution.nr / 2);
+    }
+
+    private static char[][] removeAllTilesOutside(List<String> l, char[][] matrix, PossibleSolution possibleSolution) {
+        char[][] matrixWithoutTilesOutside = new char[l.size()][l.getFirst().toCharArray().length];
+        XY[] dirs = new XY[]{new XY(0, 1), new XY(0, -1), new XY(1, 0), new XY(-1, 0)};
+        HashSet<XY> visitedPaths = possibleSolution.visitedPaths;
+        for (int y = 0; y < matrix.length; y++) {
+            for (int x = 0; x < matrix[0].length; x++) {
+                boolean inside = true;
+
+                if (!visitedPaths.contains(new XY(x, y))) {
+                    for (XY dir : dirs) {
+                        int tempX = x;
+                        int tempy = y;
+                        boolean checkInside = false;
+                        while (Util.isWithinRangeOfMatrix(tempy, tempX, matrix)) {
+                            tempX += dir.x;
+                            tempy += dir.y;
+
+                            if (visitedPaths.contains(new XY(tempX, tempy))) {
+                                checkInside = true;
+                                break;
+                            }
+                        }
+                        inside &= checkInside;
+                    }
+                }
+                if (inside) {
+                    matrixWithoutTilesOutside[y][x] = matrix[y][x];
+
+                } else {
+                    matrixWithoutTilesOutside[y][x] = '0';
+                }
+
+            }
+        }
+        return matrixWithoutTilesOutside;
+    }
+
+    private static char[][] removeAllExtraSymbols(List<String> l, char[][] matrix, PossibleSolution possibleSolution) {
+        char[][] matrixWithoutExtraSymbols = new char[l.size()][l.getFirst().toCharArray().length];
+        for (int y = 0; y < matrix.length; y++) {
+            for (int x = 0; x < matrix[0].length; x++) {
+                if (possibleSolution.visitedPaths.contains(new XY(x, y))) {
+                    matrixWithoutExtraSymbols[y][x] = matrix[y][x];
+                } else {
+                    matrixWithoutExtraSymbols[y][x] = '.';
+                }
+            }
+        }
+        return matrixWithoutExtraSymbols;
     }
 
     private static void oneStar(List<String> l) {
         char[][] matrix = parseString(l);
-        int steps = findLoop(matrix);
+        int steps = findLoop(matrix).nr / 2;
         Util.print(matrix);
         System.out.println("One star: " + steps);
-
     }
 
-    private static int findLoop(char[][] matrix) {
+    private static PossibleSolution findLoop(char[][] matrix) {
         int steps = 0;
         char startingSymbol = ' ';
         int startingX = 0;
         int startingY = 0;
+        PossibleSolution possibleSolution = new PossibleSolution();
         for (int y = 0; y < matrix.length; y++) {
             for (int x = 0; x < matrix[0].length; x++) {
                 int currentLoopSteps;
                 if (matrix[y][x] == 'S') {
                     for (Direction direction : directions) {
                         matrix[y][x] = direction.symbol;
-                        currentLoopSteps = findSteps(y, x, matrix);
+                        PossibleSolution ps = findSteps(y, x, matrix);
+                        currentLoopSteps = ps.nr;
                         if (currentLoopSteps > steps) {
                             steps = currentLoopSteps;
                             startingX = x;
                             startingY = y;
+                            possibleSolution = ps;
                             startingSymbol = direction.symbol;
                         }
                     }
@@ -83,11 +146,11 @@ public class Day10 {
             }
         }
         matrix[startingY][startingX] = startingSymbol;
-
-        return steps / 2;
+        return possibleSolution;
     }
 
-    private static int findSteps(int startY, int startX, char[][] matrix) {
+    private static PossibleSolution findSteps(int startY, int startX, char[][] matrix) {
+        PossibleSolution possibleSolution = new PossibleSolution();
         char startingPoint = matrix[startY][startX];
         Stack<Path> stack = new Stack<>();
         stack.add(new Path(startingPoint, startY, startX));
@@ -115,21 +178,23 @@ public class Day10 {
                         char symbol = matrix[y][x];
                         stack.add(new Path(symbol, y, x));
                     } else {
-                        return -1;
+                        possibleSolution.nr = -1;
+                        return possibleSolution;
                     }
                     break;
                 }
             }
         }
-
-        return steps;
+        possibleSolution.nr = steps;
+        possibleSolution.visitedPaths = visited;
+        return possibleSolution;
     }
 
     private static boolean isValidDirection(Path sourcePath, XY direction, char[][] matrix) {
         int y = sourcePath.y + direction.y;
         int x = sourcePath.x + direction.x;
 
-        if (y > matrix.length - 1 || y < 0 || x > matrix[0].length - 1 || x < 0) {
+        if (!Util.isWithinRangeOfMatrix(y, x, matrix)) {
             return false;
         }
         char destinationSymbol = matrix[y][x];
@@ -144,6 +209,11 @@ public class Day10 {
             }
         }
         return false;
+    }
+
+    private static class PossibleSolution {
+        int nr;
+        HashSet<XY> visitedPaths;
     }
 
     private static char[][] parseString(List<String> l) {
