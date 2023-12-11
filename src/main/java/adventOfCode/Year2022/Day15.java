@@ -1,6 +1,6 @@
 package adventOfCode.Year2022;
 
-import classes.XY;
+import classes.YX;
 import util.FileUtil;
 import util.TimeUtil;
 
@@ -30,8 +30,8 @@ public class Day15 {
     private static void twoStar(List<String> l, int minX, int maxX, int minY, int maxY) {
         ArrayList<SensorBeacon> sensorBeacons = parseInput(l);
         calculateManhattanDistances(sensorBeacons);
-        XY xy = findEmptySpaceWhereBeaconCanNotBePResent3(sensorBeacons, minX, maxX, minY, maxY);
-        System.out.println("Frequency " + ((xy.x * 4000000L) + xy.y));
+        YX YX = findEmptySpaceWhereBeaconCanNotBePResent3(sensorBeacons, minX, maxX, minY, maxY);
+        System.out.println("Frequency " + ((YX.x * 4000000L) + YX.y));
         System.out.println(0);
         System.out.println(maxX);
     }
@@ -54,7 +54,7 @@ public class Day15 {
         }
     }
 
-    private static XY findEmptySpaceWhereBeaconCanNotBePResent3(ArrayList<SensorBeacon> sensorBeacons, int minX, int maxX, int minY, int maxY) {
+    private static YX findEmptySpaceWhereBeaconCanNotBePResent3(ArrayList<SensorBeacon> sensorBeacons, int minX, int maxX, int minY, int maxY) {
         for (int y = minY; y <= maxY; y++) {
             ArrayList<Intervall> intervall = new ArrayList<>();
             for (SensorBeacon sensorBeacon : sensorBeacons) {
@@ -84,10 +84,10 @@ public class Day15 {
             intervall.sort(Comparator.comparingInt(o -> o.start));
             int aa = isThereAMissingPoint(intervall);
             if (aa != -1) {
-                return new XY(aa, y);
+                return new YX(y, aa);
             }
         }
-        return new XY();
+        return new YX();
     }
 
     private static int isThereAMissingPoint(ArrayList<Intervall> intervall) {
@@ -115,7 +115,7 @@ public class Day15 {
     }
 
     private static int findEmptySpaceWhereBeaconCanNotBePResent(ArrayList<SensorBeacon> sensorBeacons, int minX, int maxX, int y) {
-        HashMap<XY, String> line = new HashMap<>();
+        HashMap<YX, String> line = new HashMap<>();
         for (SensorBeacon sensorBeacon : sensorBeacons) {
             if (sensorBeacon.beacon.y == y) {
                 line.put(sensorBeacon.beacon, "B");
@@ -126,7 +126,7 @@ public class Day15 {
             for (int x = minX; x <= maxX; x++) {
                 int dist = calculateManhattanDistance(x, sensorBeacon.sensor.x, y, sensorBeacon.sensor.y);
                 if (dist <= sensorBeacon.distance) {
-                    XY key = new XY(x, y);
+                    YX key = new YX(y, x);
                     line.putIfAbsent(key, "#");
                 }
             }
@@ -134,7 +134,7 @@ public class Day15 {
         return calculateVoidBeaconsSpots(line);
     }
 
-    private static int calculateVoidBeaconsSpots(HashMap<XY, String> line) {
+    private static int calculateVoidBeaconsSpots(HashMap<YX, String> line) {
         int sum = 0;
         for (String s : line.values()) {
             if (s.equals("#") || s.equals("S")) {
@@ -180,30 +180,30 @@ public class Day15 {
         ArrayList<SensorBeacon> array = new ArrayList<>(l.size());
         for (String s : l) {
             String[] SB = s.split(":");
-            XY sensor = parseXY(SB[0]);
-            XY beacon = parseXY(SB[1]);
+            YX sensor = parseXY(SB[0]);
+            YX beacon = parseXY(SB[1]);
             SensorBeacon sensorBeacon = new SensorBeacon(sensor, beacon, 0);
             array.add(sensorBeacon);
         }
         return array;
     }
 
-    private static XY parseXY(String s) {
-        XY xy = new XY();
+    private static YX parseXY(String s) {
+        YX YX = new YX();
         String[] cords = s.split(",");
         String x = cords[0].substring(cords[0].indexOf("=") + 1);
         String y = cords[1].substring(cords[1].indexOf("=") + 1);
-        xy.x = Integer.parseInt(x);
-        xy.y = Integer.parseInt(y);
-        return xy;
+        YX.x = Integer.parseInt(x);
+        YX.y = Integer.parseInt(y);
+        return YX;
     }
 
     private static class SensorBeacon {
-        XY sensor;
-        XY beacon;
+        YX sensor;
+        YX beacon;
         int distance;
 
-        public SensorBeacon(XY sensor, XY beacon, int distance) {
+        public SensorBeacon(YX sensor, YX beacon, int distance) {
             this.sensor = sensor;
             this.beacon = beacon;
             this.distance = distance;

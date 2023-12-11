@@ -9,7 +9,7 @@ public class Lines {
     private int y2;
     private ArrayList<Integer> yPoints;
     private ArrayList<Integer> xPoints;
-    private ArrayList<XY> verticalPoints;
+    private ArrayList<YX> verticalPoints;
 
     public Lines(String s) {
         parse(s);
@@ -34,10 +34,10 @@ public class Lines {
             for (int i = 0; i < xPoints.size(); i++) {
                 for (int j = 0; j < yPoints.size(); j++) {
                     if (Math.abs(xPoints.get(i) - x2) == Math.abs(yPoints.get(j) - y2)) {
-                        XY xy = new XY();
-                        xy.x = xPoints.get(i);
-                        xy.y = yPoints.get(j);
-                        verticalPoints.add(xy);
+                        YX YX = new YX();
+                        YX.x = xPoints.get(i);
+                        YX.y = yPoints.get(j);
+                        verticalPoints.add(YX);
                     }
                 }
             }
@@ -87,7 +87,7 @@ public class Lines {
         return xPoints;
     }
 
-    public ArrayList<XY> getVerticalPoints() {
+    public ArrayList<YX> getVerticalPoints() {
         return verticalPoints;
     }
 

@@ -1,7 +1,7 @@
 package adventOfCode.Year2023;
 
 import classes.CardinalDirection;
-import classes.XY;
+import classes.YX;
 import util.FileUtil;
 import util.TimeUtil;
 import util.Util;
@@ -14,7 +14,7 @@ public class Day10 {
 
 
     private static ArrayList<Direction> directions;
-    private static HashMap<CardinalDirection, XY> directionXYHashMap;
+    private static HashMap<CardinalDirection, YX> directionXYHashMap;
 
     public static void main(String[] args) throws IOException, URISyntaxException {
         List<String> l = FileUtil.readfile(Day10.class);
@@ -39,17 +39,17 @@ public class Day10 {
 
     private static void initSetup() {
         directions = new ArrayList<>();
-        directions.add(new Direction('|', new XY[]{new XY(0, 1), new XY(0, -1)}, new CardinalDirection[]{CardinalDirection.SOUTH, CardinalDirection.NORTH}));
-        directions.add(new Direction('-', new XY[]{new XY(1, 0), new XY(-1, 0)}, new CardinalDirection[]{CardinalDirection.EAST, CardinalDirection.WEST}));
-        directions.add(new Direction('L', new XY[]{new XY(0, -1), new XY(1, 0)}, new CardinalDirection[]{CardinalDirection.NORTH, CardinalDirection.EAST}));
-        directions.add(new Direction('J', new XY[]{new XY(0, -1), new XY(-1, 0)}, new CardinalDirection[]{CardinalDirection.WEST, CardinalDirection.NORTH}));
-        directions.add(new Direction('7', new XY[]{new XY(0, 1), new XY(-1, 0)}, new CardinalDirection[]{CardinalDirection.SOUTH, CardinalDirection.WEST}));
-        directions.add(new Direction('F', new XY[]{new XY(0, 1), new XY(1, 0)}, new CardinalDirection[]{CardinalDirection.SOUTH, CardinalDirection.EAST}));
+        directions.add(new Direction('|', new YX[]{new YX(1, 0), new YX(-1, 0)}, new CardinalDirection[]{CardinalDirection.SOUTH, CardinalDirection.NORTH}));
+        directions.add(new Direction('-', new YX[]{new YX(0, 1), new YX(0, -1)}, new CardinalDirection[]{CardinalDirection.EAST, CardinalDirection.WEST}));
+        directions.add(new Direction('L', new YX[]{new YX(-1, 0), new YX(0, 1)}, new CardinalDirection[]{CardinalDirection.NORTH, CardinalDirection.EAST}));
+        directions.add(new Direction('J', new YX[]{new YX(-1, 0), new YX(0, -1)}, new CardinalDirection[]{CardinalDirection.WEST, CardinalDirection.NORTH}));
+        directions.add(new Direction('7', new YX[]{new YX(1, 0), new YX(0, -1)}, new CardinalDirection[]{CardinalDirection.SOUTH, CardinalDirection.WEST}));
+        directions.add(new Direction('F', new YX[]{new YX(1, 0), new YX(0, 1)}, new CardinalDirection[]{CardinalDirection.SOUTH, CardinalDirection.EAST}));
         directionXYHashMap = new HashMap<>();
-        directionXYHashMap.put(CardinalDirection.NORTH, new XY(0, -1));
-        directionXYHashMap.put(CardinalDirection.EAST, new XY(1, 0));
-        directionXYHashMap.put(CardinalDirection.SOUTH, new XY(0, 1));
-        directionXYHashMap.put(CardinalDirection.WEST, new XY(-1, 0));
+        directionXYHashMap.put(CardinalDirection.NORTH, new YX(-1, 0));
+        directionXYHashMap.put(CardinalDirection.EAST, new YX(0, 1));
+        directionXYHashMap.put(CardinalDirection.SOUTH, new YX(1, 0));
+        directionXYHashMap.put(CardinalDirection.WEST, new YX(0, -1));
 
     }
 
@@ -95,7 +95,7 @@ public class Day10 {
         return sum;
     }
 
-    private static void findAllInnerAndOuterWalls(HashSet<XY> visitedPaths, Pipe[][] pipes, char[][] matrixWithoutTilesOutside) {
+    private static void findAllInnerAndOuterWalls(HashSet<YX> visitedPaths, Pipe[][] pipes, char[][] matrixWithoutTilesOutside) {
         Pipe[][] p = findAndFillConnections(visitedPaths, pipes, matrixWithoutTilesOutside);
         findAndFillOutside(visitedPaths, p, matrixWithoutTilesOutside);
         for (int i = 0; i < 100; i++) {
@@ -107,12 +107,12 @@ public class Day10 {
     private static void checkSurroundings(Pipe[][] p, char[][] matrix) {
         for (int y1 = 0; y1 < matrix.length; y1++) {
             for (int x1 = 0; x1 < matrix[0].length; x1++) {
-                XY xy = new XY(x1, y1);
-                Pipe pipe = p[xy.y][xy.x];
+                YX YX = new YX(y1, x1);
+                Pipe pipe = p[YX.y][YX.x];
                 if (pipe.north == Type.EMPTY) {
-                    XY dir = directionXYHashMap.get(CardinalDirection.NORTH);
-                    int y = xy.y + dir.y;
-                    int x = xy.x + dir.x;
+                    YX dir = directionXYHashMap.get(CardinalDirection.NORTH);
+                    int y = YX.y + dir.y;
+                    int x = YX.x + dir.x;
                     if (Util.isWithinRangeOfMatrix(y, x, matrix)) {
                         Pipe pipe1 = p[y][x];
                         if (pipe1.south == Type.INSIDE) {
@@ -123,9 +123,9 @@ public class Day10 {
                     }
                 }
                 if (pipe.east == Type.EMPTY) {
-                    XY dir = directionXYHashMap.get(CardinalDirection.EAST);
-                    int y = xy.y + dir.y;
-                    int x = xy.x + dir.x;
+                    YX dir = directionXYHashMap.get(CardinalDirection.EAST);
+                    int y = YX.y + dir.y;
+                    int x = YX.x + dir.x;
                     if (Util.isWithinRangeOfMatrix(y, x, matrix)) {
                         Pipe pipe1 = p[y][x];
                         if (pipe1.west == Type.INSIDE) {
@@ -136,9 +136,9 @@ public class Day10 {
                     }
                 }
                 if (pipe.east == Type.EMPTY) {
-                    XY dir = directionXYHashMap.get(CardinalDirection.NORTH);
-                    int y = xy.y + dir.y;
-                    int x = xy.x + dir.x;
+                    YX dir = directionXYHashMap.get(CardinalDirection.NORTH);
+                    int y = YX.y + dir.y;
+                    int x = YX.x + dir.x;
                     if (Util.isWithinRangeOfMatrix(y, x, matrix)) {
                         Pipe pipe1 = p[y][x];
                         if (pipe.north == Type.CONNECTED && pipe1.south == Type.CONNECTED && pipe1.east != Type.CONNECTED) {
@@ -147,9 +147,9 @@ public class Day10 {
                     }
                 }
                 if (pipe.east == Type.EMPTY) {
-                    XY dir = directionXYHashMap.get(CardinalDirection.SOUTH);
-                    int y = xy.y + dir.y;
-                    int x = xy.x + dir.x;
+                    YX dir = directionXYHashMap.get(CardinalDirection.SOUTH);
+                    int y = YX.y + dir.y;
+                    int x = YX.x + dir.x;
                     if (Util.isWithinRangeOfMatrix(y, x, matrix)) {
                         Pipe pipe1 = p[y][x];
                         if (pipe.south == Type.CONNECTED && pipe1.north == Type.CONNECTED && pipe1.east != Type.CONNECTED) {
@@ -158,9 +158,9 @@ public class Day10 {
                     }
                 }
                 if (pipe.south == Type.EMPTY) {
-                    XY dir = directionXYHashMap.get(CardinalDirection.SOUTH);
-                    int y = xy.y + dir.y;
-                    int x = xy.x + dir.x;
+                    YX dir = directionXYHashMap.get(CardinalDirection.SOUTH);
+                    int y = YX.y + dir.y;
+                    int x = YX.x + dir.x;
                     if (Util.isWithinRangeOfMatrix(y, x, matrix)) {
                         if (p[y][x].north == Type.INSIDE) {
                             pipe.south = Type.INSIDE;
@@ -170,9 +170,9 @@ public class Day10 {
                     }
                 }
                 if (pipe.west == Type.EMPTY) {
-                    XY dir = directionXYHashMap.get(CardinalDirection.WEST);
-                    int y = xy.y + dir.y;
-                    int x = xy.x + dir.x;
+                    YX dir = directionXYHashMap.get(CardinalDirection.WEST);
+                    int y = YX.y + dir.y;
+                    int x = YX.x + dir.x;
                     if (Util.isWithinRangeOfMatrix(y, x, matrix)) {
                         Pipe pipe1 = p[y][x];
                         if (pipe1.east == Type.INSIDE) {
@@ -183,9 +183,9 @@ public class Day10 {
                     }
                 }
                 if (pipe.east == Type.EMPTY) {
-                    XY dir = directionXYHashMap.get(CardinalDirection.NORTH);
-                    int y = xy.y + dir.y;
-                    int x = xy.x + dir.x;
+                    YX dir = directionXYHashMap.get(CardinalDirection.NORTH);
+                    int y = YX.y + dir.y;
+                    int x = YX.x + dir.x;
                     if (Util.isWithinRangeOfMatrix(y, x, matrix)) {
                         Pipe pipe1 = p[y][x];
                         if (pipe.north == Type.CONNECTED && pipe1.south == Type.CONNECTED && pipe1.east != Type.CONNECTED) {
@@ -194,9 +194,9 @@ public class Day10 {
                     }
                 }
                 if (pipe.east == Type.EMPTY) {
-                    XY dir = directionXYHashMap.get(CardinalDirection.SOUTH);
-                    int y = xy.y + dir.y;
-                    int x = xy.x + dir.x;
+                    YX dir = directionXYHashMap.get(CardinalDirection.SOUTH);
+                    int y = YX.y + dir.y;
+                    int x = YX.x + dir.x;
                     if (Util.isWithinRangeOfMatrix(y, x, matrix)) {
                         Pipe pipe1 = p[y][x];
                         if (pipe.south == Type.CONNECTED && pipe1.north == Type.CONNECTED && pipe1.east != Type.CONNECTED) {
@@ -295,12 +295,12 @@ public class Day10 {
         }
     }
 
-    private static void findAndFillOutside(HashSet<XY> visited, Pipe[][] pipe, char[][] matrix) {
-        for (XY xy : visited) {
-            Pipe pipe1 = pipe[xy.y][xy.x];
+    private static void findAndFillOutside(HashSet<YX> visited, Pipe[][] pipe, char[][] matrix) {
+        for (YX YX : visited) {
+            Pipe pipe1 = pipe[YX.y][YX.x];
             if (pipe1.north == Type.EMPTY) {
-                if (Util.isWithinRangeOfMatrix(xy.y - 1, xy.x, matrix)) {
-                    char symbol = matrix[xy.y - 1][xy.x];
+                if (Util.isWithinRangeOfMatrix(YX.y - 1, YX.x, matrix)) {
+                    char symbol = matrix[YX.y - 1][YX.x];
                     if (symbol == 'O') {
                         pipe1.north = Type.OUTSIDE;
                     }
@@ -309,8 +309,8 @@ public class Day10 {
                 }
             }
             if (pipe1.east == Type.EMPTY) {
-                if (Util.isWithinRangeOfMatrix(xy.y, xy.x + 1, matrix)) {
-                    char symbol = matrix[xy.y][xy.x + 1];
+                if (Util.isWithinRangeOfMatrix(YX.y, YX.x + 1, matrix)) {
+                    char symbol = matrix[YX.y][YX.x + 1];
                     if (symbol == 'O') {
                         pipe1.east = Type.OUTSIDE;
                     }
@@ -319,8 +319,8 @@ public class Day10 {
                 }
             }
             if (pipe1.south == Type.EMPTY) {
-                if (Util.isWithinRangeOfMatrix(xy.y + 1, xy.x, matrix)) {
-                    char symbol = matrix[xy.y + 1][xy.x];
+                if (Util.isWithinRangeOfMatrix(YX.y + 1, YX.x, matrix)) {
+                    char symbol = matrix[YX.y + 1][YX.x];
                     if (symbol == 'O') {
                         pipe1.south = Type.OUTSIDE;
                     }
@@ -330,8 +330,8 @@ public class Day10 {
                 }
             }
             if (pipe1.west == Type.EMPTY) {
-                if (Util.isWithinRangeOfMatrix(xy.y, xy.x - 1, matrix)) {
-                    char symbol = matrix[xy.y][xy.x - 1];
+                if (Util.isWithinRangeOfMatrix(YX.y, YX.x - 1, matrix)) {
+                    char symbol = matrix[YX.y][YX.x - 1];
                     if (symbol == 'O') {
                         pipe1.west = Type.OUTSIDE;
                     }
@@ -342,25 +342,25 @@ public class Day10 {
         }
     }
 
-    private static Pipe[][] findAndFillConnections(HashSet<XY> visited, Pipe[][] pipe, char[][] matrix) {
+    private static Pipe[][] findAndFillConnections(HashSet<YX> visited, Pipe[][] pipe, char[][] matrix) {
 
-        for (XY xy : visited) {
-            char symbol = matrix[xy.y][xy.x];
+        for (YX YX : visited) {
+            char symbol = matrix[YX.y][YX.x];
             for (int i = 0; i < directions.size(); i++) {
                 Direction direction = directions.get(i);
                 if (symbol == direction.symbol) {
                     for (int j = 0; j < direction.type.length; j++) {
                         if (direction.type[j] == CardinalDirection.SOUTH) {
-                            pipe[xy.y][xy.x].south = Type.CONNECTED;
+                            pipe[YX.y][YX.x].south = Type.CONNECTED;
                         }
                         if (direction.type[j] == CardinalDirection.WEST) {
-                            pipe[xy.y][xy.x].west = Type.CONNECTED;
+                            pipe[YX.y][YX.x].west = Type.CONNECTED;
                         }
                         if (direction.type[j] == CardinalDirection.EAST) {
-                            pipe[xy.y][xy.x].east = Type.CONNECTED;
+                            pipe[YX.y][YX.x].east = Type.CONNECTED;
                         }
                         if (direction.type[j] == CardinalDirection.NORTH) {
-                            pipe[xy.y][xy.x].north = Type.CONNECTED;
+                            pipe[YX.y][YX.x].north = Type.CONNECTED;
                         }
                     }
                 }
@@ -385,14 +385,14 @@ public class Day10 {
 
     private static char[][] removeAllTilesOutside(List<String> l, char[][] matrix, PossibleSolution possibleSolution) {
         char[][] matrixWithoutTilesOutside = new char[l.size()][l.getFirst().toCharArray().length];
-        XY[] dirs = new XY[]{new XY(0, 1), new XY(0, -1), new XY(1, 0), new XY(-1, 0)};
-        HashSet<XY> visitedPaths = possibleSolution.visitedPaths;
+        YX[] dirs = new YX[]{new YX(1, 0), new YX(-1, 0), new YX(0, 1), new YX(0, -1)};
+        HashSet<YX> visitedPaths = possibleSolution.visitedPaths;
         for (int y = 0; y < matrix.length; y++) {
             for (int x = 0; x < matrix[0].length; x++) {
                 boolean inside = true;
 
-                if (!visitedPaths.contains(new XY(x, y))) {
-                    for (XY dir : dirs) {
+                if (!visitedPaths.contains(new YX(y, x))) {
+                    for (YX dir : dirs) {
                         int tempX = x;
                         int tempy = y;
                         boolean checkInside = false;
@@ -400,7 +400,7 @@ public class Day10 {
                             tempX += dir.x;
                             tempy += dir.y;
 
-                            if (visitedPaths.contains(new XY(tempX, tempy))) {
+                            if (visitedPaths.contains(new YX(tempy, tempX))) {
                                 checkInside = true;
                                 break;
                             }
@@ -423,36 +423,11 @@ public class Day10 {
         INSIDE, OUTSIDE, EMPTY, CONNECTED,
     }
 
-    private static class Pipe {
-        char symbol;
-        XY point = new XY();
-        Type north = Type.EMPTY;
-        Type east = Type.EMPTY;
-        Type south = Type.EMPTY;
-        Type west = Type.EMPTY;
-
-        boolean isAllSet() {
-            if (north == Type.EMPTY) {
-                return false;
-            }
-            if (east == Type.EMPTY) {
-                return false;
-            }
-            if (south == Type.EMPTY) {
-                return false;
-            }
-            if (west == Type.EMPTY) {
-                return false;
-            }
-            return true;
-        }
-    }
-
     private static char[][] removeAllExtraSymbols(List<String> l, char[][] matrix, PossibleSolution possibleSolution) {
         char[][] matrixWithoutExtraSymbols = new char[l.size()][l.getFirst().toCharArray().length];
         for (int y = 0; y < matrix.length; y++) {
             for (int x = 0; x < matrix[0].length; x++) {
-                if (possibleSolution.visitedPaths.contains(new XY(x, y))) {
+                if (possibleSolution.visitedPaths.contains(new YX(y, x))) {
                     matrixWithoutExtraSymbols[y][x] = matrix[y][x];
                 } else {
                     matrixWithoutExtraSymbols[y][x] = '.';
@@ -460,6 +435,47 @@ public class Day10 {
             }
         }
         return matrixWithoutExtraSymbols;
+    }
+
+    private static PossibleSolution findSteps(int startY, int startX, char[][] matrix) {
+        PossibleSolution possibleSolution = new PossibleSolution();
+        char startingPoint = matrix[startY][startX];
+        Stack<Path> stack = new Stack<>();
+        stack.add(new Path(startingPoint, startY, startX));
+        int steps = 0;
+        HashSet<YX> visited = new HashSet<>();
+        while (!stack.isEmpty()) {
+            Path path = stack.pop();
+            YX o = new YX(path.y, path.x);
+            if (visited.contains(o)) {
+                continue;
+            }
+            visited.add(o);
+            steps++;
+            for (Direction direction : directions) {
+                if (path.symbol == direction.symbol) {
+                    if (isValidDirection(path, direction.directions[0], matrix)) {
+                        int y = path.y + direction.directions[0].y;
+                        int x = path.x + direction.directions[0].x;
+                        char symbol = matrix[y][x];
+                        stack.add(new Path(symbol, y, x));
+                    }
+                    if (isValidDirection(path, direction.directions[1], matrix)) {
+                        int y = path.y + direction.directions[1].y;
+                        int x = path.x + direction.directions[1].x;
+                        char symbol = matrix[y][x];
+                        stack.add(new Path(symbol, y, x));
+                    } else {
+                        possibleSolution.nr = -1;
+                        return possibleSolution;
+                    }
+                    break;
+                }
+            }
+        }
+        possibleSolution.nr = steps;
+        possibleSolution.visitedPaths = visited;
+        return possibleSolution;
     }
 
     private static void oneStar(List<String> l) {
@@ -499,48 +515,7 @@ public class Day10 {
         return possibleSolution;
     }
 
-    private static PossibleSolution findSteps(int startY, int startX, char[][] matrix) {
-        PossibleSolution possibleSolution = new PossibleSolution();
-        char startingPoint = matrix[startY][startX];
-        Stack<Path> stack = new Stack<>();
-        stack.add(new Path(startingPoint, startY, startX));
-        int steps = 0;
-        HashSet<XY> visited = new HashSet<>();
-        while (!stack.isEmpty()) {
-            Path path = stack.pop();
-            XY o = new XY(path.x, path.y);
-            if (visited.contains(o)) {
-                continue;
-            }
-            visited.add(o);
-            steps++;
-            for (Direction direction : directions) {
-                if (path.symbol == direction.symbol) {
-                    if (isValidDirection(path, direction.directions[0], matrix)) {
-                        int y = path.y + direction.directions[0].y;
-                        int x = path.x + direction.directions[0].x;
-                        char symbol = matrix[y][x];
-                        stack.add(new Path(symbol, y, x));
-                    }
-                    if (isValidDirection(path, direction.directions[1], matrix)) {
-                        int y = path.y + direction.directions[1].y;
-                        int x = path.x + direction.directions[1].x;
-                        char symbol = matrix[y][x];
-                        stack.add(new Path(symbol, y, x));
-                    } else {
-                        possibleSolution.nr = -1;
-                        return possibleSolution;
-                    }
-                    break;
-                }
-            }
-        }
-        possibleSolution.nr = steps;
-        possibleSolution.visitedPaths = visited;
-        return possibleSolution;
-    }
-
-    private static boolean isValidDirection(Path sourcePath, XY direction, char[][] matrix) {
+    private static boolean isValidDirection(Path sourcePath, YX direction, char[][] matrix) {
         int y = sourcePath.y + direction.y;
         int x = sourcePath.x + direction.x;
 
@@ -550,8 +525,8 @@ public class Day10 {
         char destinationSymbol = matrix[y][x];
         for (Direction d : directions) {
             if (d.symbol == destinationSymbol) {
-                for (XY xy : d.directions) {
-                    if (y + xy.y == sourcePath.y && x + xy.x == sourcePath.x) {
+                for (YX YX : d.directions) {
+                    if (y + YX.y == sourcePath.y && x + YX.x == sourcePath.x) {
                         return true;
                     }
                 }
@@ -561,9 +536,34 @@ public class Day10 {
         return false;
     }
 
+    private static class Pipe {
+        char symbol;
+        YX point = new YX();
+        Type north = Type.EMPTY;
+        Type east = Type.EMPTY;
+        Type south = Type.EMPTY;
+        Type west = Type.EMPTY;
+
+        boolean isAllSet() {
+            if (north == Type.EMPTY) {
+                return false;
+            }
+            if (east == Type.EMPTY) {
+                return false;
+            }
+            if (south == Type.EMPTY) {
+                return false;
+            }
+            if (west == Type.EMPTY) {
+                return false;
+            }
+            return true;
+        }
+    }
+
     private static class PossibleSolution {
         int nr;
-        HashSet<XY> visitedPaths;
+        HashSet<YX> visitedPaths;
     }
 
     private static char[][] parseString(List<String> l) {
@@ -593,10 +593,10 @@ public class Day10 {
 
     private static class Direction {
         char symbol;
-        XY[] directions;
+        YX[] directions;
         CardinalDirection[] type;
 
-        public Direction(char symbol, XY[] directions, CardinalDirection[] type) {
+        public Direction(char symbol, YX[] directions, CardinalDirection[] type) {
             this.symbol = symbol;
             this.directions = directions;
             this.type = type;

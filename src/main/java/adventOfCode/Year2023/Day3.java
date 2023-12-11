@@ -1,6 +1,6 @@
 package adventOfCode.Year2023;
 
-import classes.XY;
+import classes.YX;
 import util.FileUtil;
 import util.TimeUtil;
 
@@ -89,7 +89,7 @@ public class Day3 {
                 String point = schematic[y1][x1];
                 char c = point.charAt(0);
                 if (c != '.' && (c < '0' || c > '9')) {
-                    XY.add(new Save(new XY(x1, y1), 0));
+                    XY.add(new Save(new YX(y1, x1), 0));
                     return true;
                 }
             }
@@ -111,10 +111,10 @@ public class Day3 {
     }
 
     static final class Save {
-        XY point;
+        YX point;
         int nr;
 
-        Save(XY point, int nr) {
+        Save(YX point, int nr) {
             this.point = point;
             this.nr = nr;
         }

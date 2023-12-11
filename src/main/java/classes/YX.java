@@ -1,23 +1,23 @@
 package classes;
 
-public class XY {
+public class YX {
 
-    public int x;
     public int y;
+    public int x;
 
-    public XY() {
+    public YX() {
     }
 
-    public XY(int x, int y) {
+    public YX(int y, int x) {
         this.x = x;
         this.y = y;
     }
 
     @Override
     public String toString() {
-        return "XY{" +
-                "x=" + x +
-                ", y=" + y +
+        return "YX{" +
+                "y=" + y +
+                ", x=" + x +
                 '}';
     }
 
@@ -26,10 +26,10 @@ public class XY {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        XY xy = (XY) o;
+        YX YX = (YX) o;
 
-        if (x != xy.x) return false;
-        return y == xy.y;
+        if (x != YX.x) return false;
+        return y == YX.y;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class XY {
         return result;
     }
 
-    public XY deepCopy() {
-        return new XY(this.x, this.y);
+    public YX deepCopy() {
+        return new YX(this.y, this.x);
     }
 }
