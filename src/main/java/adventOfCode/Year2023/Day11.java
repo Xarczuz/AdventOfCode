@@ -13,6 +13,8 @@ import java.util.Objects;
 public class Day11 {
 
 
+    private static final int stepsOffset = 1000000 - 2;
+
     public static void main(String[] args) throws IOException, URISyntaxException {
         List<String> l = FileUtil.readfile(Day11.class);
         List<String> l2 = FileUtil.readfileExempel(Day11.class);
@@ -21,18 +23,61 @@ public class Day11 {
         oneStar(l2);
         TimeUtil.endTime();
         TimeUtil.startTime();
-//        twoStar(l);
-//        twoStar(l2);
+        twoStar(l);
+        twoStar(l2);
         TimeUtil.endTime();
     }
 
     private static void twoStar(List<String> l) {
+        ArrayList<ArrayList<String>> matrix = parseString(l);
+        ArrayList<Integer> expansionY = new ArrayList<>();
+        ArrayList<Integer> expansionX = new ArrayList<>();
+        findEmptyiness(matrix, expansionY, expansionX);
+        expandUniverse(matrix, expansionY, expansionX);
+        ArrayList<Galaxy> galaxies = assignNumbersToGalaxy(matrix);
+        long sum = sumOfShortestPaths2(galaxies, matrix);
+        for (ArrayList<String> characters : matrix) {
+            System.out.println(characters);
+        }
+        System.out.println("Two star: " + sum);
+    }
 
+    private static long sumOfShortestPaths2(ArrayList<Galaxy> galaxies, ArrayList<ArrayList<String>> matrix) {
+        long sum = 0;
+        for (int i = 0; i < galaxies.size(); i++) {
+            for (int j = i + 1; j < galaxies.size(); j++) {
+                Galaxy g1 = galaxies.get(i);
+                Galaxy g2 = galaxies.get(j);
+                long steps = 0;
+                for (int y = g1.yx.y; y < g2.yx.y; y++) {
+                    if (matrix.get(y).get(g2.yx.x).equals("x")) {
+                        steps += Day11.stepsOffset;
+                    }
+                    steps++;
+                }
+                if (g1.yx.x > g2.yx.x) {
+                    for (int x = g1.yx.x; x > g2.yx.x; x--) {
+                        if (matrix.get(g2.yx.y).get(x).equals("x")) {
+                            steps += Day11.stepsOffset;
+                        }
+                        steps++;
+                    }
+                } else if (g1.yx.x < g2.yx.x) {
+                    for (int x = g1.yx.x; x < g2.yx.x; x++) {
+                        if (matrix.get(g2.yx.y).get(x).equals("x")) {
+                            steps += Day11.stepsOffset;
+                        }
+                        steps++;
+                    }
+                }
+                sum += steps;
+            }
+        }
+        return sum;
     }
 
     private static void oneStar(List<String> l) {
         ArrayList<ArrayList<String>> matrix = parseString(l);
-
         ArrayList<Integer> expansionY = new ArrayList<>();
         ArrayList<Integer> expansionX = new ArrayList<>();
         findEmptyiness(matrix, expansionY, expansionX);
@@ -77,7 +122,7 @@ public class Day11 {
         for (int i = 0; i < expansionY.size(); i++) {
             ArrayList<String> element = new ArrayList<>();
             for (int j = 0; j < matrix.getFirst().size(); j++) {
-                element.add(".");
+                element.add("x");
             }
             matrix.add(expansionY.get(i) + i, element);
         }
@@ -87,7 +132,7 @@ public class Day11 {
         System.out.println();
         for (int i = 0; i < expansionX.size(); i++) {
             for (int y = 0; y < matrix.size(); y++) {
-                matrix.get(y).add(expansionX.get(i) + i, ".");
+                matrix.get(y).add(expansionX.get(i) + i, "x");
             }
         }
     }
