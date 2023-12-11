@@ -17,7 +17,7 @@ public class Day11 {
         List<String> l = FileUtil.readfile(Day11.class);
         List<String> l2 = FileUtil.readfileExempel(Day11.class);
         TimeUtil.startTime();
-//        oneStar(l);
+        oneStar(l);
         oneStar(l2);
         TimeUtil.endTime();
         TimeUtil.startTime();
@@ -37,25 +37,40 @@ public class Day11 {
         ArrayList<Integer> expansionX = new ArrayList<>();
         findEmptyiness(matrix, expansionY, expansionX);
         expandUniverse(matrix, expansionY, expansionX);
-        assignNumbersToGalaxy(matrix);
-
+        ArrayList<Galaxy> galaxies = assignNumbersToGalaxy(matrix);
+        int sum = sumOfShortestPaths(galaxies);
         for (ArrayList<String> characters : matrix) {
             System.out.println(characters);
         }
-
+        System.out.println("One star: " + sum);
     }
 
-    private static void assignNumbersToGalaxy(ArrayList<ArrayList<String>> matrix) {
-        new ArrayList<>();
+    private static int sumOfShortestPaths(ArrayList<Galaxy> galaxies) {
+        int sum = 0;
+        for (int i = 0; i < galaxies.size(); i++) {
+            for (int j = i + 1; j < galaxies.size(); j++) {
+                Galaxy g1 = galaxies.get(i);
+                Galaxy g2 = galaxies.get(j);
+                sum += Math.abs(g1.yx.x - g2.yx.x) + Math.abs(g1.yx.y - g2.yx.y);
+            }
+        }
+        return sum;
+    }
+
+    private static ArrayList<Galaxy> assignNumbersToGalaxy(ArrayList<ArrayList<String>> matrix) {
+        ArrayList<Galaxy> galaxies = new ArrayList<>();
         int index = 1;
-        for (ArrayList<String> characters : matrix) {
-            for (int i = 0; i < characters.size(); i++) {
-                if (Objects.equals(characters.get(i), "#")) {
-                    characters.set(i, String.valueOf(index));
+        for (int y = 0; y < matrix.size(); y++) {
+            ArrayList<String> characters = matrix.get(y);
+            for (int x = 0; x < characters.size(); x++) {
+                if (Objects.equals(characters.get(x), "#")) {
+                    characters.set(x, String.valueOf(index));
+                    galaxies.add(new Galaxy(index, new YX(y, x)));
                     index++;
                 }
             }
         }
+        return galaxies;
     }
 
     private static void expandUniverse(ArrayList<ArrayList<String>> matrix, ArrayList<Integer> expansionY, ArrayList<Integer> expansionX) {
@@ -117,9 +132,13 @@ public class Day11 {
     }
 
     private static class Galaxy {
-        YX YX;
+        int nr;
+        YX yx;
 
+        public Galaxy(int nr, classes.YX yx) {
+            this.nr = nr;
+            this.yx = yx;
+        }
     }
-
 
 }
