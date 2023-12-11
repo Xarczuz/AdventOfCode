@@ -32,7 +32,7 @@ public class Day11 {
         ArrayList<ArrayList<String>> matrix = parseString(l);
         ArrayList<Integer> expansionY = new ArrayList<>();
         ArrayList<Integer> expansionX = new ArrayList<>();
-        findEmptyiness(matrix, expansionY, expansionX);
+        findEmptiness(matrix, expansionY, expansionX);
         expandUniverse(matrix, expansionY, expansionX);
         ArrayList<Galaxy> galaxies = assignNumbersToGalaxy(matrix);
         long sum = sumOfShortestPaths2(galaxies, matrix);
@@ -80,7 +80,7 @@ public class Day11 {
         ArrayList<ArrayList<String>> matrix = parseString(l);
         ArrayList<Integer> expansionY = new ArrayList<>();
         ArrayList<Integer> expansionX = new ArrayList<>();
-        findEmptyiness(matrix, expansionY, expansionX);
+        findEmptiness(matrix, expansionY, expansionX);
         expandUniverse(matrix, expansionY, expansionX);
         ArrayList<Galaxy> galaxies = assignNumbersToGalaxy(matrix);
         int sum = sumOfShortestPaths(galaxies);
@@ -131,13 +131,13 @@ public class Day11 {
         }
         System.out.println();
         for (int i = 0; i < expansionX.size(); i++) {
-            for (int y = 0; y < matrix.size(); y++) {
-                matrix.get(y).add(expansionX.get(i) + i, "x");
+            for (ArrayList<String> strings : matrix) {
+                strings.add(expansionX.get(i) + i, "x");
             }
         }
     }
 
-    private static void findEmptyiness(ArrayList<ArrayList<String>> matrix, ArrayList<Integer> expansionY, ArrayList<Integer> expansionX) {
+    private static void findEmptiness(ArrayList<ArrayList<String>> matrix, ArrayList<Integer> expansionY, ArrayList<Integer> expansionX) {
         for (int y = 0; y < matrix.size(); y++) {
             boolean shouldAdd = true;
             for (int x = 0; x < matrix.getFirst().size(); x++) {
@@ -152,8 +152,8 @@ public class Day11 {
         }
         for (int x = 0; x < matrix.getFirst().size(); x++) {
             boolean shouldAdd = true;
-            for (int y = 0; y < matrix.size(); y++) {
-                if (Objects.equals(matrix.get(y).get(x), "#")) {
+            for (ArrayList<String> strings : matrix) {
+                if (Objects.equals(strings.get(x), "#")) {
                     shouldAdd = false;
                     break;
                 }
