@@ -15,17 +15,48 @@ public class Day12 {
         List<String> l = FileUtil.readfile(Day12.class);
         List<String> l2 = FileUtil.readfileExempel(Day12.class);
         TimeUtil.startTime();
-        oneStar(l);
-        oneStar(l2);
+//        oneStar(l);
+//        oneStar(l2);
         TimeUtil.endTime();
         TimeUtil.startTime();
 //        twoStar(l);
-//        twoStar(l2);
+        twoStar(l2);
         TimeUtil.endTime();
     }
 
     private static void twoStar(List<String> l) {
+        ArrayList<HotSpring> hotSprings = parseString2(l);
+        long sum = 0;
+        for (HotSpring hotSpring : hotSprings) {
+            sum += findTotalArrangemnts(hotSpring);
+        }
+        System.out.println("Two star: " + sum);
+    }
 
+    private static ArrayList<HotSpring> parseString2(List<String> l) {
+        ArrayList<HotSpring> hotSprings = new ArrayList<>(l.size());
+        for (String s : l) {
+            String[] ss = s.split(" ");
+            HotSpring hotSpring = new HotSpring();
+            hotSpring.borkenRecord = ss[0].toCharArray();
+            char[] fiveX = new char[hotSpring.borkenRecord.length * 5];
+
+            for (int i = 0; i < fiveX.length; i++) {
+                fiveX[i] = hotSpring.borkenRecord[i % hotSpring.borkenRecord.length];
+            }
+            hotSpring.borkenRecord = fiveX;
+
+            String[] ints = ss[1].split(",");
+            int[] order = new int[ints.length * 5];
+            for (int i = 0; i < ints.length * 5; i++) {
+
+                order[i] = Integer.parseInt(ints[i % ints.length]);
+
+            }
+            hotSpring.order = order;
+            hotSprings.add(hotSpring);
+        }
+        return hotSprings;
     }
 
     private static void oneStar(List<String> l) {
@@ -53,13 +84,11 @@ public class Day12 {
                 sum++;
             }
         }
-        System.out.println(sum);
         return sum;
     }
 
     private static boolean isValidArrangement(char[] copy, HotSpring hotSpring) {
         int[] order = hotSpring.order;
-        int index = 0;
         int amount = 0;
         boolean first = false;
         ArrayList<Integer> integerArrayList = new ArrayList<>();
@@ -130,7 +159,7 @@ public class Day12 {
             char spring = '#';
             ArrayList<char[]> permutaions = new ArrayList<>();
             int r = (int) (Math.pow(2, a));
-//            System.out.println(r);
+            System.out.println(r);
             int maxLength = 0;
             for (int i = r - 1; i >= 0; i--) {
                 String binaryString = Integer.toBinaryString(i);
