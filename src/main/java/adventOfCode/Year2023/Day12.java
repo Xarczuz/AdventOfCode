@@ -15,7 +15,7 @@ public class Day12 {
         List<String> l = FileUtil.readfile(Day12.class);
         List<String> l2 = FileUtil.readfileExempel(Day12.class);
         TimeUtil.startTime();
-//        oneStar(l);
+        oneStar(l);
         oneStar(l2);
         TimeUtil.endTime();
         TimeUtil.startTime();
@@ -38,15 +38,58 @@ public class Day12 {
     }
 
     private static long findTotalArrangemnts(HotSpring hotSpring) {
-
-        ArrayList<char[]> aa = hotSpring.permutaionsOfArrangementsOfBrokenSprings();
-        for (char[] chars : aa) {
-            for (char aChar : chars) {
-                System.out.print(aChar);
+        long sum = 0;
+        ArrayList<char[]> arrangementsOfBrokenSprings = hotSpring.permutaionsOfArrangementsOfBrokenSprings();
+        for (char[] chars : arrangementsOfBrokenSprings) {
+            char[] copy = hotSpring.copyBrokenRecord();
+            int index = 0;
+            for (int i = 0; i < copy.length; i++) {
+                if (copy[i] == '?') {
+                    copy[i] = chars[index];
+                    index++;
+                }
             }
-            System.out.println();
+            if (isValidArrangement(copy, hotSpring)) {
+                sum++;
+            }
         }
-        return 0;
+        System.out.println(sum);
+        return sum;
+    }
+
+    private static boolean isValidArrangement(char[] copy, HotSpring hotSpring) {
+        int[] order = hotSpring.order;
+        int index = 0;
+        int amount = 0;
+        boolean first = false;
+        ArrayList<Integer> integerArrayList = new ArrayList<>();
+        for (char c : copy) {
+            if (c == '#') {
+                amount++;
+                first = true;
+            } else if (c == '.' && first) {
+                first = false;
+                integerArrayList.add(amount);
+                amount = 0;
+            }
+        }
+        if (copy[copy.length - 1] == '#') {
+            integerArrayList.add(amount);
+        }
+
+        if (integerArrayList.size() != order.length) {
+            return false;
+        }
+
+        for (int j = 0; j < integerArrayList.size(); j++) {
+            Integer i = integerArrayList.get(j);
+            if (i != order[j]) {
+                return false;
+
+            }
+        }
+
+        return true;
     }
 
     private static ArrayList<HotSpring> parseString(List<String> l) {
@@ -71,7 +114,7 @@ public class Day12 {
         char[] borkenRecord;
         int[] order;
 
-        public int amountOfBrokenSprings() {
+        private int amountOfBrokenSprings() {
             int sum = 0;
             for (char c : borkenRecord) {
                 if (c == '?') {
@@ -85,24 +128,17 @@ public class Day12 {
             int a = amountOfBrokenSprings();
             char noSpring = '.';
             char spring = '#';
-
             ArrayList<char[]> permutaions = new ArrayList<>();
-
             int r = (int) (Math.pow(2, a));
-            System.out.println(r);
+//            System.out.println(r);
             int maxLength = 0;
             for (int i = r - 1; i >= 0; i--) {
                 String binaryString = Integer.toBinaryString(i);
                 maxLength = Math.max(maxLength, binaryString.length());
                 if (binaryString.length() < maxLength) {
-                    String x = "";
-                    for (int j = 0; j < maxLength - binaryString.length(); j++) {
-                        x += String.valueOf(0);
-                    }
-                    binaryString = x + binaryString;
+                    binaryString = String.valueOf(0).repeat(maxLength - binaryString.length()) + binaryString;
                 }
-
-                System.out.println(binaryString);
+//                System.out.println(binaryString);
                 char[] chars = binaryString.toCharArray();
                 for (int j = 0; j < chars.length; j++) {
                     if (chars[j] == '1') {
@@ -114,8 +150,13 @@ public class Day12 {
                 permutaions.add(chars);
             }
 
-
             return permutaions;
+        }
+
+        public char[] copyBrokenRecord() {
+            char[] copy = new char[borkenRecord.length];
+            System.arraycopy(borkenRecord, 0, copy, 0, borkenRecord.length);
+            return copy;
         }
     }
 
