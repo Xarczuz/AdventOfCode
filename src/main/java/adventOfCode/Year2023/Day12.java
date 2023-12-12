@@ -2,7 +2,6 @@ package adventOfCode.Year2023;
 
 import util.FileUtil;
 import util.TimeUtil;
-import util.Util;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -16,7 +15,7 @@ public class Day12 {
         List<String> l = FileUtil.readfile(Day12.class);
         List<String> l2 = FileUtil.readfileExempel(Day12.class);
         TimeUtil.startTime();
-        oneStar(l);
+//        oneStar(l);
         oneStar(l2);
         TimeUtil.endTime();
         TimeUtil.startTime();
@@ -40,7 +39,13 @@ public class Day12 {
 
     private static long findTotalArrangemnts(HotSpring hotSpring) {
 
-        hotSpring.permutaionsOfArrangementsOfBrokenSprings();
+        ArrayList<char[]> aa = hotSpring.permutaionsOfArrangementsOfBrokenSprings();
+        for (char[] chars : aa) {
+            for (char aChar : chars) {
+                System.out.print(aChar);
+            }
+            System.out.println();
+        }
         return 0;
     }
 
@@ -81,12 +86,12 @@ public class Day12 {
             char noSpring = '.';
             char spring = '#';
 
-            long n1 = Util.factorial(a);
-            long n2 = Util.factorial(a - 2);
-            int r = (int) (n1 / n2);
+            ArrayList<char[]> permutaions = new ArrayList<>();
 
+            int r = (int) (Math.pow(2, a));
+            System.out.println(r);
             int maxLength = 0;
-            for (int i = r; i >= 0; i--) {
+            for (int i = r - 1; i >= 0; i--) {
                 String binaryString = Integer.toBinaryString(i);
                 maxLength = Math.max(maxLength, binaryString.length());
                 if (binaryString.length() < maxLength) {
@@ -96,11 +101,21 @@ public class Day12 {
                     }
                     binaryString = x + binaryString;
                 }
+
                 System.out.println(binaryString);
+                char[] chars = binaryString.toCharArray();
+                for (int j = 0; j < chars.length; j++) {
+                    if (chars[j] == '1') {
+                        chars[j] = spring;
+                    } else {
+                        chars[j] = noSpring;
+                    }
+                }
+                permutaions.add(chars);
             }
 
-            System.out.println(r);
-            return null;
+
+            return permutaions;
         }
     }
 
