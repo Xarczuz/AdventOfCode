@@ -53,6 +53,20 @@ class Day13Test {
         assertEquals(4, Day13.horizontalReflection(arr, false));
     }
 
+
+    @Test
+    void horizontalReflectionStar2() {
+        ArrayList<String> arr = new ArrayList<>();
+        arr.add("#...##..#");
+        arr.add("#....#..#");
+        arr.add("..##..###");
+        arr.add("#####.##.");
+        arr.add("#####.##.");
+        arr.add("..##..###");
+        arr.add("#....#..#");
+        assertEquals(4, Day13.horizontalReflection2(arr, false));
+    }
+
     @Test
     void transposeArray() {
         ArrayList<String> arr = new ArrayList<>();
