@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class Day13Test {
 
@@ -24,27 +24,17 @@ class Day13Test {
     @Test
     void horizontalReflection1() {
         ArrayList<String> arr = new ArrayList<>();
-        String s = "..#...###..##\n" +
-                "..##....##...\n" +
-                "#.#.#....####\n" +
-                "##.###.#.##.#\n" +
-                "##.###.#.##.#\n" +
-                "#.#.#....####\n" +
-                ".###....##...\n" +
-                "..#...###..##\n" +
-                "..#...###..##\n" +
-                ".###....##...\n" +
-                "#.#.#....####";
-        StringBuilder s1= new StringBuilder();
+        String s = "..#...###..##\n" + "..##....##...\n" + "#.#.#....####\n" + "##.###.#.##.#\n" + "##.###.#.##.#\n" + "#.#.#....####\n" + ".###....##...\n" + "..#...###..##\n" + "..#...###..##\n" + ".###....##...\n" + "#.#.#....####";
+        StringBuilder s1 = new StringBuilder();
         for (char c : s.toCharArray()) {
 
-            if (c =='\n') {
+            if (c == '\n') {
 
                 arr.add(s1.toString());
-                s1=new StringBuilder();
-            }else{
+                s1 = new StringBuilder();
+            } else {
 
-            s1.append(c);
+                s1.append(c);
             }
         }
         assertEquals(4, Day13.horizontalReflection(arr, false));
