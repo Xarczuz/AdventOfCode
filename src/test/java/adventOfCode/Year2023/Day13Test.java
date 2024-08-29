@@ -37,7 +37,7 @@ class Day13Test {
                 s1.append(c);
             }
         }
-        assertEquals(4, Day13.horizontalReflection(arr, false));
+        assertEquals(8, Day13.horizontalReflection(arr, false));
     }
 
     @Test
@@ -50,7 +50,7 @@ class Day13Test {
         arr.add("#####.##.");
         arr.add("..##..###");
         arr.add("#....#..#");
-        assertEquals(8, Day13.horizontalReflection(arr, false));
+        assertEquals(4, Day13.horizontalReflection(arr, false));
     }
 
     @Test
