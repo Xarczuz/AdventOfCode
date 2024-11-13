@@ -24,57 +24,64 @@ public class Day19 {
 //        TimeUtil.endTime();
     }
 
+    static long ss = 0;
+
     private static void twoStar(List<String> l) {
         Work work = parseWork(l);
 
         Parts part = new Parts(new Interval(1, 4000), new Interval(1, 4000), new Interval(1, 4000), new Interval(1, 4000));
-        long sum = checkPart2(part, work.system, "in", 0);
+        long sum = checkPart2(part, work.system, "in");
 
         System.out.println(sum);
+        System.out.println(ss);
     }
 
-    private static long checkPart2(Parts partOrg, HashMap<String, ArrayList<Condition>> system, String in, long sum) {
+    private static long checkPart2(Parts part, HashMap<String, ArrayList<Condition>> system, String in) {
         ArrayList<Condition> conditions = system.get(in);
 
         if (in.equals("A")) {
-            return partOrg.calc();
+            long calc = part.calc();
+            ss += calc;
+            return calc;
         } else if (in.equals("R")) {
             return 0;
         }
-        Parts part = partOrg.deepCopy();
+        //167409079868000
+        //174205762239804
+        //182796038177793
+        //156954768310743
+        //167010937327821
+        long sum = 0;
         for (Condition condition : conditions) {
             String part1 = condition.part;
-            Interval interval = new Interval(Integer.MIN_VALUE, Integer.MIN_VALUE);
-            if ("x".equals(part1)) {
-                interval = part.x;
-            }
-            if ("s".equals(part1)) {
-                interval = part.s;
-            }
-            if ("m".equals(part1)) {
-                interval = part.m;
-            }
-            if ("a".equals(part1)) {
-                interval = part.a;
-            }
+            Interval interval = part.getInterval(part1);
             if (condition.type == Type.less) {
                 if (interval.end < condition.number) {
-                    return checkPart2(part, system, condition.target, sum);
+                    sum += checkPart2(part, system, condition.target);
                 }
                 if (interval.start < condition.number) {
-                    interval.end = condition.number - 1;
-                    return checkPart2(part, system, condition.target, sum);
-                } // TODO check else condition
+                    Parts parts = part.deepCopy();
+                    Interval interval1 = parts.getInterval(part1);
+                    interval1.end = condition.number - 1;
+                    Interval interval2 = part.getInterval(part1);
+                    interval2.start = condition.number;
+                    sum += checkPart2(parts, system, condition.target);
+                }
             } else if (condition.type == Type.greater) {
                 if (interval.start > condition.number) {
-                    return checkPart2(part, system, condition.target, sum);
+                    sum += checkPart2(part, system, condition.target);
                 }
                 if (interval.end > condition.number) {
-                    interval.end = condition.number + 1;
-                    return checkPart2(part, system, condition.target, sum);
+                    Parts parts = part.deepCopy();
+                    Interval interval1 = parts.getInterval(part1);
+                    interval1.start = condition.number + 1;
+                    Interval interval2 = part.getInterval(part1);
+                    interval2.end = condition.number;
+
+                    sum += checkPart2(parts, system, condition.target);
                 }
             } else if (condition.type == Type.none) {
-                return checkPart2(part, system, condition.target, sum);
+                sum += checkPart2(part, system, condition.target);
             }
         }
         return sum;
@@ -103,19 +110,7 @@ public class Day19 {
         }
         for (Condition condition : conditions) {
             String part1 = condition.part;
-            Interval interval = new Interval(Integer.MIN_VALUE, Integer.MIN_VALUE);
-            if ("x".equals(part1)) {
-                interval = part.x;
-            }
-            if ("s".equals(part1)) {
-                interval = part.s;
-            }
-            if ("m".equals(part1)) {
-                interval = part.m;
-            }
-            if ("a".equals(part1)) {
-                interval = part.a;
-            }
+            Interval interval = part.getInterval(part1);
             if (condition.type == Type.less) {
                 if (interval.start < condition.number) {
                     return checkPart(part, system, condition.target);
@@ -205,6 +200,23 @@ public class Day19 {
 
         public Parts deepCopy() {
             return new Parts(x.deepCopy(), m.deepCopy(), a.deepCopy(), s.deepCopy());
+        }
+
+        public Interval getInterval(String part1) {
+            Interval interval = null;
+            if ("x".equals(part1)) {
+                interval = x;
+            }
+            if ("s".equals(part1)) {
+                interval = s;
+            }
+            if ("m".equals(part1)) {
+                interval = m;
+            }
+            if ("a".equals(part1)) {
+                interval = a;
+            }
+            return interval;
         }
     }
 
