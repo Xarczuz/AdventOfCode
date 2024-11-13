@@ -16,12 +16,12 @@ public class Day19 {
         List<String> l2 = FileUtil.readfileExempel(Day19.class);
         TimeUtil.startTime();
 //        oneStar(l);
-//        oneStar(l2);
+        oneStar(l2);
         TimeUtil.endTime();
-//        TimeUtil.startTime();
+        TimeUtil.startTime();
 //        twoStar(l);
         twoStar(l2);
-//        TimeUtil.endTime();
+        TimeUtil.endTime();
     }
 
     static long ss = 0;
@@ -47,10 +47,10 @@ public class Day19 {
             return 0;
         }
         //167409079868000
+        //167010937327821
         //174205762239804
         //182796038177793
         //156954768310743
-        //167010937327821
         long sum = 0;
         for (Condition condition : conditions) {
             String part1 = condition.part;
@@ -86,7 +86,6 @@ public class Day19 {
         }
         return sum;
     }
-
 
     private static void oneStar(List<String> l) {
         Work work = parseWork(l);
