@@ -15,16 +15,14 @@ public class Day19 {
         List<String> l = FileUtil.readfile(Day19.class);
         List<String> l2 = FileUtil.readfileExempel(Day19.class);
         TimeUtil.startTime();
-//        oneStar(l);
+        oneStar(l);
         oneStar(l2);
         TimeUtil.endTime();
         TimeUtil.startTime();
-//        twoStar(l);
+        twoStar(l);
         twoStar(l2);
         TimeUtil.endTime();
     }
-
-    static long ss = 0;
 
     private static void twoStar(List<String> l) {
         Work work = parseWork(l);
@@ -33,19 +31,17 @@ public class Day19 {
         long sum = checkPart2(part, work.system, "in");
 
         System.out.println(sum);
-        System.out.println(ss);
     }
 
     private static long checkPart2(Parts part, HashMap<String, ArrayList<Condition>> system, String in) {
         ArrayList<Condition> conditions = system.get(in);
 
         if (in.equals("A")) {
-            long calc = part.calc();
-            ss += calc;
-            return calc;
+            return part.calc();
         } else if (in.equals("R")) {
             return 0;
         }
+        //167409079868000
         //167409079868000
         //167010937327821
         //174205762239804
@@ -53,34 +49,30 @@ public class Day19 {
         //156954768310743
         long sum = 0;
         for (Condition condition : conditions) {
-            String part1 = condition.part;
-            Interval interval = part.getInterval(part1);
+            Interval interval = part.getInterval(condition.part);
             if (condition.type == Type.less) {
                 if (interval.end < condition.number) {
                     sum += checkPart2(part, system, condition.target);
-                }
-                if (interval.start < condition.number) {
+                } else if (interval.start < condition.number) {
                     Parts parts = part.deepCopy();
-                    Interval interval1 = parts.getInterval(part1);
+                    Interval interval1 = parts.getInterval(condition.part);
                     interval1.end = condition.number - 1;
-                    Interval interval2 = part.getInterval(part1);
+                    Interval interval2 = part.getInterval(condition.part);
                     interval2.start = condition.number;
                     sum += checkPart2(parts, system, condition.target);
                 }
             } else if (condition.type == Type.greater) {
                 if (interval.start > condition.number) {
                     sum += checkPart2(part, system, condition.target);
-                }
-                if (interval.end > condition.number) {
+                } else if (interval.end > condition.number) {
                     Parts parts = part.deepCopy();
-                    Interval interval1 = parts.getInterval(part1);
+                    Interval interval1 = parts.getInterval(condition.part);
                     interval1.start = condition.number + 1;
-                    Interval interval2 = part.getInterval(part1);
+                    Interval interval2 = part.getInterval(condition.part);
                     interval2.end = condition.number;
-
                     sum += checkPart2(parts, system, condition.target);
                 }
-            } else if (condition.type == Type.none) {
+            } else {
                 sum += checkPart2(part, system, condition.target);
             }
         }
@@ -194,7 +186,7 @@ public class Day19 {
         }
 
         public long calc() {
-            return (long) (x.end - x.start) * (s.end - s.start) * (a.end - a.start) * (m.end - m.start);
+            return (x.end - x.start + 1) * (s.end - s.start + 1) * (a.end - a.start + 1) * (m.end - m.start + 1);
         }
 
         public Parts deepCopy() {
@@ -220,10 +212,10 @@ public class Day19 {
     }
 
     private static class Interval {
-        int start;
-        int end;
+        long start;
+        long end;
 
-        public Interval(int start, int end) {
+        public Interval(long start, long end) {
             this.start = start;
             this.end = end;
         }
