@@ -30,8 +30,14 @@ public class Day20 {
 
   }
 
+  enum Pulse {
+    HIGH,
+    LOW
+  }
+
   interface Sensor {
 
+    Sensor[] send(Pulse pulse);
   }
 
   private class Broadcaster implements Sensor {
@@ -42,10 +48,14 @@ public class Day20 {
     public Broadcaster(String name) {
       this.name = name;
     }
+
+    @Override
+    public Sensor[] send(Pulse pulse) {
+      return new Sensor[0];
+    }
   }
 
   private class FlipFlop implements Sensor {
-
     boolean on;
     String name;
     Sensor[] signalsOut;
@@ -53,6 +63,11 @@ public class Day20 {
     public FlipFlop(boolean on, String name) {
       this.on = on;
       this.name = name;
+    }
+
+    @Override
+    public Sensor[] send(Pulse pulse) {
+      return new Sensor[0];
     }
   }
 
@@ -70,6 +85,11 @@ public class Day20 {
       this.name = name;
       this.signalsOut = signalsOut;
       this.signalsIn = signalsIn;
+    }
+
+    @Override
+    public Sensor[] send(Pulse pulse) {
+      return new Sensor[0];
     }
   }
 
