@@ -30,4 +30,47 @@ public class Day20 {
 
   }
 
+  interface Sensor {
+
+  }
+
+  private class Broadcaster implements Sensor {
+
+    String name;
+    Sensor[] signalsOut;
+
+    public Broadcaster(String name) {
+      this.name = name;
+    }
+  }
+
+  private class FlipFlop implements Sensor {
+
+    boolean on;
+    String name;
+    Sensor[] signalsOut;
+
+    public FlipFlop(boolean on, String name) {
+      this.on = on;
+      this.name = name;
+    }
+  }
+
+  private class Conjunction implements Sensor {
+
+    Sensor[] signalsIn;
+    Sensor[] signalsOut;
+    String name;
+
+    public Conjunction(Sensor[] signalsIn) {
+      this.signalsIn = signalsIn;
+    }
+
+    public Conjunction(String name, Sensor[] signalsOut, Sensor[] signalsIn) {
+      this.name = name;
+      this.signalsOut = signalsOut;
+      this.signalsIn = signalsIn;
+    }
+  }
+
 }
