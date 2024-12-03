@@ -9,7 +9,6 @@ import util.TimeUtil;
 public class Day3 {
 
   public static void main(String[] args) throws IOException, URISyntaxException {
-    System.out.println("(11,8)".matches("\\(\\d+,\\d+\\).{0,}"));
     List<String> l = FileUtil.readfile(Day3.class);
     List<String> l2 = FileUtil.readfileExempel(Day3.class);
     List<String> l3 = FileUtil.readfileExempel2(Day3.class);
