@@ -81,7 +81,7 @@ public class Day16 {
             }
         }
         System.out.println("Tiles: " + tile);
-        // 107512 to high
+        // 106512 Right
     }
 
     private static void tiles(char[][] lab) {
@@ -105,7 +105,7 @@ public class Day16 {
         }
         if (valueMap.containsKey(labAgent.location)) {
             Long l = valueMap.get(labAgent.location);
-            if (l * 1000 < labAgent.score()) {
+            if (l + 1002 < labAgent.score()) {
                 return Long.MAX_VALUE;
             }
         }
@@ -122,6 +122,7 @@ public class Day16 {
             if (bestScore == score) {
                 agents.add(visited);
             }
+            System.out.println(score);
             return score;
         }
         for (YX cardinalDirection : cardinalDirections) {
