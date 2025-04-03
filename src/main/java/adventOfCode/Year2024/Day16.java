@@ -15,6 +15,7 @@ import java.util.List;
 public class Day16 {
     private static final YX[] cardinalDirections = YX.cardinalDirectionsList();
     static ArrayList<HashSet<YX>> agents = new ArrayList<>();
+    static long bestScore = Long.MAX_VALUE;
 
 //    private static void twoStar(List<String> l2) {
 //    }
@@ -77,7 +78,8 @@ public class Day16 {
         }
         Util.print(chars);
         System.out.println("-----------------------------------------------------------------------");
-        System.out.println(sum);
+        System.out.println("Score: " + sum);
+        System.out.println("Tiles: " + agents.getLast().size());
         // 107512 to high
     }
 
