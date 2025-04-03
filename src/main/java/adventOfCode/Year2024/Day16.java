@@ -7,12 +7,17 @@ import util.Util;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
 public class Day16 {
-    private static YX[] cardinalDirections = YX.cardinalDirectionsList();
+    private static final YX[] cardinalDirections = YX.cardinalDirectionsList();
+    static ArrayList<HashSet<YX>> agents = new ArrayList<>();
+
+//    private static void twoStar(List<String> l2) {
+//    }
 
     public static void main(String[] args) throws IOException, URISyntaxException {
 
@@ -26,29 +31,8 @@ public class Day16 {
         TimeUtil.endTime();
         TimeUtil.startTime();
         //        twoStar(l);
-        twoStar(l2);
+//        twoStar(l2);
         TimeUtil.endTime();
-    }
-
-    private static void twoStar(List<String> l2) {
-    }
-
-    private static void oneStar(List<String> l) {
-        char[][] lab = parse(l);
-        YX start = findCord(lab, 'S');
-        YX end = findCord(lab, 'E');
-        System.out.println("Start: " + start);
-        System.out.println("End: " + end);
-        LabAgent labAgent = new LabAgent();
-        labAgent.direction = YX.east();
-        labAgent.location = start;
-        HashSet<YX> visited = new HashSet<>();
-        visited.add(start);
-        HashMap<YX, Long> valueMap = new HashMap<>();
-        long sum = findShortestPath(lab, labAgent, visited, end, valueMap, Long.MAX_VALUE);
-        System.out.println(sum);
-
-        // 107512 to high
     }
 
     private static YX findCord(char[][] lab, char symbol) {
@@ -66,6 +50,36 @@ public class Day16 {
         return yx;
     }
 
+    private static void oneStar(List<String> l) {
+        char[][] lab = parse(l);
+        YX start = findCord(lab, 'S');
+        YX end = findCord(lab, 'E');
+        System.out.println("Start: " + start);
+        System.out.println("End: " + end);
+        LabAgent labAgent = new LabAgent();
+        labAgent.direction = YX.east();
+        labAgent.location = start;
+        HashSet<YX> visited = new HashSet<>();
+        visited.add(start);
+        HashMap<YX, Long> valueMap = new HashMap<>();
+        long sum = findShortestPath(lab, labAgent, visited, end, valueMap, Long.MAX_VALUE);
+        System.out.println(sum);
+
+
+        System.out.println("-----------------------------------------------------------------------");
+
+        char[][] chars = Util.deepCopyMatrix(lab);
+        for (YX yx : agents.getLast()) {
+            if (chars[yx.y][yx.x] == 'S' || chars[yx.y][yx.x] == 'E') {
+                continue;
+            }
+            chars[yx.y][yx.x] = 'v';
+        }
+        Util.print(chars);
+        System.out.println("-----------------------------------------------------------------------");
+        System.out.println(sum);
+        // 107512 to high
+    }
 
     private static long findShortestPath(char[][] lab, LabAgent labAgent, HashSet<YX> visited, YX end, HashMap<YX, Long> valueMap, long minValue) {
         if (labAgent.score() > minValue) {
@@ -81,49 +95,35 @@ public class Day16 {
         if (lab[labAgent.location.y][labAgent.location.x] == '#') {
             return Long.MAX_VALUE;
         }
-        if (labAgent.location.x == end.x && labAgent.location.y == end.y) {
-            System.out.println("-----------------------------------------------------------------------");
-            System.out.println(labAgent.score());
-            char[][] chars = Util.deepCopyMatrix(lab);
-            for (YX yx : visited) {
-                chars[yx.y][yx.x] = 'X';
-            }
-            Util.print(chars);
-            System.out.println(labAgent.score());
-            System.out.println("-----------------------------------------------------------------------");
+        if (labAgent.location.equals(end)) {
+            agents.add(visited);
             return labAgent.score();
         }
         for (YX cardinalDirection : cardinalDirections) {
-            if (cardinalDirection == labAgent.direction) {
+            if (cardinalDirection.equals(labAgent.direction)) {
                 LabAgent newLabAgent = labAgent.deepCopy();
                 newLabAgent.location.go(cardinalDirection);
-                newLabAgent.direction = cardinalDirection;
-                if (visited.contains(newLabAgent.location) || !isStepValid(newLabAgent, lab)) {
+                if (visited.contains(newLabAgent.location) || isStepValid(newLabAgent, lab)) {
                     continue;
                 }
                 newLabAgent.steps++;
-                visited.add(newLabAgent.location);
-                minValue = Math.min(minValue, findShortestPath(lab, newLabAgent, deepCopy(visited), end, valueMap, minValue));
-            } else if (!labAgent.deepCopy().direction.isOpposite(cardinalDirection)) {
+                HashSet<YX> visited1 = deepCopy(visited);
+                visited1.add(newLabAgent.location);
+                minValue = Math.min(minValue, findShortestPath(lab, newLabAgent, visited1, end, valueMap, minValue));
+            } else {
                 LabAgent newLabAgent = labAgent.deepCopy();
                 newLabAgent.location.go(cardinalDirection);
                 newLabAgent.direction = cardinalDirection;
-                if (visited.contains(newLabAgent.location) || !isStepValid(newLabAgent, lab)) {
+                if (visited.contains(newLabAgent.location) || isStepValid(newLabAgent, lab)) {
                     continue;
                 }
                 newLabAgent.steps++;
                 newLabAgent.rotation++;
-                visited.add(newLabAgent.location);
-                minValue = Math.min(minValue, findShortestPath(lab, newLabAgent, deepCopy(visited), end, valueMap, minValue));
+                HashSet<YX> visited1 = deepCopy(visited);
+                visited1.add(newLabAgent.location);
+                minValue = Math.min(minValue, findShortestPath(lab, newLabAgent, visited1, end, valueMap, minValue));
             }
         }
-//        if (visited.size() == 36 && visited.contains(end)) {
-//            char[][] chars = Util.deepCopyMatrix(lab);
-//            for (YX yx : visited) {
-//                chars[yx.y][yx.x] = 'X';
-//            }
-//            Util.print(chars);
-//        }
         return minValue;
     }
 
@@ -137,10 +137,7 @@ public class Day16 {
 
     private static boolean isStepValid(LabAgent deepCopy, char[][] lab) {
         char c = lab[deepCopy.location.y][deepCopy.location.x];
-        if (c == '.' || c == 'E') {
-            return true;
-        }
-        return false;
+        return c != '.' && c != 'E';
     }
 
     private static char[][] parse(List<String> l) {
@@ -170,7 +167,7 @@ public class Day16 {
         }
 
         public long score() {
-            return this.steps + this.rotation * 1000L;
+            return this.steps + (this.rotation * 1000L);
         }
     }
 

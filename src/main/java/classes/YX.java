@@ -9,8 +9,8 @@ public class YX {
     }
 
     public YX(int y, int x) {
-        this.x = x;
         this.y = y;
+        this.x = x;
     }
 
     public static YX north() {
@@ -55,19 +55,16 @@ public class YX {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        YX YX = (YX) o;
-
-        if (x != YX.x) return false;
-        return y == YX.y;
+        YX yx = (YX) o;
+        return y == yx.y && x == yx.x;
     }
 
     @Override
     public int hashCode() {
-        int result = x;
-        result = 31 * result + y;
+        int result = y;
+        result = 31 * result + x;
         return result;
     }
 
