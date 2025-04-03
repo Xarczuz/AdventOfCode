@@ -52,6 +52,8 @@ public class Day16 {
     }
 
     private static void oneStar(List<String> l) {
+        agents.clear();
+        bestScore = Long.MAX_VALUE;
         char[][] lab = parse(l);
         YX start = findCord(lab, 'S');
         YX end = findCord(lab, 'E');
@@ -67,20 +69,34 @@ public class Day16 {
         System.out.println(sum);
 
 
-        System.out.println("-----------------------------------------------------------------------");
+        tiles(lab);
 
-        char[][] chars = Util.deepCopyMatrix(lab);
-        for (YX yx : agents.getLast()) {
-            if (chars[yx.y][yx.x] == 'S' || chars[yx.y][yx.x] == 'E') {
-                continue;
-            }
-            chars[yx.y][yx.x] = 'v';
-        }
-        Util.print(chars);
-        System.out.println("-----------------------------------------------------------------------");
         System.out.println("Score: " + sum);
-        System.out.println("Tiles: " + agents.getLast().size());
+        int tile = 0;
+        for (char[] chars : lab) {
+            for (char aChar : chars) {
+                if (aChar == 'O') {
+                    tile++;
+                }
+            }
+        }
+        System.out.println("Tiles: " + tile);
         // 107512 to high
+    }
+
+    private static void tiles(char[][] lab) {
+        System.out.println("-----------------------------------------------------------------------");
+        for (HashSet<YX> agent : agents) {
+            char[][] chars = lab;
+            for (YX yx : agent) {
+//            if (chars[yx.y][yx.x] == 'S' || chars[yx.y][yx.x] == 'E') {
+//                continue;
+//            }
+                chars[yx.y][yx.x] = 'O';
+            }
+            Util.print(chars);
+            System.out.println("-----------------------------------------------------------------------");
+        }
     }
 
     private static long findShortestPath(char[][] lab, LabAgent labAgent, HashSet<YX> visited, YX end, HashMap<YX, Long> valueMap, long minValue) {
@@ -89,7 +105,7 @@ public class Day16 {
         }
         if (valueMap.containsKey(labAgent.location)) {
             Long l = valueMap.get(labAgent.location);
-            if (l < labAgent.score()) {
+            if (l * 1000 < labAgent.score()) {
                 return Long.MAX_VALUE;
             }
         }
@@ -98,8 +114,15 @@ public class Day16 {
             return Long.MAX_VALUE;
         }
         if (labAgent.location.equals(end)) {
-            agents.add(visited);
-            return labAgent.score();
+            long score = labAgent.score();
+            if (score < bestScore) {
+                bestScore = score;
+                agents.clear();
+            }
+            if (bestScore == score) {
+                agents.add(visited);
+            }
+            return score;
         }
         for (YX cardinalDirection : cardinalDirections) {
             if (cardinalDirection.equals(labAgent.direction)) {
