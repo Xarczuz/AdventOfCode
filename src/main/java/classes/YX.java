@@ -44,6 +44,7 @@ public class YX {
     public static YX[] cardinalDirectionsList() {
         return new YX[]{YX.north(), YX.south(), YX.east(), YX.west()};
     }
+
     @Override
     public String toString() {
         return "YX{" +
@@ -72,5 +73,16 @@ public class YX {
 
     public YX deepCopy() {
         return new YX(this.y, this.x);
+    }
+
+    public void go(YX cardinalDirection) {
+        this.x += cardinalDirection.x;
+        this.y += cardinalDirection.y;
+    }
+
+    public boolean isOpposite(YX cardinalDirection) {
+        boolean b = this.x + cardinalDirection.x == 0;
+        boolean a = this.y + cardinalDirection.y == 0;
+        return b && a;
     }
 }

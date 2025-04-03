@@ -50,6 +50,15 @@ public class Util {
         return copy;
     }
 
+    public static char[][] deepCopyMatrix(char[][] lab) {
+        char[][] copy = new char[lab.length][lab[0].length];
+        for (int i = 0; i < lab.length; i++) {
+            for (int j = 0; j < lab[0].length; j++) {
+                copy[i][j] = lab[i][j];
+            }
+        }
+        return copy;
+    }
     public static long gcd(long i, long i1) {
         while (i != i1) {
             if (i > i1) {
@@ -72,4 +81,6 @@ public class Util {
         }
         return sum;
     }
+
+
 }
