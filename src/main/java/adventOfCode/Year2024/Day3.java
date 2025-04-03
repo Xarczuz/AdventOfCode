@@ -1,10 +1,11 @@
 package adventOfCode.Year2024;
 
+import util.FileUtil;
+import util.TimeUtil;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
-import util.FileUtil;
-import util.TimeUtil;
 
 public class Day3 {
 
@@ -76,7 +77,6 @@ public class Day3 {
               int i1 = Integer.parseInt(substring2);
               sum += (long) i * i1;
             }
-
           }
         }
         if (mul.contains("do()")) {
