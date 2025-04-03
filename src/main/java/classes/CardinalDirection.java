@@ -1,8 +1,5 @@
 package classes;
 
 public enum CardinalDirection {
-    NORTH,
-    EAST,
-    SOUTH,
-    WEST
+    NORTH, EAST, SOUTH, WEST
 }
