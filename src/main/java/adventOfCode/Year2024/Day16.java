@@ -19,9 +19,9 @@ public class Day16 {
         List<String> l = FileUtil.readfile(Day16.class);
         List<String> l2 = FileUtil.readfileExempel(Day16.class);
         List<String> l3 = FileUtil.readfileExempel2(Day16.class);
-        TimeUtil.startTime();
         oneStar(l2);
         oneStar(l3);
+        TimeUtil.startTime();
         oneStar(l);
         TimeUtil.endTime();
         TimeUtil.startTime();
@@ -45,7 +45,7 @@ public class Day16 {
         HashSet<YX> visited = new HashSet<>();
         visited.add(start);
         HashMap<YX, Long> valueMap = new HashMap<>();
-        long sum = findShortestPath(lab, labAgent, visited, end, valueMap);
+        long sum = findShortestPath(lab, labAgent, visited, end, valueMap, Long.MAX_VALUE);
         System.out.println(sum);
 
         // 107512 to high
@@ -67,7 +67,10 @@ public class Day16 {
     }
 
 
-    private static long findShortestPath(char[][] lab, LabAgent labAgent, HashSet<YX> visited, YX end, HashMap<YX, Long> valueMap) {
+    private static long findShortestPath(char[][] lab, LabAgent labAgent, HashSet<YX> visited, YX end, HashMap<YX, Long> valueMap, long minValue) {
+        if (labAgent.score() > minValue) {
+            return Long.MAX_VALUE;
+        }
         if (valueMap.containsKey(labAgent.location)) {
             Long l = valueMap.get(labAgent.location);
             if (l < labAgent.score()) {
@@ -79,20 +82,28 @@ public class Day16 {
             return Long.MAX_VALUE;
         }
         if (labAgent.location.x == end.x && labAgent.location.y == end.y) {
+            System.out.println("-----------------------------------------------------------------------");
+            System.out.println(labAgent.score());
+            char[][] chars = Util.deepCopyMatrix(lab);
+            for (YX yx : visited) {
+                chars[yx.y][yx.x] = 'X';
+            }
+            Util.print(chars);
+            System.out.println(labAgent.score());
+            System.out.println("-----------------------------------------------------------------------");
             return labAgent.score();
         }
-        long minValue = Long.MAX_VALUE;
         for (YX cardinalDirection : cardinalDirections) {
             if (cardinalDirection == labAgent.direction) {
                 LabAgent newLabAgent = labAgent.deepCopy();
                 newLabAgent.location.go(cardinalDirection);
+                newLabAgent.direction = cardinalDirection;
                 if (visited.contains(newLabAgent.location) || !isStepValid(newLabAgent, lab)) {
                     continue;
                 }
                 newLabAgent.steps++;
-                newLabAgent.direction = cardinalDirection;
                 visited.add(newLabAgent.location);
-                minValue = Math.min(minValue, findShortestPath(lab, newLabAgent, deepCopy(visited), end, valueMap));
+                minValue = Math.min(minValue, findShortestPath(lab, newLabAgent, deepCopy(visited), end, valueMap, minValue));
             } else if (!labAgent.deepCopy().direction.isOpposite(cardinalDirection)) {
                 LabAgent newLabAgent = labAgent.deepCopy();
                 newLabAgent.location.go(cardinalDirection);
@@ -103,7 +114,7 @@ public class Day16 {
                 newLabAgent.steps++;
                 newLabAgent.rotation++;
                 visited.add(newLabAgent.location);
-                minValue = Math.min(minValue, findShortestPath(lab, newLabAgent, deepCopy(visited), end, valueMap));
+                minValue = Math.min(minValue, findShortestPath(lab, newLabAgent, deepCopy(visited), end, valueMap, minValue));
             }
         }
 //        if (visited.size() == 36 && visited.contains(end)) {
