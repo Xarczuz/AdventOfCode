@@ -81,7 +81,6 @@ public class Day16 {
             }
         }
         System.out.println("Tiles: " + tile);
-        // 106512 Right
     }
 
     private static void tiles(char[][] lab) {
@@ -89,9 +88,6 @@ public class Day16 {
         for (HashSet<YX> agent : agents) {
             char[][] chars = lab;
             for (YX yx : agent) {
-//            if (chars[yx.y][yx.x] == 'S' || chars[yx.y][yx.x] == 'E') {
-//                continue;
-//            }
                 chars[yx.y][yx.x] = 'O';
             }
             Util.print(chars);
